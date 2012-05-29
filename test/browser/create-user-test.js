@@ -4,7 +4,7 @@ var soda = require("soda");
 var browser = soda.createClient({
     host: 'localhost'
   , port: 4444
-  , url: 'http://localhost:8080'
+  , url: 'http://localhost:8000'
   , browser: 'firefox'
 });
 
@@ -15,7 +15,7 @@ browser.on('command', function(cmd, args){
 });
 
 buster.testCase("Upload receipts", {
-    "will work": function () {
+    "will work": function (done) {
         browser
             .chain
             .session()
@@ -25,6 +25,7 @@ buster.testCase("Upload receipts", {
             .waitForElementPresent('id=landing')
             .testComplete()
             .end(function(err){
+                    done();
                     if(err) throw err;
             });
         assert(true);
