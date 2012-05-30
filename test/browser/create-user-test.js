@@ -1,34 +1,21 @@
 var buster = require("buster");
-var soda = require("soda");
+var webdriverjs = require("webdriverjs");
 
-var browser = soda.createClient({
-    host: 'localhost'
-  , port: 4444
-  , url: 'http://localhost:8000'
-  , browser: 'firefox'
-});
-
-
-// Log commands as they are fired
-browser.on('command', function(cmd, args){
-  console.log(' \x1b[33m%s\x1b[0m: %s', cmd, args.join(', '));
-});
 
 buster.testCase("Upload receipts", {
     "will work": function (done) {
-        browser
-            .chain
-            .session()
-            .open('/')
-            .type('id=banan', 'Kalle Anka')
-            .click('link=logga in')
-            .waitForElementPresent('id=landing')
-            .testComplete()
-            .end(function(err){
-                    done();
-                    if(err) throw err;
-            });
-        assert(true);
+        var client = webdriverjs.remote();
+        //var client = webdriverjs.remote({host: "xx.xx.xx.xx"}); // to run it on a remote webdriver/selenium server
+        //var client = webdriverjs.remote({desiredCapabilities:{browserName:"chrome"}}); // to run in chrome
+
+        client
+            .init()
+            .url("https://github.com/")
+            .getElementSize("id", "header", function(result){ console.log(result);  })
+            .getTitle(function(title) { console.log(title) })
+            .getElementCssProperty("id", "header", "color", function(result){ console.log(result); done(); })
+            .end(); 
+            
     },
     "will work too": function () {
         refute(false);
