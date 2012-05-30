@@ -1,24 +1,31 @@
 var buster = require("buster");
 var webdriverjs = require("webdriverjs");
 
+var assert = buster.assertions.assert;
 
-buster.testCase("Upload receipts", {
-    "will work": function (done) {
-        var client = webdriverjs.remote();
-        //var client = webdriverjs.remote({host: "xx.xx.xx.xx"}); // to run it on a remote webdriver/selenium server
-        //var client = webdriverjs.remote({desiredCapabilities:{browserName:"chrome"}}); // to run in chrome
+function createClient(done) {
+  var client = webdriverjs.remote();
+  var endAndDone =  function(error) {
+                      client.end();
+                      done();
+                    };
+  buster.testRunner.on('test:failure', endAndDone );
+  buster.testRunner.on('test:error', endAndDone );
+  buster.testRunner.on('uncaughtException', endAndDone );
+  
+  return client;
+}
 
-        client
-            .init()
-            .url("https://github.com/")
-            .getElementSize("id", "header", function(result){ console.log(result);  })
-            .getTitle(function(title) { console.log(title) })
-            .getElementCssProperty("id", "header", "color", function(result){ console.log(result); done(); })
-            .end(); 
-            
-    },
-    "will work too": function () {
-        refute(false);
-    }
+buster.testCase("Site", {
+    "has a header": function (done) {
+        this.timeout = 5000;
+        createClient()
+          .init()
+          .url("http://localhost:8000/")
+          .getTitle(function(title) { 
+              assert.equals('Teh Frens', title); 
+          })
+          .end(done); 
+    },    
 })
 
