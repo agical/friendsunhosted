@@ -3,7 +3,7 @@ var webdriverjs = require("webdriverjs");
 
 var assert = buster.assertions.assert;
 
-function createClient(done) {
+function createTestBrowser(done) {
   var client = webdriverjs.remote();
   var endAndDone =  function(error) {
                       client.end();
@@ -16,16 +16,34 @@ function createClient(done) {
   return client;
 }
 
+function createNewUser(basename, password) {
+  return {username: basename + new Date().getTime().toString(),
+          password: password };
+}
+
 buster.testCase("Site", {
-    "has a header": function (done) {
+    "has a title": function (done) {
         this.timeout = 5000;
-        createClient()
+        createTestBrowser(done)
           .init()
           .url("http://localhost:8000/")
           .getTitle(function(title) { 
               assert.equals('Teh Frens', title); 
           })
           .end(done); 
-    },    
+    },
+    
+    "can login a user": function (done) {
+        this.timeout = 5000;
+        var user = createNewUser("genUser", "1234568");
+        createTestBrowser(done)
+          .init()
+          .url("http://localhost:8000/")
+          .setValue("#username", user.username)
+          .setValue("#password", user.password)
+          .submitForm("#login-form")
+          .tests.cssPropertyEquals("#welcome", "", user.username + " logged in", "Logged in message correct")
+          .end(done); 
+    },
 })
 
