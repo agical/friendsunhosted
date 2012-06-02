@@ -1,4 +1,4 @@
-require(['jquery', 'ui'], function($) {
+require(['jquery', 'ui', 'remoteStorage'], function($, ui, remote) {
     	$(function(){
 
 				// Accordion
