@@ -49,5 +49,7 @@ buster.testCase("Site", {
           .tests.cssPropertyEquals("#welcome", "", user.username + " logged in", "Logged in message correct")
           .end(done); 
     },
+    /*
+    */
 })
 
