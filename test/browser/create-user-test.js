@@ -4,21 +4,11 @@ var webdriverjs = require("webdriverjs");
 var assert = buster.assertions.assert;
 
 function createTestBrowser(done) {
-//  var client = webdriverjs.remote({desiredCapabilities:{browserName:"*googlechrome"}});
   var client = webdriverjs.remote({desiredCapabilities:{
     browserName:"chrome", 
     seleniumProtocol: 'WebDriver',
     'chrome.switches': ['--start-maximized',]}});
 
-/*
-  var client = webdriverjs.remote({
-    "desiredCapabilities":{
-      "browserName":"firefox",
-      "version":"",
-      "javascriptEnabled":true,
-      "platform":"ANY"
-    }});
-    */
   var endAndDone =  function(error) {
                       client.end();
                       done();
@@ -47,7 +37,6 @@ buster.testCase("Site", {
           })
           .end(done); 
     },
-  /*    
     "can login a user": function (done) {
         this.timeout = 5000;
         var user = createNewUser("genUser", "1234568");
@@ -59,6 +48,6 @@ buster.testCase("Site", {
           .submitForm("#login-form")
           .tests.cssPropertyEquals("#welcome", "", user.username + " logged in", "Logged in message correct")
           .end(done); 
-    },*/
+    },
 })
 
