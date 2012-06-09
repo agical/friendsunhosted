@@ -1,4 +1,7 @@
 require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remote) {
+  
+      
+      
     	$(function(){
 
 				// Accordion

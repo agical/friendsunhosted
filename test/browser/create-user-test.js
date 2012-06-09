@@ -45,7 +45,7 @@ buster.testCase("Site", {
           .url("http://localhost:8000/")
           .setValue("#username", user.username)
           .setValue("#password", user.password)
-          .submitForm("#login-form")
+          .click("#do-login")
           .tests.cssPropertyEquals("#welcome", "", user.username + " logged in", "Logged in message correct")
           .end(done); 
     },

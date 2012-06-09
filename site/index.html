@@ -7,8 +7,7 @@
 		<link type="text/css" href="css/style.css" rel="stylesheet" />
     <script type="text/javascript" data-main="js/main" src="js/require.js"></script>
     <script type="text/javascript">
-      // Configure the RequireJS paths to use an alias for the
-      // jQuery library.
+      // Configuring the RequireJS paths to have versions in one place
       require.config({
         paths: {
           "jquery": "jquery-1.7.2.min",
@@ -24,17 +23,17 @@
 	<div id="header" class="ui-widget-header">
   	<img id="logo-top" src="img/logo-white.png"/>
 	  <div id="byline-top">The #unhosted friends network</div>
-    <div id="login-area" class="not-logged-in">
-      <form id="login-form">
-        Username:<input type="input" id="username" name="username"/>
-        Password:<input type="password" id="password" name="password"/>
-        <input type="submit" id="submit-login" name="submit"/>
+    <div id="login-area" class="not-logged-in" data-bind="visible: !loggedIn">
+        Username:<input data-bind="value: username" />
+        Password:<input type="password" data-bind="value: password" />
+        <button id="do-login" data-bind="click: login">Login</button>    
+    </div>
+    <div id="welcome" class="logged-in" data-bind="visible: loggedIn" >
+      Welcome, <span data-bind="loggedInName"/>!
     </div>
   </div>
   
   
-  <div class="logged-in">
-  </div>
   
 	<p style="font-weight: bold; margin: 2em 0 1em; font-size: 1.3em;">YOUR COMPONENTS:</p>
 
