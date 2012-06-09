@@ -37,6 +37,7 @@ buster.testCase("Site", {
           })
           .end(done); 
     },
+    
     "can login a user": function (done) {
         this.timeout = 5000;
         var user = createNewUser("genUser", "1234568");
@@ -46,8 +47,9 @@ buster.testCase("Site", {
           .setValue("#username", user.username)
           .setValue("#password", user.password)
           .click("#do-login")
-          .tests.cssPropertyEquals("#welcome", "", user.username + " logged in", "Logged in message correct")
+          .tests.cssPropertyEquals("#welcome", "", "Welcome, " + user.username + "!", "Logged in message correct")
           .end(done); 
+        assert(true);
     },
     /*
     */

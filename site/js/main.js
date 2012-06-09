@@ -1,6 +1,21 @@
 require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remote) {
   
+  function LoginViewModel() {
+      var self = this;
       
+      self.loggedIn = ko.observable(false);
+      
+      self.username = ko.observable("");
+      self.password = ko.observable("");
+
+      // Operations
+      self.login = function() {
+          console.log(self.username(), self.password()); 
+          self.loggedIn(true);
+      };
+  };
+
+  ko.applyBindings(new LoginViewModel());
       
     	$(function(){
 

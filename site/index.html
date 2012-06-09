@@ -23,14 +23,12 @@
 	<div id="header" class="ui-widget-header">
   	<img id="logo-top" src="img/logo-white.png"/>
 	  <div id="byline-top">The #unhosted friends network</div>
-    <div id="login-area" class="not-logged-in" data-bind="visible: !loggedIn">
-        Username:<input data-bind="value: username" />
-        Password:<input type="password" data-bind="value: password" />
+    <div id="login-area" class="not-logged-in" data-bind="visible: !loggedIn()">
+        Username:<input id="username" data-bind="value: username" />
+        Password:<input id="password" type="password" data-bind="value: password" />
         <button id="do-login" data-bind="click: login">Login</button>    
     </div>
-    <div id="welcome" class="logged-in" data-bind="visible: loggedIn" >
-      Welcome, <span data-bind="loggedInName"/>!
-    </div>
+    <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
   
   
