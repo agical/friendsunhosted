@@ -17,6 +17,9 @@ function createTestBrowser(done) {
   buster.testRunner.on('test:error', endAndDone );
   buster.testRunner.on('uncaughtException', endAndDone );
   
+  client.cssEq = function(cssSelector, expected) {
+    return client.getText(cssSelector, function(val) {assert.equals(expected, val.value)});
+  };
   return client;
 }
 
@@ -47,9 +50,8 @@ buster.testCase("Site", {
           .setValue("#username", user.username)
           .setValue("#password", user.password)
           .click("#do-login")
-          .tests.cssPropertyEquals("#welcome", "", "Welcome, " + user.username + "!", "Logged in message correct")
+          .cssEq("#welcome", "Welcome, " + user.username + "!")
           .end(done); 
-        assert(true);
     },
     /*
     */
