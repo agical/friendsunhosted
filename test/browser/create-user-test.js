@@ -1,4 +1,5 @@
 var buster = require("buster");
+var http = require("http");
 var webdriverjs = require("webdriverjs");
 
 var assert = buster.assertions.assert;
@@ -24,6 +25,11 @@ function createTestBrowser(done) {
 }
 
 function createNewUser(basename, password) {
+  console.log(http.get);
+  var username = basename + new Date().getTime().toString();
+  http.getSync("http://localhost/create_user/" + username, function(res) {
+    console.log(res);
+  });
   return {username: basename + new Date().getTime().toString(),
           password: password };
 }
@@ -49,7 +55,7 @@ buster.testCase("Site", {
           .url("http://localhost:8000/")
           .setValue("#username", user.username)
           .setValue("#password", user.password)
-          .click("#do-login")
+          .click("#do-login") 
           .cssEq("#welcome", "Welcome, " + user.username + "!")
           .end(done); 
     },
