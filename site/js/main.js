@@ -1,18 +1,41 @@
-require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remote) {
+require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStorage) {
   
   function LoginViewModel() {
-      var self = this;
-      
-      self.loggedIn = ko.observable(false);
-      
-      self.username = ko.observable("");
-      self.password = ko.observable("");
-
-      // Operations
-      self.login = function() {
-          console.log(self.username(), self.password()); 
+    var self = this;
+    
+    self.loggedIn = ko.observable(false);
+    
+    self.username = ko.observable("");
+    self.password = ko.observable("");
+    self.token = ko.observable("");
+    
+    // Operations
+    self.login = function() {
+      remoteStorage.getStorageInfo(self.username(), function(err, storageInfo) {
+        var receivedToken = remoteStorage.receiveToken();
+        if(receivedToken) {
           self.loggedIn(true);
-      };
+          self.token(receivedToken);
+        } else {
+          //get an access token for 'notes' by dancing OAuth with the remoteStorage of user@example.com:
+          window.location = remoteStorage.createOAuthAddress(storageInfo, ['notes'], window.location.href);
+        }
+      }
+      /*
+        if(token) {
+          //we can access the 'notes' category on the remoteStorage of user@example.com:
+          var client = remoteStorage.createClient(storageInfo, 'notes', token);
+
+          client.put('key', 'value', function(err) {
+            client.get('key', function(err, data) {
+              client.delete('key', function(err) {
+              });
+            });
+          });
+
+        */
+      );      
+    };
   };
 
   ko.applyBindings(new LoginViewModel());
