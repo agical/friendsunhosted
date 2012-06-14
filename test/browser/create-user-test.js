@@ -24,14 +24,22 @@ function createTestBrowser(done) {
   return client;
 }
 
-function createNewUser(basename, password) {
+function createNewUser(username, password, cb) {
   console.log(http.get);
-  var username = basename + new Date().getTime().toString();
-  http.getSync("http://localhost/create_user/" + username, function(res) {
-    console.log(res);
-  });
-  return {username: basename + new Date().getTime().toString(),
-          password: password };
+  var options = {
+    host: 'localhost',
+    port: 80,
+    path: '/create_user/' + username + "/" + password
+  };
+
+  http.get(options, function(res) {
+    console.log("Got response: ", res);
+    cb(null, {username: username + "@" + options.host,
+          password: password });
+  }).on('error', function(e) {
+    console.log("Got error: ", e);
+    cb(e);
+  });  
 }
 
 buster.testCase("Site", {
@@ -48,16 +56,28 @@ buster.testCase("Site", {
     },
     
     "can login a user": function (done) {
-        this.timeout = 5000;
-        var user = createNewUser("genUser", "1234568");
-        createTestBrowser(done)
-          .init()
-          .url("http://localhost:8000/")
-          .setValue("#username", user.username)
-          .setValue("#password", user.password)
-          .click("#do-login") 
-          .cssEq("#welcome", "Welcome, " + user.username + "!")
-          .end(done); 
+        this.timeout = 25000;
+        createNewUser("genUser" + new Date().getTime().toString(), "1234568", function(err,user) {
+          if(err) {assert.fail(err); return;}
+          createTestBrowser(done)
+            .init()
+            .pause(500, function(){})
+            .url("http://localhost:8000/")
+            .pause(500, function(){})
+            .setValue("#username", user.username)
+            .pause(500, function(){})
+            .click("#do-login") 
+            .pause(500, function(){})
+            .waitFor('input[type=password]', 500, function(){}) 
+            .pause(500, function(){})
+            .setValue('input[type=password]', user.password)
+            .pause(500, function(){})
+            .submitForm("form") 
+            .pause(500, function(){})
+            .cssEq("#welcome", "Welcome, " + user.username + "!")
+            .pause(500, function(){})
+            .end(done); 
+        });
     },
     
     

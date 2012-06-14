@@ -1,5 +1,5 @@
 require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStorage) {
-  
+
   function LoginViewModel() {
     var self = this;
     
@@ -7,20 +7,56 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
     
     self.username = ko.observable("");
     self.password = ko.observable("");
-    self.token = ko.observable("");
     
+      // `getStorageInfo` takes a user address ("user@host") and a callback as its
+    // arguments. The callback will get an error code, and a `storageInfo`
+    // object. If the error code is `null`, then the `storageInfo` object will
+    // contain data required to access the remoteStorage.
+    function connect(userAddress, callback) {
+      remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
+        if(error) {
+          alert('Could not load storage info');
+          console.log(error);
+        } else {
+          console.log('Storage info received:');
+          console.log(storageInfo);
+        }
+
+        callback(error, storageInfo);
+      });
+    }
+
+    // Getting data from the "public" category doesn't require any credentials.
+    // For writing to a user's public data, or reading/writing any of the other
+    // categories, we need to do an OAuth request first to obtain a token.
+
+    // This method opens a popup that sends the user to the OAuth dialog of the
+    // remoteStorage provider.
+    function authorize(categories) {
+      var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
+      var redirectUri = location.protocol + '//' + location.host + '/receive_token.html';
+
+      var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
+      var popup = window.open(oauthPage);
+    }
+
+    // To get the OAuth token we listen for the `message` event from the
+    // receive_token.html that sends it back to us.
+    window.addEventListener('message', function(event) {
+      if(event.origin == location.protocol +'//'+ location.host) {
+        console.log('Received an OAuth token: ' + event.data);
+        localStorage.setItem('bearerToken', event.data);
+        self.loggedIn(event.data!=null);
+      }
+    }, false);
+
     // Operations
     self.login = function() {
-      remoteStorage.getStorageInfo(self.username(), function(err, storageInfo) {
-        var receivedToken = remoteStorage.receiveToken();
-        if(receivedToken) {
-          self.loggedIn(true);
-          self.token(receivedToken);
-        } else {
-          //get an access token for 'notes' by dancing OAuth with the remoteStorage of user@example.com:
-          window.location = remoteStorage.createOAuthAddress(storageInfo, ['notes'], window.location.href);
-        }
-      }
+      connect(self.username(), function(err, storageInfo) {
+        localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
+        authorize(['public', 'friends']);
+      });
+      
       /*
         if(token) {
           //we can access the 'notes' category on the remoteStorage of user@example.com:
@@ -34,7 +70,6 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
           });
 
         */
-      );      
     };
   };
 
