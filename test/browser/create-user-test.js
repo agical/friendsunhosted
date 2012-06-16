@@ -95,7 +95,7 @@ function createNewUser(username, password, cb) {
             });
         });
         
-        deferred.promise.when(function(b) {b.end(done);});
+        deferred.promise.then(function(b) {b.end(done);});
     },
     
     
