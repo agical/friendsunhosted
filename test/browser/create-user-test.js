@@ -52,7 +52,7 @@ function createNewUser(username, password, cb) {
   }
 
   buster.testCase("Site", {
-    "//has a title": function (done) {
+    "has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
