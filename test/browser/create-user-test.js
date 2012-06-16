@@ -4,11 +4,22 @@ var webdriverjs = require("webdriverjs");
 
 var assert = buster.assertions.assert;
 
-function createTestBrowser(done) {
-  var client = webdriverjs.remote({desiredCapabilities:{
+function createChromeDriver() {
+  return webdriverjs.remote({desiredCapabilities:{
     browserName:"chrome", 
     seleniumProtocol: 'WebDriver',
-    'chrome.switches': ['--start-maximized',]}});
+    'chrome.switches': ['--start-maximized','--disable-popup-blocking']}});
+}
+
+function createFirefoxDriver() {
+  return webdriverjs.remote({desiredCapabilities:{
+    browserName:"firefox", 
+    seleniumProtocol: 'WebDriver',
+  }});
+}
+
+function createTestBrowser(done) {
+  var client = createChromeDriver();
 
   var endAndDone =  function(error) {
                       client.end();
@@ -25,7 +36,6 @@ function createTestBrowser(done) {
 }
 
 function createNewUser(username, password, cb) {
-  console.log(http.get);
   var options = {
     host: 'localhost',
     port: 80,
@@ -33,17 +43,16 @@ function createNewUser(username, password, cb) {
   };
 
   http.get(options, function(res) {
-    console.log("Got response: ", res);
     cb(null, {username: username + "@" + options.host,
           password: password });
-  }).on('error', function(e) {
-    console.log("Got error: ", e);
-    cb(e);
-  });  
-}
+    }).on('error', function(e) {
+      console.log("Got error: ", e);
+      cb(e);
+    });  
+  }
 
-buster.testCase("Site", {
-    "has a title": function (done) {
+  buster.testCase("Site", {
+    "//has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -59,23 +68,31 @@ buster.testCase("Site", {
         this.timeout = 25000;
         createNewUser("genUser" + new Date().getTime().toString(), "1234568", function(err,user) {
           if(err) {assert.fail(err); return;}
-          createTestBrowser(done)
+          var browser = createTestBrowser(done);
+          browser
             .init()
             .pause(500, function(){})
             .url("http://localhost:8000/")
             .pause(500, function(){})
             .setValue("#username", user.username)
             .pause(500, function(){})
-            .click("#do-login") 
-            .pause(500, function(){})
-            .waitFor('input[type=password]', 500, function(){}) 
-            .pause(500, function(){})
-            .setValue('input[type=password]', user.password)
-            .pause(500, function(){})
-            .submitForm("form") 
-            .pause(500, function(){})
-            .cssEq("#welcome", "Welcome, " + user.username + "!")
-            .pause(500, function(){})
+            .click("#do-login")
+            .pause(2000, function(){})
+            .windowHandles(function(data){
+              var popupWindow = data.value[1];
+              console.log("popupWindow is", popupWindow);
+              this.window(popupWindow)
+                .waitFor('input[name="password"]', 500, function(){}) 
+                .setValue('input[name="password"]', user.password)
+                .submitForm("form")
+                .windowHandles(function(data){
+                    var originalWindow = data.value[0];
+                    this.window(originalWindow)
+                      .pause(500, function(){})
+                      .cssEq("#welcome", "Welcome, " + user.username + "!")
+                      .pause(500, function(){});
+                });
+            })
             .end(done); 
         });
     },
