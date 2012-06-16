@@ -83,7 +83,7 @@ function createNewUser(username, password, cb) {
             .windowHandles(function(data){
               var popupWindow = data.value[1];
               console.log("popupWindow is", popupWindow);
-              this.window(popupWindow)
+              deferred.resolve(this.window(popupWindow)
                 .waitFor('input[name="password"]', 500, function(){}) 
                 .setValue('input[name="password"]', user.password)
                 .submitForm("form")
@@ -91,10 +91,11 @@ function createNewUser(username, password, cb) {
                     var originalWindow = data.value[0];
                     this.window(originalWindow)
                       .cssEq("#welcome", "Welcome, " + user.username + "!")
-                });
-            })
-            .end(done); 
+                }));
+            });
         });
+        
+        deferred.promise.when(function(b) {b.end(done);});
     },
     
     
