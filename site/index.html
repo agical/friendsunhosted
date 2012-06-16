@@ -29,12 +29,24 @@
     </div>
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
+    <div id="status">
+        <h3 >Status:</h3>
+        <input id="status-update" data-bind="value: statusUpdate" />
+        <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
+        <div id="status-stream">
+          <span data-bind="foreach: allStatuses">
+            <p id="latest-status" data-bind="text: status"></p>
+          </span>
+        </div>
+    </div>
+
+        <button id="do-clear-all-updates" data-bind="click: clearAllUpdates">Clear all updates!!</button>    
   
-    <div id="add-a-friend" class="not-logged-in" data-bind="visible: loggedIn()">
+    <!--div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
         <h3 >Add a friend</h3>
         Friends username:<input id="add-friends-username" data-bind="value: addFriendsUsername" />
         <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
-    </div>
+    </div-->
   
   
 

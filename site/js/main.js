@@ -7,11 +7,25 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
     
     self.username = ko.observable("");
     self.password = ko.observable("");
+    self.statusUpdate = ko.observable("");
+    self.allStatuses = ko.observableArray([]);
     
-      // `getStorageInfo` takes a user address ("user@host") and a callback as its
-    // arguments. The callback will get an error code, and a `storageInfo`
-    // object. If the error code is `null`, then the `storageInfo` object will
-    // contain data required to access the remoteStorage.
+    self.clearAllUpdates = function() {
+      var token = localStorage.getItem('bearerToken');
+      if(token) {
+        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
+        var client = remoteStorage.createClient(storageInfo, 'public', token);
+        var key = 'friendsunhosted.com/statusupdate/testing';
+        client.put(key, JSON.stringify(null), function(err) {
+          if(err) {
+            console.log("Error when clearing updates:", err);
+          } else {
+            self.allStatuses([]);
+          }
+         });
+      }    
+    }
+    
     function connect(userAddress, callback) {
       remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
         if(error) {
@@ -57,20 +71,33 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
         authorize(['public', 'friends']);
       });
       
-      /*
-        if(token) {
-          //we can access the 'notes' category on the remoteStorage of user@example.com:
-          var client = remoteStorage.createClient(storageInfo, 'notes', token);
-
-          client.put('key', 'value', function(err) {
-            client.get('key', function(err, data) {
-              client.delete('key', function(err) {
-              });
-            });
-          });
-
-        */
     };
+    
+    self.updateStatus = function() {
+      var token = localStorage.getItem('bearerToken');
+      if(token) {
+        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
+        var client = remoteStorage.createClient(storageInfo, 'public', token);
+        var key = 'friendsunhosted.com/statusupdate/testing';
+        client.get(key, function(err, data) {
+          if(err) {
+            console.log("Error when reading status update:", err);
+            return;
+          };
+          var data = data!="null" ? JSON.parse(data) : [];
+          var update = {"status": self.statusUpdate()};
+          data.push(update);
+          client.put(key, JSON.stringify(data), function(err) {
+            if(err) {
+              console.log("Error when writing status update:", err);
+            } else {  
+              self.allStatuses(data);
+            }
+          });
+        });
+      }
+    };
+    
   };
 
   ko.applyBindings(new LoginViewModel());

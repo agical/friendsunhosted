@@ -58,7 +58,7 @@ function loginCreatedUser(done) {
           .windowHandles(function(data){
               var originalWindow = data.value[0];
               whenBrowser.resolve(
-                {browser: this.window(originalWindow).cssEq("#welcome", "Welcome, " + user.username + "!"),
+                {browser: this.window(originalWindow),
                  loggedInUser: user});
           })});
       });
@@ -98,11 +98,27 @@ function createNewUser(username, password, cb) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser.browser
-            .end(done);
+          browserAndUser
+            .browser
+              .cssEq("#welcome", "Welcome, " + browserAndUser.loggedInUser.username + "!")
+              .end(done);
         });
     },
     
+    "can add status updates": function (done) {
+        this.timeout = 25000;
+         
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .setValue("#status-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .cssEq("#latest-status", "Hello, #unhosted world!")
+              .end(done);
+        });
+    },
+
+
     
     /*
     */
