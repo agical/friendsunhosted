@@ -23,11 +23,13 @@ function createTestBrowser(done) {
   var client = createChromeDriver();
 
   var endAndDone =  function(error) {
+                      console.log("Exiting browsers");
                       client.end();
                       done();
                     };
   buster.testRunner.on('test:failure', endAndDone );
   buster.testRunner.on('test:error', endAndDone );
+  buster.testRunner.on('test:timeout', endAndDone );
   buster.testRunner.on('uncaughtException', endAndDone );
   
   client.cssEq = function(cssSelector, expected) {
@@ -36,10 +38,14 @@ function createTestBrowser(done) {
   return client;
 }
 
+function createTestUser() {
+  return createNewUser("genUser" + new Date().getTime().toString(), "1234568");
+}
+
 function loginCreatedUser(done) {
   var whenBrowser = when.defer();
   
-  createNewUser("genUser" + new Date().getTime().toString(), "1234568")
+  createTestUser()
     .then(function(user) {
       var browser = createTestBrowser(done);
       browser
@@ -121,21 +127,57 @@ function createNewUser(username, password, cb) {
               .end(done);
         });
     },
-
-    "can add friend": function (done) {
+        
+    "can list friends": function (done) {
         this.timeout = 25000;
-         
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .setValue("#status-update", "Hello, #unhosted world!")
-              .click("#do-update-status")
-              .cssEq("#status-stream :first-child", "Hello, #unhosted world!")
-              .setValue("#status-update", "Second message")
-              .click("#do-update-status")
-              .cssEq("#status-stream :first-child", "Second message")
-              .end(done);
-        });
+        createTestUser()
+          .then(function(userToBeAdded) {
+            loginCreatedUser(done)
+              .then(function(browserAndUser) {
+                console.log("Adder:", browserAndUser.loggedInUser);
+                console.log("Added:", userToBeAdded);
+                browserAndUser
+                  .browser
+                    .setValue("#add-friends-username", userToBeAdded.username)
+                    .click("#do-add-friend")
+                    .cssEq("#friends :first-child", userToBeAdded.username)
+                    .end(done);
+              });
+            });
+    },
+
+
+    "//can see friends messages": function (done) {
+        this.timeout = 25000;
+        var userToBeAdded;
+        loginCreatedUser(done)
+          .then(function(browserAndUser) {
+            userToBeAdded = browserAndUser.loggedInUser;
+            browserAndUser
+              .browser
+                .setValue("#status-update", "The message of the added")
+                .click("#do-update-status")
+                .end();
+                
+          }).then(function() {
+            loginCreatedUser(done)
+              .then(function(browserAndUser) {
+                console.log("Adder:", browserAndUser.loggedInUser);
+                console.log("Added:", userToBeAdded);
+                browserAndUser
+                  .browser
+                    .setValue("#add-friends-username", userToBeAdded.username)
+                    .click("#do-add-friend")
+                    .cssEq("#status-stream :first-child", "The message of the added")
+                    .setValue("#status-update", "The message of the adder")
+                    .click("#do-update-status")
+                    .cssEq("#status-stream :first-child", "The message of the adder")
+                    .setValue("#status-update", "Next message")
+                    .click("#do-update-status")
+                    .cssEq("#status-stream :first-child", "Next message")
+                    .end(done);
+              });
+            });
     },
 
 
