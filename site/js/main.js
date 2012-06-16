@@ -2,6 +2,8 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
 
   function LoginViewModel() {
     var self = this;
+    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
+    var FRIENDS_KEY = 'friendsunhosted_friends';
     
     self.loggedIn = ko.observable(false);
     
@@ -15,13 +17,25 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
     self.addFriendsUsername = ko.observable("");
     
     self.addFriend = function() {
-      var key = 'friendsunhosted.com/friends';
       var value = {"username": self.addFriendsUsername()};
       
-      appendToPublicData(key, value).then(function(updatedFriendsList) {
+      appendToPublicData(FRIENDS_KEY, value).then(function(updatedFriendsList) {
         self.allFriends(updatedFriendsList);
         self.addFriendsUsername("");
-        
+        connect(value.username, function(err1, storageInfo) {
+          var client = remoteStorage.createClient(storageInfo, 'public');
+          client.get(STATUS_KEY, function(err, dataStr) {
+            if(err) {
+              console.log("Error when reading status update for key:", key, " Error:", err);
+              return;
+            };
+            var data = JSON.parse(dataStr);
+            for(var item in data) {
+              self.allStatuses.push(data[item]);
+            }
+          });
+          
+        });
       });
     };
     
@@ -32,12 +46,12 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
       if(token) {
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
         var client = remoteStorage.createClient(storageInfo, 'public', token);
-        client.get(key, function(err, data) {
+        client.get(key, function(err, dataStr) {
           if(err) {
             console.log("Error when reading status update for key:", key, " Error:", err);
             return;
           };
-          var data = data!="null" ? JSON.parse(data) : [];
+          var data = (dataStr!=null && dataStr!="null") ? JSON.parse(dataStr) : [];
           data.push(value);
           client.put(key, JSON.stringify(data), function(err) {
             if(err) {
@@ -52,10 +66,9 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
     };
     
     self.updateStatus = function() {
-      var _key = 'friendsunhosted.com/statusupdate/testing';
       var _value = {"status": self.statusUpdate()};
       
-      appendToPublicData(_key, _value).then(function(savedData) {
+      appendToPublicData(STATUS_KEY, _value).then(function(savedData) {
         self.allStatuses(savedData);
         self.statusUpdate("");
       });
@@ -66,8 +79,7 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
       if(token) {
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
         var client = remoteStorage.createClient(storageInfo, 'public', token);
-        var key = 'friendsunhosted.com/statusupdate/testing';
-        client.put(key, JSON.stringify(null), function(err) {
+        client.put(STATUS_KEY, JSON.stringify(null), function(err) {
           if(err) {
             console.log("Error when clearing updates:", err);
           } else {
@@ -181,3 +193,4 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
 
 			});
 });
+

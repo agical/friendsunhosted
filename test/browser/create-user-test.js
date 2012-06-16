@@ -147,7 +147,7 @@ function createNewUser(username, password, cb) {
     },
 
 
-    "//can see friends messages": function (done) {
+    "can see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded;
         loginCreatedUser(done)
@@ -157,6 +157,7 @@ function createNewUser(username, password, cb) {
               .browser
                 .setValue("#status-update", "The message of the added")
                 .click("#do-update-status")
+                .cssEq("#status-stream :first-child", "The message of the added")
                 .end();
                 
           }).then(function() {
@@ -168,6 +169,7 @@ function createNewUser(username, password, cb) {
                   .browser
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
+                    .pause(5000)
                     .cssEq("#status-stream :first-child", "The message of the added")
                     .setValue("#status-update", "The message of the adder")
                     .click("#do-update-status")
