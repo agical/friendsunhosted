@@ -113,7 +113,7 @@ function createNewUser(username, password, cb) {
             .browser
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
-              .cssEq("#latest-status", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child", "Hello, #unhosted world!")
               .end(done);
         });
     },
