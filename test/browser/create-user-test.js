@@ -1,6 +1,7 @@
 var buster = require("buster");
 var http = require("http");
 var webdriverjs = require("webdriverjs");
+var when = require("promise").when;
 
 var assert = buster.assertions.assert;
 

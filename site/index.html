@@ -30,6 +30,11 @@
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
   
+    <div id="add-a-friend" class="not-logged-in" data-bind="visible: loggedIn()">
+        <h3 >Add a friend</h3>
+        Friends username:<input id="add-friends-username" data-bind="value: addFriendsUsername" />
+        <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
+    </div>
   
   
 
