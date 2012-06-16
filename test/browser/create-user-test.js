@@ -1,7 +1,7 @@
 var buster = require("buster");
 var http = require("http");
 var webdriverjs = require("webdriverjs");
-var when = require("promise").when;
+var when = require("when");
 
 var assert = buster.assertions.assert;
 
@@ -67,6 +67,10 @@ function createNewUser(username, password, cb) {
     
     "can login a user": function (done) {
         this.timeout = 25000;
+        var deferred = when.defer();
+        
+        
+        
         createNewUser("genUser" + new Date().getTime().toString(), "1234568", function(err,user) {
           if(err) {assert.fail(err); return;}
           var browser = createTestBrowser(done);
