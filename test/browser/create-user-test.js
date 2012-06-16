@@ -74,7 +74,7 @@ function createNewUser(username, password, cb) {
             .url("http://localhost:8000/")
             .setValue("#username", user.username)
             .click("#do-login")
-            .pause(2000, function(){})
+            .pause(100)
             .windowHandles(function(data){
               var popupWindow = data.value[1];
               console.log("popupWindow is", popupWindow);
