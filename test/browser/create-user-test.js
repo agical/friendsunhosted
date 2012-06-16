@@ -39,8 +39,7 @@ function createTestBrowser(done) {
 function loginCreatedUser(done) {
   var whenBrowser = when.defer();
   
-  createNewUser("genUser" + new Date().getTime().toString(), "1234568", function(err,user) {
-    if(err) {assert.fail(err); return;}
+  createNewUser("genUser" + new Date().getTime().toString(), "1234568").then(function(user) {
     var browser = createTestBrowser(done);
     browser
       .init()
@@ -61,7 +60,7 @@ function loginCreatedUser(done) {
                 {browser: this.window(originalWindow),
                  loggedInUser: user});
           })});
-      });
+      }, function(err){assert.fail(err);});
   return whenBrowser.promise;
 }
 
@@ -71,15 +70,18 @@ function createNewUser(username, password, cb) {
     port: 80,
     path: '/create_user/' + username + "/" + password
   };
-
+  var deferred = when.defer();
+  
   http.get(options, function(res) {
-    cb(null, {username: username + "@" + options.host,
-          password: password });
-    }).on('error', function(e) {
-      console.log("Got error: ", e);
-      cb(e);
-    });  
-  }
+    deferred.resolve(
+      {username: username + "@" + options.host,
+       password: password });
+  }).on('error', function(e) {
+      deferred.reject(e);
+  });
+    
+  return deferred.promise;
+}
 
   buster.testCase("Site", {
     "has a title": function (done) {
@@ -106,6 +108,22 @@ function createNewUser(username, password, cb) {
     },
     
     "can add status updates": function (done) {
+        this.timeout = 25000;
+         
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .setValue("#status-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child", "Hello, #unhosted world!")
+              .setValue("#status-update", "Second message")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child", "Second message")
+              .end(done);
+        });
+    },
+
+    "can add friend": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
