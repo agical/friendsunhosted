@@ -71,13 +71,9 @@ function createNewUser(username, password, cb) {
           var browser = createTestBrowser(done);
           browser
             .init()
-            .pause(500, function(){})
             .url("http://localhost:8000/")
-            .pause(500, function(){})
             .setValue("#username", user.username)
-            .pause(500, function(){})
             .click("#do-login")
-            .pause(2000, function(){})
             .windowHandles(function(data){
               var popupWindow = data.value[1];
               console.log("popupWindow is", popupWindow);
@@ -88,9 +84,7 @@ function createNewUser(username, password, cb) {
                 .windowHandles(function(data){
                     var originalWindow = data.value[0];
                     this.window(originalWindow)
-                      .pause(500, function(){})
                       .cssEq("#welcome", "Welcome, " + user.username + "!")
-                      .pause(500, function(){});
                 });
             })
             .end(done); 
