@@ -67,7 +67,7 @@ function createNewUser(username, password, cb) {
     
     "can login a user": function (done) {
         this.timeout = 25000;
-        var deferred = when.defer();
+        var whenBrowser = when.defer();
         
         
         
@@ -89,12 +89,12 @@ function createNewUser(username, password, cb) {
                 .submitForm("form")
                 .windowHandles(function(data){
                     var originalWindow = data.value[0];
-                    deferred.resolve(this.window(originalWindow)
+                    whenBrowser.resolve(this.window(originalWindow)
                       .cssEq("#welcome", "Welcome, " + user.username + "!"));
                 })});
             });
         
-        deferred.promise.then(function(b) {b.end(done);});
+        whenBrowser.promise.then(function(b) {b.end(done);});
     },
     
     
