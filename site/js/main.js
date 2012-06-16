@@ -92,6 +92,7 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
               console.log("Error when writing status update:", err);
             } else {  
               self.allStatuses(data);
+              self.statusUpdate("");
             }
           });
         });

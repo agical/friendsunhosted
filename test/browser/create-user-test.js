@@ -114,6 +114,9 @@ function createNewUser(username, password, cb) {
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child", "Hello, #unhosted world!")
+              .setValue("#status-update", "Second message")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child", "Second message")
               .end(done);
         });
     },

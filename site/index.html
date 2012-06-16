@@ -33,7 +33,7 @@
         <h3 >Status:</h3>
         <input id="status-update" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
-        <div id="status-stream" data-bind="foreach: allStatuses">
+        <div id="status-stream" data-bind="foreach: allStatuses().reverse()">
           <p class="status-update" data-bind="text: status"></p>
         </div>
     </div>
