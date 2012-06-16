@@ -29,7 +29,7 @@
     </div>
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
-    <div id="status">
+    <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
         <h3 >Status:</h3>
         <input id="status-update" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
