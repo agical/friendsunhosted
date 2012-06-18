@@ -1,4 +1,4 @@
-require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, remoteStorage, when) {
+require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function($, us, ui, ko, remoteStorage, when) {
 
   function LoginViewModel() {
     var self = this;
@@ -17,7 +17,8 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
     self.addFriendsUsername = ko.observable("");
     
     self.addFriend = function() {
-      var value = {"username": self.addFriendsUsername()};
+      var value = {"username": self.addFriendsUsername(),
+                   "timestamp": new Date().getTime()};
       
       appendToPublicData(FRIENDS_KEY, value).then(function(updatedFriendsList) {
         self.allFriends(updatedFriendsList);
@@ -30,14 +31,20 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
               return;
             };
             var data = JSON.parse(dataStr);
-            for(var item in data) {
-              self.allStatuses.push(data[item]);
-            }
+            addStatusUpdates(data!=null?data:[]);
           });
           
         });
       });
     };
+
+    function addStatusUpdates(statusUpdatesArray) {
+      var existingStatuses = self.allStatuses();
+      var all = us.union(existingStatuses, statusUpdatesArray);
+      var allSorted = us.sortBy(all, function(item) {return item.timestamp;});
+      var allUnique = us.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
+      self.allStatuses(allUnique);
+    }
     
     function appendToPublicData(key, value) {
       var deferred = when.defer();
@@ -66,10 +73,12 @@ require(['jquery', 'ui', 'ko', 'remoteStorage', 'when'], function($, ui, ko, rem
     };
     
     self.updateStatus = function() {
-      var _value = {"status": self.statusUpdate()};
+      var _value = {"status": self.statusUpdate(),
+                    "timestamp": new Date().getTime(),
+                    "username": self.username()};
       
       appendToPublicData(STATUS_KEY, _value).then(function(savedData) {
-        self.allStatuses(savedData);
+        addStatusUpdates(savedData);
         self.statusUpdate("");
       });
     };
