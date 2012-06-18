@@ -23,11 +23,13 @@ function createTestBrowser(done) {
   var client = createChromeDriver();
 
   var endAndDone =  function(error) {
+                      console.log("Exiting browsers");
                       client.end();
                       done();
                     };
   buster.testRunner.on('test:failure', endAndDone );
   buster.testRunner.on('test:error', endAndDone );
+  buster.testRunner.on('test:timeout', endAndDone );
   buster.testRunner.on('uncaughtException', endAndDone );
   
   client.cssEq = function(cssSelector, expected) {
@@ -36,32 +38,36 @@ function createTestBrowser(done) {
   return client;
 }
 
+function createTestUser() {
+  return createNewUser("genUser" + new Date().getTime(), "1234568");
+}
+
 function loginCreatedUser(done) {
   var whenBrowser = when.defer();
   
-  createNewUser("genUser" + new Date().getTime().toString(), "1234568", function(err,user) {
-    if(err) {assert.fail(err); return;}
-    var browser = createTestBrowser(done);
-    browser
-      .init()
-      .url("http://localhost:8000/")
-      .setValue("#username", user.username)
-      .click("#do-login")
-      .pause(100)
-      .windowHandles(function(data){
-        var popupWindow = data.value[1];
-        console.log("popupWindow is", popupWindow);
-        this.window(popupWindow)
-          .waitFor('input[name="password"]', 500, function(){}) 
-          .setValue('input[name="password"]', user.password)
-          .submitForm("form")
-          .windowHandles(function(data){
-              var originalWindow = data.value[0];
-              whenBrowser.resolve(
-                {browser: this.window(originalWindow),
-                 loggedInUser: user});
-          })});
-      });
+  createTestUser()
+    .then(function(user) {
+      var browser = createTestBrowser(done);
+      browser
+        .init()
+        .url("http://localhost:8000/")
+        .setValue("#username", user.username)
+        .click("#do-login")
+        .pause(100)
+        .windowHandles(function(data) {
+          var popupWindow = data.value[1];
+          console.log("popupWindow is", popupWindow);
+          this.window(popupWindow)
+            .waitFor('input[name="password"]', 500) 
+            .setValue('input[name="password"]', user.password)
+            .submitForm("form")
+            .windowHandles(function(data){
+                var originalWindow = data.value[0];
+                whenBrowser.resolve(
+                  {browser: this.window(originalWindow),
+                   loggedInUser: user});
+            })});
+    }, assert.fail);
   return whenBrowser.promise;
 }
 
@@ -71,15 +77,16 @@ function createNewUser(username, password, cb) {
     port: 80,
     path: '/create_user/' + username + "/" + password
   };
-
+  var deferred = when.defer();
+  
   http.get(options, function(res) {
-    cb(null, {username: username + "@" + options.host,
-          password: password });
-    }).on('error', function(e) {
-      console.log("Got error: ", e);
-      cb(e);
-    });  
-  }
+    deferred.resolve(
+      {username: username + "@" + options.host,
+       password: password });
+  }).on('error', deferred.reject);
+    
+  return deferred.promise;
+}
 
   buster.testCase("Site", {
     "has a title": function (done) {
@@ -119,6 +126,63 @@ function createNewUser(username, password, cb) {
               .cssEq("#status-stream :first-child", "Second message")
               .end(done);
         });
+    },
+        
+    "can list friends": function (done) {
+        this.timeout = 25000;
+        createTestUser()
+          .then(function(userToBeAdded) {
+            loginCreatedUser(done)
+              .then(function(browserAndUser) {
+                console.log("Adder:", browserAndUser.loggedInUser);
+                console.log("Added:", userToBeAdded);
+                browserAndUser
+                  .browser
+                    .setValue("#add-friends-username", userToBeAdded.username)
+                    .click("#do-add-friend")
+                    .cssEq("#friends :first-child", userToBeAdded.username)
+                    .end(done);
+              });
+            });
+    },
+
+
+    "can see friends messages": function (done) {
+        this.timeout = 25000;
+        var userToBeAdded;
+        loginCreatedUser(done)
+          .then(function(browserAndUser) {
+            userToBeAdded = browserAndUser.loggedInUser;
+            browserAndUser
+              .browser
+                .setValue("#status-update", "The message of the added")
+                .click("#do-update-status")
+                .cssEq("#status-stream :first-child", "The message of the added")
+                .end();
+                
+          }).then(function() {
+            loginCreatedUser(done)
+              .then(function(browserAndUser) {
+                console.log("Adder:", browserAndUser.loggedInUser);
+                console.log("Added:", userToBeAdded);
+                browserAndUser
+                  .browser
+                    .setValue("#add-friends-username", userToBeAdded.username)
+                    .click("#do-add-friend")
+                    .pause(5000)
+                    .cssEq("#status-stream :first-child", "The message of the added")
+                    .setValue("#status-update", "The message of the adder")
+                    .click("#do-update-status")
+                    .cssEq("#status-stream :first-child", "The message of the adder")
+                    .cssEq("#status-stream :nth-child(2)", "The message of the added")
+                    .setValue("#status-update", "Next message")
+                    .click("#do-update-status")
+                    .cssEq("#status-stream :first-child", "Next message")
+                    .cssEq("#status-stream :nth-child(2)", "The message of the adder")
+                    .cssEq("#status-stream :nth-child(3)", "The message of the added")
+                    .end(done);
+              });
+            });
     },
 
 
