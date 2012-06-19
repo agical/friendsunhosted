@@ -169,7 +169,6 @@ function createNewUser(username, password, cb) {
                   .browser
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
-                    .pause(5000)
                     .cssEq("#status-stream :first-child", "The message of the added")
                     .setValue("#status-update", "The message of the adder")
                     .click("#do-update-status")
