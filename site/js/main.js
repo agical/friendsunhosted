@@ -16,6 +16,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
 
     self.addFriendsUsername = ko.observable("");
     
+    
+    self.login = function() {
+      connect(self.username(), function(err, storageInfo) {
+        localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
+        authorize(['public', 'friends']);
+      });
+      
+    };
+
+    
     self.addFriend = function() {
       var value = {"username": self.addFriendsUsername(),
                    "timestamp": new Date().getTime()};
@@ -46,53 +56,51 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       self.allStatuses(allUnique);
     }
 
+    function getUserStorageClient(category) {
+        var token = localStorage.getItem('bearerToken');
+        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
+        var client = remoteStorage.createClient(storageInfo, category, token);
+        return client;      
+    }
+  
     function fetchPublicData(key) {
       var deferred = when.defer();
       
-      var token = localStorage.getItem('bearerToken');
-      if(token) {
-        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-        var client = remoteStorage.createClient(storageInfo, 'public', token);
-        client.get(key, function(err, dataStr) {
-          if(err) {
-            deferred.reject(err);
-          } else {
-            try {
-              deferred.resolve(JSON.parse(dataStr));
-            } catch(e) {
-              deferred.reject(e);
-            }
+      var client = getUserStorageClient('public');
+      client.get(key, function(err, dataStr) {
+        if(err) {
+          deferred.reject(err);
+        } else {
+          try {
+            deferred.resolve(JSON.parse(dataStr));
+          } catch(e) {
+            deferred.reject(e);
           }
-        });
-      } else {
-        deferred.reject("No bearerToken in local storage");
-      }
+        }
+      });
       return deferred.promise;
     };
     
     function appendToPublicData(key, value) {
       var deferred = when.defer();
       
-      var token = localStorage.getItem('bearerToken');
-      if(token) {
-        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-        var client = remoteStorage.createClient(storageInfo, 'public', token);
-        client.get(key, function(err, dataStr) {
+      var client = getUserStorageClient('public');
+
+      client.get(key, function(err, dataStr) {
+        if(err) {
+          console.log("Error when reading status update for key:", key, " Error:", err);
+          return;
+        };
+        var data = (dataStr!=null && dataStr!="null") ? JSON.parse(dataStr) : [];
+        data.push(value);
+        client.put(key, JSON.stringify(data), function(err) {
           if(err) {
-            console.log("Error when reading status update for key:", key, " Error:", err);
-            return;
-          };
-          var data = (dataStr!=null && dataStr!="null") ? JSON.parse(dataStr) : [];
-          data.push(value);
-          client.put(key, JSON.stringify(data), function(err) {
-            if(err) {
-              console.log("Error when writing status update:", err);
-            } else {  
-              deferred.resolve(data);
-            }
-          });
+            console.log("Error when writing status update:", err);
+          } else {  
+            deferred.resolve(data);
+          }
         });
-      }
+      });
       return deferred.promise;
     };
     
@@ -108,25 +116,23 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     };
 
     self.clearAll = function() {
-      var token = localStorage.getItem('bearerToken');
-      if(token) {
-        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-        var client = remoteStorage.createClient(storageInfo, 'public', token);
-        client.delete(STATUS_KEY, function(err) {
-          if(err) {
-            console.log("Error when clearing updates:", err);
-          } else {
-            self.allStatuses([]);
-          }
-        });
-        client.delete(FRIENDS_KEY, function(err) {
-          if(err) {
-            console.log("Error when clearing updates:", err);
-          } else {
-            self.allFriends([]);
-          }
-        });
-      }    
+      var client = getUserStorageClient('public');
+
+      client.delete(STATUS_KEY, function(err) {
+        if(err) {
+          console.log("Error when clearing updates:", err);
+        } else {
+          self.allStatuses([]);
+        }
+      });
+
+      client.delete(FRIENDS_KEY, function(err) {
+        if(err) {
+          console.log("Error when clearing updates:", err);
+        } else {
+          self.allFriends([]);
+        }
+      });
     }
     
     function connect(userAddress, callback) {
@@ -167,14 +173,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }
     }, false);
 
-    // Operations
-    self.login = function() {
-      connect(self.username(), function(err, storageInfo) {
-        localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-        authorize(['public', 'friends']);
-      });
-      
-    };
     
     
   };
