@@ -30,10 +30,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var value = {"username": self.addFriendsUsername(),
                    "timestamp": new Date().getTime()};
       
+            
       appendToPublicData(FRIENDS_KEY, value).then(function(updatedFriendsList) {
         self.allFriends(updatedFriendsList);
         self.addFriendsUsername("");
-        connect(value.username, function(err1, storageInfo) {
+        var friendUsername = value.username;
+        
+        connect(friendUsername, function(err1, storageInfo) {
           var client = remoteStorage.createClient(storageInfo, 'public');
           client.get(STATUS_KEY, function(err, dataStr) {
             if(err) {
@@ -63,16 +66,36 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         return client;      
     }
   
-    function fetchPublicData(key) {
+    function fetchUserData(key, category) {
+      category = category || 'public';
       var deferred = when.defer();
       
-      var client = getUserStorageClient('public');
+      var client = getUserStorageClient();
       client.get(key, function(err, dataStr) {
         if(err) {
           deferred.reject(err);
         } else {
           try {
             deferred.resolve(JSON.parse(dataStr));
+          } catch(e) {
+            deferred.reject(e);
+          }
+        }
+      });
+      return deferred.promise;
+    };
+
+    function putUserData(key, value, category) {
+      category = category || 'public';
+      var deferred = when.defer();
+      
+      var client = getUserStorageClient(category);
+      client.put(key, value, function(err) {
+        if(err) {
+          deferred.reject(err);
+        } else {
+          try {
+            deferred.resolve({"key": key, "value": value, "category": category});
           } catch(e) {
             deferred.reject(e);
           }
