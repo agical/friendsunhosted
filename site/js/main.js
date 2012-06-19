@@ -1,4 +1,4 @@
-require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function($, us, ui, ko, remoteStorage, when) {
+require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function($, _, ui, ko, remoteStorage, when) {
 
   function LoginViewModel() {
     var self = this;
@@ -25,37 +25,44 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       
     };
 
+    var onError = function(err) { console.log(err) };
     
-    self.addFriend = function() {
-      var value = {"username": self.addFriendsUsername(),
-                   "timestamp": new Date().getTime()};
-      
-            
-      appendToPublicData(FRIENDS_KEY, value).then(function(updatedFriendsList) {
-        self.allFriends(updatedFriendsList);
-        self.addFriendsUsername("");
-        var friendUsername = value.username;
-        
-        connect(friendUsername, function(err1, storageInfo) {
+    self.allFriends.subscribe(function(newFriendsList) {
+      _.each(newFriendsList, function(friendData) {
+        connect(friendData.username, function(err1, storageInfo) {
           var client = remoteStorage.createClient(storageInfo, 'public');
           client.get(STATUS_KEY, function(err, dataStr) {
             if(err) {
               console.log("Error when reading status update for key:", key, " Error:", err);
-              return;
-            };
-            var data = JSON.parse(dataStr);
-            addStatusUpdates(data!=null?data:[]);
+            } else {
+              var data = JSON.parse(dataStr);
+              addStatusUpdates(data!=null?data:[]);
+            }
           });
-          
         });
       });
+    });
+        
+    self.addFriend = function() {
+      var friendData = {"username": self.addFriendsUsername(),
+                        "timestamp": new Date().getTime()};
+      
+      fetchUserData(FRIENDS_KEY).then(function(value) {
+        value = value || [];
+        value.push(friendData);
+        putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+          self.allFriends.push(friendData);
+        }, onError); 
+      }, onError)
     };
+    
+                   
 
     function addStatusUpdates(statusUpdatesArray) {
       var existingStatuses = self.allStatuses();
-      var all = us.union(existingStatuses, statusUpdatesArray);
-      var allSorted = us.sortBy(all, function(item) {return item.timestamp;});
-      var allUnique = us.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
+      var all = _.union(existingStatuses, statusUpdatesArray);
+      var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
+      var allUnique = _.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
       self.allStatuses(allUnique);
     }
 
@@ -70,7 +77,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       category = category || 'public';
       var deferred = when.defer();
       
-      var client = getUserStorageClient();
+      var client = getUserStorageClient(category);
       client.get(key, function(err, dataStr) {
         if(err) {
           deferred.reject(err);
@@ -90,7 +97,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var deferred = when.defer();
       
       var client = getUserStorageClient(category);
-      client.put(key, value, function(err) {
+      client.put(key, JSON.stringify(value), function(err) {
         if(err) {
           deferred.reject(err);
         } else {
@@ -187,7 +194,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     }
 
     // To get the OAuth token we listen for the `message` event from the
-    // receive_token.html that sends it back to us.
+    // receive_token.html that sends it back to _.
     window.addEventListener('message', function(event) {
       if(event.origin == location.protocol +'//'+ location.host) {
         console.log('Received an OAuth token: ' + event.data);
