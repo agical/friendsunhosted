@@ -8,10 +8,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.loggedIn = ko.observable(false);
     
     self.username = ko.observable("");
-    self.password = ko.observable("");
     self.statusUpdate = ko.observable("");
-    self.allStatuses = ko.observableArray([]);
     
+    
+    self.allStatuses = ko.observableArray([]);
     self.allFriends = ko.observableArray([]);
 
     self.addFriendsUsername = ko.observable("");
@@ -45,6 +45,30 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var allUnique = us.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
       self.allStatuses(allUnique);
     }
+
+    function fetchPublicData(key) {
+      var deferred = when.defer();
+      
+      var token = localStorage.getItem('bearerToken');
+      if(token) {
+        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
+        var client = remoteStorage.createClient(storageInfo, 'public', token);
+        client.get(key, function(err, dataStr) {
+          if(err) {
+            deferred.reject(err);
+          } else {
+            try {
+              deferred.resolve(JSON.parse(dataStr));
+            } catch(e) {
+              deferred.reject(e);
+            }
+          }
+        });
+      } else {
+        deferred.reject("No bearerToken in local storage");
+      }
+      return deferred.promise;
+    };
     
     function appendToPublicData(key, value) {
       var deferred = when.defer();
@@ -83,18 +107,25 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       });
     };
 
-    self.clearAllUpdates = function() {
+    self.clearAll = function() {
       var token = localStorage.getItem('bearerToken');
       if(token) {
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
         var client = remoteStorage.createClient(storageInfo, 'public', token);
-        client.put(STATUS_KEY, JSON.stringify(null), function(err) {
+        client.delete(STATUS_KEY, function(err) {
           if(err) {
             console.log("Error when clearing updates:", err);
           } else {
             self.allStatuses([]);
           }
-         });
+        });
+        client.delete(FRIENDS_KEY, function(err) {
+          if(err) {
+            console.log("Error when clearing updates:", err);
+          } else {
+            self.allFriends([]);
+          }
+        });
       }    
     }
     
