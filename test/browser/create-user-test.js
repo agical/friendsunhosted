@@ -127,6 +127,10 @@ function createNewUser(username, password, cb) {
               .end(done);
         });
     },
+    
+    "//friend is only added once": function () {
+      
+    },
         
     "can list friends": function (done) {
         this.timeout = 25000;
