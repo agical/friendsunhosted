@@ -154,7 +154,8 @@ function createNewUser(username, password, cb) {
     "can see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded;
-        loginCreatedUser(done)
+        var user1promise = loginCreatedUser(done);
+        user1promise
           .then(function(browserAndUser) {
             userToBeAdded = browserAndUser.loggedInUser;
             browserAndUser
@@ -163,29 +164,28 @@ function createNewUser(username, password, cb) {
                 .click("#do-update-status")
                 .cssEq("#status-stream :first-child", "The message of the added")
                 .end();
-                
-          }).then(function() {
-            loginCreatedUser(done)
-              .then(function(browserAndUser) {
-                console.log("Adder:", browserAndUser.loggedInUser);
-                console.log("Added:", userToBeAdded);
-                browserAndUser
-                  .browser
-                    .setValue("#add-friends-username", userToBeAdded.username)
-                    .click("#do-add-friend")
-                    .cssEq("#status-stream :first-child", "The message of the added")
-                    .setValue("#status-update", "The message of the adder")
-                    .click("#do-update-status")
-                    .cssEq("#status-stream :first-child", "The message of the adder")
-                    .cssEq("#status-stream :nth-child(2)", "The message of the added")
-                    .setValue("#status-update", "Next message")
-                    .click("#do-update-status")
-                    .cssEq("#status-stream :first-child", "Next message")
-                    .cssEq("#status-stream :nth-child(2)", "The message of the adder")
-                    .cssEq("#status-stream :nth-child(3)", "The message of the added")
-                    .end(done);
-              });
-            });
+          });
+        var user2promise = loginCreatedUser(done);
+        user2promise
+          .then(function(browserAndUser) {
+            console.log("Adder:", browserAndUser.loggedInUser);
+            console.log("Added:", userToBeAdded);
+              browserAndUser
+                .browser
+                  .setValue("#add-friends-username", userToBeAdded.username)
+                  .click("#do-add-friend")
+                  .cssEq("#status-stream :first-child", "The message of the added")
+                  .setValue("#status-update", "The message of the adder")
+                  .click("#do-update-status")
+                  .cssEq("#status-stream :first-child", "The message of the adder")
+                  .cssEq("#status-stream :nth-child(2)", "The message of the added")
+                  .setValue("#status-update", "Next message")
+                  .click("#do-update-status")
+                  .cssEq("#status-stream :first-child", "Next message")
+                  .cssEq("#status-stream :nth-child(2)", "The message of the adder")
+                  .cssEq("#status-stream :nth-child(3)", "The message of the added")
+                  .end(done);
+        });
     },
 
 
