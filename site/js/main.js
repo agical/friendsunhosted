@@ -26,6 +26,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     };
 
     var onError = function(err) { console.log(err) };
+    
     var updateFriends = function(newFriendsList) {
       _.each(newFriendsList, function(friendData) {
         connect(friendData.username, function(err1, storageInfo) {
@@ -84,7 +85,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
           deferred.reject(err);
         } else {
           try {
-            deferred.resolve(JSON.parse(dataStr));
+            deferred.resolve(dataStr?JSON.parse(dataStr):null);
           } catch(e) {
             deferred.reject(e);
           }
@@ -102,11 +103,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         if(err) {
           deferred.reject(err);
         } else {
-          try {
-            deferred.resolve({"key": key, "value": value, "category": category});
-          } catch(e) {
-            deferred.reject(e);
-          }
+          deferred.resolve({"key": key, "value": value, "category": category});
         }
       });
       return deferred.promise;
@@ -204,7 +201,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }
     }, false);
 
-    
+    setInterval(
+      function() {
+        if(localStorage.getItem('bearerToken') && self.allFriends().length>0) {
+          updateFriends(self.allFriends());
+        }
+      }
+      , 500);
     
   };
 
