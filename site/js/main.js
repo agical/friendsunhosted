@@ -26,8 +26,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     };
 
     var onError = function(err) { console.log(err) };
-    
-    self.allFriends.subscribe(function(newFriendsList) {
+    var updateFriends = function(newFriendsList) {
       _.each(newFriendsList, function(friendData) {
         connect(friendData.username, function(err1, storageInfo) {
           var client = remoteStorage.createClient(storageInfo, 'public');
@@ -41,7 +40,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
           });
         });
       });
-    });
+    };
+    
+    self.allFriends.subscribe(updateFriends);
         
     self.addFriend = function() {
       var friendData = {"username": self.addFriendsUsername(),

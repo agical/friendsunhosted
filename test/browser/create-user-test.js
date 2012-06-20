@@ -161,9 +161,8 @@ function createNewUser(username, password, cb) {
             browserAndUser
               .browser
                 .setValue("#status-update", "The message of the added")
-                .click("#do-update-status")
-                .cssEq("#status-stream :first-child", "The message of the added")
-                .end();
+                .click("#do-update-status") 
+                .cssEq("#status-stream :first-child", "The message of the added");
           });
         var user2promise = loginCreatedUser(done);
         user2promise
@@ -176,9 +175,21 @@ function createNewUser(username, password, cb) {
                   .setValue("#status-update", "The message of the adder")
                   .click("#do-update-status")
                   .cssEq("#status-stream :first-child", "The message of the adder")
-                  .cssEq("#status-stream :nth-child(2)", "The message of the added")
-                  .end(done);
+                  .cssEq("#status-stream :nth-child(2)", "The message of the added");
         });
+        user1promise
+          .then(function(browserAndUser) {
+            browserAndUser.browser
+                .setValue("#status-update", "New message of user 1")
+                .click("#do-update-status")
+                .end();})
+                
+        user2promise
+          .then(function(browserAndUser) {
+              browserAndUser.browser
+                  .cssEq("#status-stream :first-child", "New message of user 1")
+                  .end(done);});
+
     },
 
 
