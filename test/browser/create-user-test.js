@@ -96,7 +96,7 @@ function createNewUser(username, password, cb) {
           .init()
           .url("http://localhost:8000/")
           .getTitle(function(title) { 
-              assert.equals('Teh Frens', title); 
+              assert.equals('FRIENDS#UNHOSTED - the #unhosted friends network', title); 
           })
           .end(done); 
     },
@@ -150,7 +150,6 @@ function createNewUser(username, password, cb) {
             });
     },
 
-
     "can see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded;
@@ -180,15 +179,5 @@ function createNewUser(username, password, cb) {
               });
             });
     },
-
-
-    
-    /*
-                  .setValue("#status-update", "Next message")
-                  .click("#do-update-status")
-                  .cssEq("#status-stream :first-child", "Next message")
-                  .cssEq("#status-stream :nth-child(2)", "The message of the adder")
-                  .cssEq("#status-stream :nth-child(3)", "The message of the added")
-    */
 })
 
