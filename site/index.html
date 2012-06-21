@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Teh Frens</title>
+		<title>FRIENDS#UNHOSTED - the #unhosted friends network</title>
 		<link type="text/css" href="css/custom-theme/jquery-ui-1.8.20.custom.css" rel="stylesheet" />
 		<link type="text/css" href="css/style.css" rel="stylesheet" />
     <script type="text/javascript" data-main="js/main" src="js/require.js"></script>
@@ -20,7 +20,7 @@
 		</script>
 	</head>
 	<body>
-	<div id="header" class="ui-widget-header">
+	<div id="header" class="header">
   	<img id="logo-top" src="img/logo.png"/>
 	  <div id="byline-top">The #unhosted friends network</div>
     <div id="login-area" class="not-logged-in" data-bind="visible: !loggedIn()">
@@ -30,6 +30,7 @@
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
     <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
+        <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
         <h3 >Status:</h3>
         <input id="status-update" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
@@ -38,7 +39,6 @@
         </div>
     </div>
 
-    <button id="do-clear-all-updates" data-bind="click: clearAllUpdates">Clear all updates!!</button>    
   
     <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
         <h3 >Add a friend</h3>

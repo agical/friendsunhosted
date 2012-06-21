@@ -75,7 +75,7 @@ function createNewUser(username, password, cb) {
   var options = {
     host: 'localhost',
     port: 80,
-    path: '/create_user/' + username + "/" + password
+    path: '/create_user/localhost/' +  username + "/" + password
   };
   var deferred = when.defer();
   
@@ -96,7 +96,7 @@ function createNewUser(username, password, cb) {
           .init()
           .url("http://localhost:8000/")
           .getTitle(function(title) { 
-              assert.equals('Teh Frens', title); 
+              assert.equals('FRIENDS#UNHOSTED - the #unhosted friends network', title); 
           })
           .end(done); 
     },
@@ -127,6 +127,10 @@ function createNewUser(username, password, cb) {
               .end(done);
         });
     },
+    
+    "//friend is only added once": function () {
+      
+    },
         
     "can list friends": function (done) {
         this.timeout = 25000;
@@ -146,7 +150,6 @@ function createNewUser(username, password, cb) {
             });
     },
 
-
     "can see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded;
@@ -159,35 +162,22 @@ function createNewUser(username, password, cb) {
                 .click("#do-update-status")
                 .cssEq("#status-stream :first-child", "The message of the added")
                 .end();
-                
-          }).then(function() {
+          })
+          .then(function() {
             loginCreatedUser(done)
               .then(function(browserAndUser) {
-                console.log("Adder:", browserAndUser.loggedInUser);
-                console.log("Added:", userToBeAdded);
-                browserAndUser
-                  .browser
-                    .setValue("#add-friends-username", userToBeAdded.username)
-                    .click("#do-add-friend")
-                    .pause(5000)
-                    .cssEq("#status-stream :first-child", "The message of the added")
-                    .setValue("#status-update", "The message of the adder")
-                    .click("#do-update-status")
-                    .cssEq("#status-stream :first-child", "The message of the adder")
-                    .cssEq("#status-stream :nth-child(2)", "The message of the added")
-                    .setValue("#status-update", "Next message")
-                    .click("#do-update-status")
-                    .cssEq("#status-stream :first-child", "Next message")
-                    .cssEq("#status-stream :nth-child(2)", "The message of the adder")
-                    .cssEq("#status-stream :nth-child(3)", "The message of the added")
-                    .end(done);
+                  browserAndUser
+                    .browser
+                      .setValue("#add-friends-username", userToBeAdded.username)
+                      .click("#do-add-friend")
+                      .cssEq("#status-stream :first-child", "The message of the added")
+                      .setValue("#status-update", "The message of the adder")
+                      .click("#do-update-status")
+                      .cssEq("#status-stream :first-child", "The message of the adder")
+                      .cssEq("#status-stream :nth-child(2)", "The message of the added")
+                      .end(done);
               });
             });
     },
-
-
-    
-    /*
-    */
 })
 
