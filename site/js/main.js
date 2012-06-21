@@ -19,7 +19,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.login = function() {
       connect(self.username(), function(err, storageInfo) {
         localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-        authorize(['public', 'friends']);
+        authorize(['public']);
       });
     };
 
