@@ -16,13 +16,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
 
     self.addFriendsUsername = ko.observable("");
     
-    
     self.login = function() {
       connect(self.username(), function(err, storageInfo) {
         localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
         authorize(['public', 'friends']);
       });
-      
     };
 
     var onError = function(err) { console.log(err) };
@@ -58,8 +56,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
-                   
-
     function addStatusUpdates(statusUpdatesArray) {
       var existingStatuses = self.allStatuses();
       var all = _.union(existingStatuses, statusUpdatesArray);
@@ -109,7 +105,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       return deferred.promise;
     };
     
-
     self.updateStatus = function() {
       var statusUpdate = {"status": self.statusUpdate(),
                     "timestamp": new Date().getTime()};
@@ -180,7 +175,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         }
       }
       , 2000);
-    
   };
 
   ko.applyBindings(new LoginViewModel());
