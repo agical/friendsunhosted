@@ -112,8 +112,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
 
     self.updateStatus = function() {
       var statusUpdate = {"status": self.statusUpdate(),
-                    "timestamp": new Date().getTime(),
-                    "username": self.username()};
+                    "timestamp": new Date().getTime()};
       fetchUserData(STATUS_KEY).then(function(statusUpdates) {
         statusUpdates = statusUpdates || [];
         statusUpdates.push(statusUpdate);
