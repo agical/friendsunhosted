@@ -33,8 +33,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
             if(err) {
               console.log("Error when reading status update for key:", key, " Error:", err);
             } else {
-              var data = JSON.parse(dataStr);
-              addStatusUpdates(data!=null?data:[], friendData.username);
+              addStatusUpdates(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
             }
           });
         });
@@ -56,11 +55,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
-    function addStatusUpdates(statusUpdatesArray, username) {
+    function addStatusUpdates(statusUpdatesArray) {
       var existingStatuses = self.allStatuses();
       var all = _.union(existingStatuses, statusUpdatesArray);
       var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
-      var allUnique = _.unique(allSorted, true, function(item) {return item.timestamp + username;});
+      var allUnique = _.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
       self.allStatuses(allUnique);
     }
 
@@ -107,12 +106,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     
     self.updateStatus = function() {
       var statusUpdate = {"status": self.statusUpdate(),
-                    "timestamp": new Date().getTime()};
+                    "timestamp": new Date().getTime(),
+                    "username": self.username()};
       fetchUserData(STATUS_KEY).then(function(statusUpdates) {
         statusUpdates = statusUpdates || [];
         statusUpdates.push(statusUpdate);
         putUserData(STATUS_KEY, statusUpdates).then(function() {
-          addStatusUpdates(statusUpdates, self.username());
+          addStatusUpdates(statusUpdates);
           self.statusUpdate('');
         });
       });

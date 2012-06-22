@@ -35,7 +35,10 @@
         <input id="status-update" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
         <div id="status-stream" data-bind="foreach: allStatuses().reverse()">
-          <p class="status-update" data-bind="text: status"></p>
+          <div>
+            <span class="status-update-username" data-bind="text: username"></span>
+            <span class="status-update" data-bind="text: status"></span>
+          </div>
         </div>
     </div>
 
