@@ -147,6 +147,10 @@ function createNewUser(username, password, cb) {
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
                     .cssEq("#friends :first-child", userToBeAdded.username)
+                    .setValue("#add-friends-username", userToBeAdded.username)
+                    .click("#do-add-friend")
+                    .cssEq("#friends :first-child", userToBeAdded.username)
+                    .cssEq("#friends :nth-child(2)", null)
                     .end(done);
               });
             });
