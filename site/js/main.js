@@ -34,7 +34,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
               console.log("Error when reading status update for key:", key, " Error:", err);
             } else {
               var data = JSON.parse(dataStr);
-              addStatusUpdates(data!=null?data:[]);
+              addStatusUpdates(data!=null?data:[], friendData.username);
             }
           });
         });
@@ -56,11 +56,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
-    function addStatusUpdates(statusUpdatesArray) {
+    function addStatusUpdates(statusUpdatesArray, username) {
       var existingStatuses = self.allStatuses();
       var all = _.union(existingStatuses, statusUpdatesArray);
       var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
-      var allUnique = _.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
+      var allUnique = _.unique(allSorted, true, function(item) {return item.timestamp + username;});
       self.allStatuses(allUnique);
     }
 
@@ -112,7 +112,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         statusUpdates = statusUpdates || [];
         statusUpdates.push(statusUpdate);
         putUserData(STATUS_KEY, statusUpdates).then(function() {
-          addStatusUpdates(statusUpdates);
+          addStatusUpdates(statusUpdates, self.username());
           self.statusUpdate('');
         });
       });
