@@ -14,10 +14,27 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.allStatuses = ko.observableArray([]);
     self.allFriends = ko.observableArray([]);
 
+    function init() {
+      var localUsername = localStorage.getItem('username');
+      if(localUsername) {
+        self.username(JSON.parse(localUsername));
+        self.loggedIn(true);
+        fetchUserData(FRIENDS_KEY).then(function(value) {
+          value = value || [];
+          self.allFriends(value);
+        }, onError)
+        fetchUserData(STATUS_KEY).then(function(value) {
+          value = value || [];
+          self.allStatuses(value);
+        }, onError)
+      }
+    }
+
     self.addFriendsUsername = ko.observable("");
     
     self.login = function() {
       connect(self.username(), function(err, storageInfo) {
+        localStorage.setItem('username', JSON.stringify(self.username()));
         localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
         authorize(['public']);
       });
@@ -179,6 +196,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         }
       }
       , 2000);
+      
+    init();
   };
 
   ko.applyBindings(new LoginViewModel());

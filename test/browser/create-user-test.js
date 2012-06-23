@@ -131,10 +131,6 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "//friend is only added once": function () {
-      
-    },
-        
     "can let user add and list friends": function (done) {
         this.timeout = 25000;
         createTestUser()
@@ -186,5 +182,23 @@ function createNewUser(username, password, cb) {
               });
             });
     },
+
+    "keeps login status on refresh": function (done) {
+        this.timeout = 25000;
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .setValue("#status-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .refresh()
+              .waitFor("#status-stream :first-child .status-update", 2000)
+              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .end(done);
+        });
+    },
+
 })
 
