@@ -35,6 +35,9 @@ function createTestBrowser(done) {
   client.cssEq = function(cssSelector, expected) {
     return client.getText(cssSelector, function(val) {assert.equals(expected, val.value)});
   };
+  client.cssCondition = function(cssSelector, condition) {
+    return client.getText(cssSelector, function(val) {condition(val.value)});
+  };
   return client;
 }
 
@@ -123,10 +126,12 @@ function createNewUser(username, password, cb) {
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
               .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
               .setValue("#status-update", "Second message")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Second message")
               .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
               .end(done);
         });
     },
