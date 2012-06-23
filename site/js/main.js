@@ -43,14 +43,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.allFriends.subscribe(updateFriends);
         
     self.addFriend = function() {
+      if(self.addFriendsUsername() && 
+         _.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
+        return;
+      } 
       var friendData = {"username": self.addFriendsUsername(),
                         "timestamp": new Date().getTime()};
-      
       fetchUserData(FRIENDS_KEY).then(function(value) {
         value = value || [];
         value.push(friendData);
         putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
           self.allFriends.push(friendData);
+          self.addFriendsUsername("");
         }, onError); 
       }, onError)
     };
@@ -141,7 +145,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     function connect(userAddress, callback) {
       remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
         if(error) {
-          alert('Could not load storage info');
+          alert('Could not load storage info:' + error);
           console.log(error);
         } else {
           console.log('Storage info received:');
