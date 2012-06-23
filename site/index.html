@@ -24,15 +24,15 @@
   	<img id="logo-top" src="img/logo.png"/>
 	  <div id="byline-top">The #unhosted friends network</div>
     <div id="login-area" class="not-logged-in" data-bind="visible: !loggedIn()">
-        Username:<input id="username" data-bind="value: username" />
+        <label for="username">Username:</label>
+        <input id="username" data-bind="value: username" />
         <button id="do-login" data-bind="click: login">Login</button>    
     </div>
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
     <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
-        <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
-        <h3 >Status:</h3>
-        <input id="status-update" data-bind="value: statusUpdate" />
+        <label for="status-update">Status</label>
+        <input id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
         <div id="status-stream" data-bind="foreach: allStatuses().reverse()">
           <div>
@@ -44,12 +44,15 @@
 
   
     <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
-        <h3 >Add a friend</h3>
-        Friends username:<input id="add-friends-username" data-bind="value: addFriendsUsername" />
+        <label for="add-friends-username">Add a friend</label>
+        <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
         <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
     </div>
-    <div id="friends" data-bind="foreach: allFriends">
+    <div id="friends" class="logged-in" data-bind="foreach: allFriends">
       <p class="friend" data-bind="text: username"></p>
+    </div>
+    <div class="logged-in">
+      <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
     </div>
 
     <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >
