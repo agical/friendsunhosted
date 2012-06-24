@@ -93,7 +93,7 @@ function createNewUser(username, password, cb) {
 }
 
   buster.testCase("Friends#Unhosted", {
-    "has a title": function (done) {
+    "-has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -105,7 +105,7 @@ function createNewUser(username, password, cb) {
           .end(done); 
     },
     
-    "can login a user": function (done) {
+    "-can login a user": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -116,7 +116,7 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "can let user add status updates": function (done) {
+    "-can let user add status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -135,8 +135,25 @@ function createNewUser(username, password, cb) {
               .end(done);
         });
     },
+
+    "-can comment on status updates": function (done) {
+        this.timeout = 25000;
+         
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .setValue("#status-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
+              .setValue("#status-stream :first-child .comment", "Hello to you!")
+              .click("#status-stream :first-child .do-comment")
+               .cssEq("#status-stream :first-child .comments .comment-update", "Hello to you!")
+              .end(done);
+        });
+    },
+
     
-    "can let user add and list friends": function (done) {
+    "-can let user add and list friends": function (done) {
         this.timeout = 25000;
         createTestUser()
           .then(function(userToBeAdded) {
@@ -158,7 +175,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "can let user see friends messages": function (done) {
+    "-can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded;
         loginCreatedUser(done)
@@ -178,6 +195,7 @@ function createNewUser(username, password, cb) {
                     .browser
                       .setValue("#add-friends-username", userToBeAdded.username)
                       .click("#do-add-friend")
+                      .click("#refresh")
                       .cssEq("#status-stream :first-child .status-update", "The message of the added")
                       .setValue("#status-update", "The message of the adder")
                       .click("#do-update-status")
@@ -188,7 +206,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "keeps login status on refresh": function (done) {
+    "-keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
