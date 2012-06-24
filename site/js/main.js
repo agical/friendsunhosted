@@ -14,12 +14,29 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.allStatuses = ko.observableArray([]);
     self.allFriends = ko.observableArray([]);
 
+    function init() {
+      var localUsername = localStorage.getItem('username');
+      if(localUsername) {
+        self.username(JSON.parse(localUsername));
+        self.loggedIn(true);
+        fetchUserData(FRIENDS_KEY).then(function(value) {
+          value = value || [];
+          self.allFriends(value);
+        }, onError)
+        fetchUserData(STATUS_KEY).then(function(value) {
+          value = value || [];
+          self.allStatuses(value);
+        }, onError)
+      }
+    }
+
     self.addFriendsUsername = ko.observable("");
     
     self.login = function() {
       connect(self.username(), function(err, storageInfo) {
+        localStorage.setItem('username', JSON.stringify(self.username()));
         localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-        authorize(['public', 'friends']);
+        authorize(['public']);
       });
     };
 
@@ -33,8 +50,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
             if(err) {
               console.log("Error when reading status update for key:", key, " Error:", err);
             } else {
-              var data = JSON.parse(dataStr);
-              addStatusUpdates(data!=null?data:[]);
+              addStatusUpdates(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
             }
           });
         });
@@ -44,14 +60,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.allFriends.subscribe(updateFriends);
         
     self.addFriend = function() {
+      if(self.addFriendsUsername() && 
+         _.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
+        return;
+      } 
       var friendData = {"username": self.addFriendsUsername(),
                         "timestamp": new Date().getTime()};
-      
       fetchUserData(FRIENDS_KEY).then(function(value) {
         value = value || [];
         value.push(friendData);
         putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
           self.allFriends.push(friendData);
+          self.addFriendsUsername("");
         }, onError); 
       }, onError)
     };
@@ -107,7 +127,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     
     self.updateStatus = function() {
       var statusUpdate = {"status": self.statusUpdate(),
-                    "timestamp": new Date().getTime()};
+                    "timestamp": new Date().getTime(),
+                    "username": self.username()};
       fetchUserData(STATUS_KEY).then(function(statusUpdates) {
         statusUpdates = statusUpdates || [];
         statusUpdates.push(statusUpdate);
@@ -141,7 +162,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     function connect(userAddress, callback) {
       remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
         if(error) {
-          alert('Could not load storage info');
+          alert('Could not load storage info:' + error);
           console.log(error);
         } else {
           console.log('Storage info received:');
@@ -175,6 +196,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         }
       }
       , 2000);
+      
+    init();
   };
 
   ko.applyBindings(new LoginViewModel());

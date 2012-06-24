@@ -35,6 +35,9 @@ function createTestBrowser(done) {
   client.cssEq = function(cssSelector, expected) {
     return client.getText(cssSelector, function(val) {assert.equals(expected, val.value)});
   };
+  client.cssCondition = function(cssSelector, condition) {
+    return client.getText(cssSelector, function(val) {condition(val.value)});
+  };
   return client;
 }
 
@@ -83,12 +86,13 @@ function createNewUser(username, password, cb) {
     deferred.resolve(
       {username: username + "@" + options.host,
        password: password });
-  }).on('error', deferred.reject);
+  })
+  .on('error', deferred.reject);
     
   return deferred.promise;
 }
 
-  buster.testCase("Site", {
+  buster.testCase("Friends#Unhosted", {
     "has a title": function (done) {
         this.timeout = 5000;
         
@@ -112,7 +116,7 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "can add status updates": function (done) {
+    "can let user add status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -120,19 +124,19 @@ function createNewUser(username, password, cb) {
             .browser
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
-              .cssEq("#status-stream :first-child", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
               .setValue("#status-update", "Second message")
               .click("#do-update-status")
-              .cssEq("#status-stream :first-child", "Second message")
+              .cssEq("#status-stream :first-child .status-update", "Second message")
+              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
               .end(done);
         });
     },
     
-    "//friend is only added once": function () {
-      
-    },
-        
-    "can list friends": function (done) {
+    "can let user add and list friends": function (done) {
         this.timeout = 25000;
         createTestUser()
           .then(function(userToBeAdded) {
@@ -145,12 +149,16 @@ function createNewUser(username, password, cb) {
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
                     .cssEq("#friends :first-child", userToBeAdded.username)
+                    .setValue("#add-friends-username", userToBeAdded.username)
+                    .click("#do-add-friend")
+                    .cssEq("#friends :first-child", userToBeAdded.username)
+                    .cssEq("#friends :nth-child(2)", undefined)
                     .end(done);
               });
             });
     },
 
-    "can see friends messages": function (done) {
+    "can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded;
         loginCreatedUser(done)
@@ -160,7 +168,7 @@ function createNewUser(username, password, cb) {
               .browser
                 .setValue("#status-update", "The message of the added")
                 .click("#do-update-status")
-                .cssEq("#status-stream :first-child", "The message of the added")
+                .cssEq("#status-stream :first-child .status-update", "The message of the added")
                 .end();
           })
           .then(function() {
@@ -170,14 +178,32 @@ function createNewUser(username, password, cb) {
                     .browser
                       .setValue("#add-friends-username", userToBeAdded.username)
                       .click("#do-add-friend")
-                      .cssEq("#status-stream :first-child", "The message of the added")
+                      .cssEq("#status-stream :first-child .status-update", "The message of the added")
                       .setValue("#status-update", "The message of the adder")
                       .click("#do-update-status")
-                      .cssEq("#status-stream :first-child", "The message of the adder")
-                      .cssEq("#status-stream :nth-child(2)", "The message of the added")
+                      .cssEq("#status-stream :first-child .status-update", "The message of the adder")
+                      .cssEq("#status-stream :nth-child(2) .status-update", "The message of the added")
                       .end(done);
               });
             });
     },
+
+    "keeps login status on refresh": function (done) {
+        this.timeout = 25000;
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .setValue("#status-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .refresh()
+              .waitFor("#status-stream :first-child .status-update", 2000)
+              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
+              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .end(done);
+        });
+    },
+
 })
 
