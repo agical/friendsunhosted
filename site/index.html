@@ -39,9 +39,11 @@
             <span class="status-update-username" data-bind="text: username"></span>
             <span class="status-update" data-bind="text: status"></span>
             <span class="status-update-timestamp" data-bind="text: timestamp"></span>
-            <div class="comments" data-bind="template: { name: 'comment-template', foreach: comments }"></div>
-            <input placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" />
-            <button class="do-comment" data-bind="click: doComment">Comment</button>    
+            <div class="comments">
+              <div class="comments" data-bind="template: { name: 'comment-template', foreach: comments }"></div>
+              <input placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" />
+              <button class="do-comment" data-bind="click: doComment">Comment</button>   
+            </div> 
           </div>
         </div>
     </div>

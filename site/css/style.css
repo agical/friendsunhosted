@@ -16,6 +16,22 @@
   margin: 0px;  
 }
 
+.comments {
+  background: #bbb; /* for non-css3 browsers */  
+}
+
+.status-update {
+  
+}
+
+.status-update-username {
+  font: 50% "Courier", sans-serif; 
+}
+
+.status-update-timestamp {
+  font: 50% "Courier", sans-serif; 
+}
+
 /*demo page css*/
 body{ 
   font: 100% "Trebuchet MS", sans-serif; 
