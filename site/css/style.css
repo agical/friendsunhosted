@@ -32,7 +32,9 @@
 }
 
 .comments {
-  background: #bbb; /* for non-css3 browsers */  
+  background: #bbb;
+  margin-left: 10px;
+   
 }
 
 .status-update {
@@ -40,19 +42,21 @@
 }
 
 .status-update-username {
-  font: 50% "Courier", sans-serif; 
+  font: 100% "Courier", sans-serif;
+  font-weight:bold;  
 }
 
 .status-update-timestamp {
-  font: 50% "Courier", sans-serif; 
+  font: 100% "Courier", sans-serif; 
 }
 
 .comment-update-username {
-  font: 50% "Courier", sans-serif; 
+  font: 100% "Courier", sans-serif; 
+  font-weight:bold;  
 }
 
 .comment-update-timestamp {
-  font: 50% "Courier", sans-serif; 
+  font: 100% "Courier", sans-serif; 
 }
 
 #status {

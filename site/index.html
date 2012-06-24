@@ -33,7 +33,7 @@
     <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
         <div class="status-update">
           <label for="status-update">Status</label>
-          <input id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" />
+          <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
           <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
         </div>
         <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
