@@ -22,7 +22,13 @@
   border-bottom:0px;
   border-left:0px;
   border-right:0px;
-  margin-bottom: 5px;
+  margin: 5px;
+  margin-bottom: 15px;
+}
+
+.status-update {
+  margin: 5px;
+  margin-bottom: 15px;
 }
 
 .comments {

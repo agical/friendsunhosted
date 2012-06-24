@@ -31,9 +31,11 @@
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
     <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
-        <label for="status-update">Status</label>
-        <input id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" />
-        <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
+        <div class="status-update">
+          <label for="status-update">Status</label>
+          <input id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" />
+          <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
+        </div>
         <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
           <div class="conversation">
             <span class="status-update-username" data-bind="text: username"></span>
