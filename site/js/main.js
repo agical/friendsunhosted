@@ -8,10 +8,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.loggedIn = ko.observable(false);
     
     self.username = ko.observable("");
-    self.statusUpdate = ko.observable("");
-    
+    self.statusUpdate = ko.observable("");    
     
     self.allStatuses = ko.observableArray([]);
+    self.allRootStatuses = ko.computed(function() {
+      return _.filter(self.allStatuses(), function(item) {return !item.inReplyTo;});
+    });
     self.allFriends = ko.observableArray([]);
 
     function StatusUpdate(suData) {
@@ -20,11 +22,27 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       su.timestamp = suData.timestamp;
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
-      su.comments = ko.computed(function() {
-        return _.filter(self.allStatuses(), function(item) {
-          return item.inReplyTo == su.timestamp+":" + su.username;
-        });
+      su.comment = ko.observable("");
+          
+      su.id = ko.computed(function() {
+        return su.timestamp + ":" + su.username;
       });
+      
+      su.comments = ko.computed(function() {
+        var res = _.filter(self.allStatuses(), function(item) {
+          return item.inReplyTo == su.id();
+        });
+        return res;
+      });
+      
+      su.doComment = function() {
+        self.addNewStatus({
+          'username': self.username(),
+          'timestamp': new Date().getTime(),
+          'status': su.comment(),
+          'inReplyTo': su.id(),
+        });
+      }
     }
 
     function init() {
@@ -38,8 +56,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         }, onError)
         fetchUserData(STATUS_KEY).then(function(value) {
           value = value || [];
-          
-          self.allStatuses(value);
+          addStatusUpdates(value);
         }, onError)
       }
     }
@@ -103,9 +120,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
                  s1.timestamp == s2.timestamp;
       }
       var existingStatuses = self.allStatuses();
-      var newUpdates = _.reject(statusUpdatesArray, function(item) {
-        return _.any(existingStatuses, function(existing) {
-            return statusEquals(existing, item);
+      var newUpdates = _.filter(statusUpdatesArray, function(item) {
+        return !existingStatuses || _.all(existingStatuses, function(existing) {
+            return !statusEquals(existing, item);
           });
       });
       var newUpdatesAsObjects = _.map(newUpdates, function(item) {
@@ -115,6 +132,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
       self.allStatuses(allSorted);
     }
+
 
     function getUserStorageClient(category) {
         var token = localStorage.getItem('bearerToken');
@@ -158,10 +176,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     };
     
     self.updateStatus = function() {
-      var statusUpdate = {"status": self.statusUpdate(),
-                    "timestamp": new Date().getTime(),
-                    "username": self.username()};
-                    
+      self.addNewStatus(
+          {"status": self.statusUpdate(),
+           "timestamp": new Date().getTime(),
+           "username": self.username()});
+    };
+    
+    self.addNewStatus = function(statusUpdate) {
       fetchUserData(STATUS_KEY).then(function(statusUpdates) {
         statusUpdates = statusUpdates || [];
         statusUpdates.push(statusUpdate);

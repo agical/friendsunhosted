@@ -136,7 +136,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "//can comment on status updates": function (done) {
+    "-can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -147,7 +147,7 @@ function createNewUser(username, password, cb) {
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
               .setValue("#status-stream :first-child .comment", "Hello to you!")
               .click("#status-stream :first-child .do-comment")
-              .cssEq("#status-stream :first-child .comments :first-child", "Hello to you!")
+               .cssEq("#status-stream :first-child .comments .comment-update", "Hello to you!")
               .end(done);
         });
     },

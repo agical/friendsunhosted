@@ -34,15 +34,24 @@
         <label for="status-update">Status</label>
         <input id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
-        <div id="status-stream" data-bind="foreach: allStatuses().reverse()">
+        <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
           <div>
             <span class="status-update-username" data-bind="text: username"></span>
             <span class="status-update" data-bind="text: status"></span>
             <span class="status-update-timestamp" data-bind="text: timestamp"></span>
+            <div class="comments" data-bind="template: { name: 'comment-template', foreach: comments }"></div>
+            <input placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" />
+            <button class="do-comment" data-bind="click: doComment">Comment</button>    
           </div>
         </div>
     </div>
 
+    <script type="text/html" id="comment-template">
+      <span class="comment-update-username" data-bind="text: username"></span>
+      <span class="comment-update" data-bind="text: status"></span>
+      <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+    </script>
+ 
   
     <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
         <label for="add-friends-username">Add a friend</label>
