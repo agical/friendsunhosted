@@ -35,12 +35,13 @@
         <input id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" />
         <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
         <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
-          <div>
+          <div class="conversation">
             <span class="status-update-username" data-bind="text: username"></span>
             <span class="status-update" data-bind="text: status"></span>
             <span class="status-update-timestamp" data-bind="text: timestamp"></span>
             <div class="comments">
-              <div class="comments" data-bind="template: { name: 'comment-template', foreach: comments }"></div>
+              <!-- ko template: { name: 'comment-template', foreach: comments } -->              
+              <!-- /ko -->
               <input placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" />
               <button class="do-comment" data-bind="click: doComment">Comment</button>   
             </div> 
@@ -49,9 +50,11 @@
     </div>
 
     <script type="text/html" id="comment-template">
-      <span class="comment-update-username" data-bind="text: username"></span>
-      <span class="comment-update" data-bind="text: status"></span>
-      <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+      <div class="comment">
+        <span class="comment-update-username" data-bind="text: username"></span>
+        <span class="comment-update" data-bind="text: status"></span>
+        <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+      </div>
     </script>
  
   

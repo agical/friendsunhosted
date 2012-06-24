@@ -16,6 +16,15 @@
   margin: 0px;  
 }
 
+.conversation {
+  border-style:solid;
+  border-top:2px double #ccc;
+  border-bottom:0px;
+  border-left:0px;
+  border-right:0px;
+  margin-bottom: 5px;
+}
+
 .comments {
   background: #bbb; /* for non-css3 browsers */  
 }
@@ -30,6 +39,18 @@
 
 .status-update-timestamp {
   font: 50% "Courier", sans-serif; 
+}
+
+.comment-update-username {
+  font: 50% "Courier", sans-serif; 
+}
+
+.comment-update-timestamp {
+  font: 50% "Courier", sans-serif; 
+}
+
+#status {
+  width: 400px;
 }
 
 /*demo page css*/
