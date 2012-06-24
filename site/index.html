@@ -52,8 +52,9 @@
     <div id="friends" class="logged-in" data-bind="foreach: allFriends">
       <p class="friend" data-bind="text: username"></p>
     </div>
-    <div class="logged-in">
+    <div class="logged-in" data-bind="visible: loggedIn()">
       <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
+      <button id="refresh" data-bind="click: refresh">Refresh</button>    
     </div>
 
     <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >

@@ -1,6 +1,6 @@
 require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function($, _, ui, ko, remoteStorage, when) {
 
-  function LoginViewModel() {
+  function FriendsViewModel() {
     var self = this;
     var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
     var FRIENDS_KEY = 'friendsunhosted_friends';
@@ -14,6 +14,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.allStatuses = ko.observableArray([]);
     self.allFriends = ko.observableArray([]);
 
+    function StatusUpdate(suData) {
+      var su = this;
+      su.status = suData.status;
+      su.timestamp = suData.timestamp;
+      su.username = suData.username;
+      su.inReplyTo = suData.inReplyTo;
+      su.comments = ko.computed(function() {
+        return _.filter(self.allStatuses(), function(item) {
+          return item.inReplyTo == su.timestamp+":" + su.username;
+        });
+      });
+    }
+
     function init() {
       var localUsername = localStorage.getItem('username');
       if(localUsername) {
@@ -25,6 +38,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         }, onError)
         fetchUserData(STATUS_KEY).then(function(value) {
           value = value || [];
+          
           self.allStatuses(value);
         }, onError)
       }
@@ -38,6 +52,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
         authorize(['public']);
       });
+    };
+  
+    self.refresh = function() {
+      if(localStorage.getItem('bearerToken') && self.allFriends().length>0) {
+        updateFriends(self.allFriends());
+      }
     };
 
     var onError = function(err) { console.log(err) };
@@ -76,12 +96,24 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
+    
     function addStatusUpdates(statusUpdatesArray) {
+      function statusEquals(s1, s2) {
+          return s1.username == s2.username && 
+                 s1.timestamp == s2.timestamp;
+      }
       var existingStatuses = self.allStatuses();
-      var all = _.union(existingStatuses, statusUpdatesArray);
+      var newUpdates = _.reject(statusUpdatesArray, function(item) {
+        return _.any(existingStatuses, function(existing) {
+            return statusEquals(existing, item);
+          });
+      });
+      var newUpdatesAsObjects = _.map(newUpdates, function(item) {
+        return new StatusUpdate(item);
+      });
+      var all = _.union(existingStatuses, newUpdatesAsObjects);
       var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
-      var allUnique = _.unique(allSorted, true, function(item) {return item.timestamp + item.username;});
-      self.allStatuses(allUnique);
+      self.allStatuses(allSorted);
     }
 
     function getUserStorageClient(category) {
@@ -129,6 +161,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var statusUpdate = {"status": self.statusUpdate(),
                     "timestamp": new Date().getTime(),
                     "username": self.username()};
+                    
       fetchUserData(STATUS_KEY).then(function(statusUpdates) {
         statusUpdates = statusUpdates || [];
         statusUpdates.push(statusUpdate);
@@ -189,18 +222,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }
     }, false);
 
-    setInterval(
-      function() {
-        if(localStorage.getItem('bearerToken') && self.allFriends().length>0) {
-          updateFriends(self.allFriends());
-        }
-      }
-      , 2000);
+    setInterval( self.refresh, 30000);
       
     init();
   };
 
-  ko.applyBindings(new LoginViewModel());
+  ko.applyBindings(new FriendsViewModel());
       
     	$(function(){
 
