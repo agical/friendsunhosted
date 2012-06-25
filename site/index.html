@@ -20,6 +20,7 @@
 		</script>
 	</head>
 	<body>
+
 	<div id="header" class="header">
   	<img id="logo-top" src="img/logo.png"/>
 	  <div id="byline-top">The #unhosted friends network</div>
@@ -30,49 +31,56 @@
     </div>
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
-    <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
-        <div class="status-update">
-          <label for="status-update">Status</label>
-          <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
-          <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
-        </div>
-        <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
-          <div class="conversation">
-            <span class="status-update-username" data-bind="text: username"></span>
-            <span class="status-update" data-bind="text: status"></span>
-            <span class="status-update-timestamp" data-bind="text: timestamp"></span>
-            <div class="comments">
-              <!-- ko template: { name: 'comment-template', foreach: comments } -->              
-              <!-- /ko -->
-              <input placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" />
-              <button class="do-comment" data-bind="click: doComment">Comment</button>   
-            </div> 
-          </div>
-        </div>
-    </div>
 
-    <script type="text/html" id="comment-template">
-      <div class="comment">
-        <span class="comment-update-username" data-bind="text: username"></span>
-        <span class="comment-update" data-bind="text: status"></span>
-        <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+  <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
+    
+    <div class="status-update">
+      <label for="status-update">Status</label>
+      <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
+      <button id="do-update-status" data-bind="click: updateStatus">Update</button>    
+    </div>
+    
+    <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
+      <div class="conversation">
+        <div class="status-details">
+          <span class="status-update-username" data-bind="text: username"></span>
+          <span class="status-update" data-bind="text: status"></span>
+          <span class="status-update-timestamp" data-bind="text: timestamp"></span>
+        </div>
+        <div class="comments">
+          <!-- ko foreach: comments -->              
+            <div class="comment">
+              <span class="comment-update-username" data-bind="text: username"></span>
+              <span class="comment-update" data-bind="text: status"></span>
+              <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+            </div>
+          <!-- /ko -->
+          <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
+          <button class="do-comment" data-bind="click: doComment">Comment</button>   
+        </div> 
       </div>
-    </script>
- 
-  
+    </div>
+    
+  </div>
+
+  <div class="friends">
     <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
         <label for="add-friends-username">Add a friend</label>
         <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
         <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
     </div>
+    
     <div id="friends" class="logged-in" data-bind="foreach: allFriends">
       <p class="friend" data-bind="text: username"></p>
     </div>
+  </div>
+  <div class="Profile">
     <div class="logged-in" data-bind="visible: loggedIn()">
       <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
       <button id="refresh" data-bind="click: refresh">Refresh</button>    
     </div>
-
+  </div>
+  
     <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >
       <div>
       <h3>What is FRIENDS#UNHOSTED?</h3>

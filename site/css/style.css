@@ -16,6 +16,21 @@
   margin: 0px;  
 }
 
+.status {
+  float: left;
+  clear: right;
+}
+
+.status-update {
+  float: left;
+  clear: right;
+}
+
+.status-stream {
+  float: left;
+  clear: right;
+}
+
 .conversation {
   border-style:solid;
   border-top:2px double #ccc;
@@ -32,31 +47,40 @@
 }
 
 .comments {
-  background: #bbb;
   margin-left: 10px;
-   
+  background-color: #bbb;
+  float: left;
 }
 
-.status-update {
-  
+.comment {
+}
+
+
+.status-details {
+  float: left;
+
 }
 
 .status-update-username {
   font: 100% "Courier", sans-serif;
   font-weight:bold;  
+  float: left;
 }
 
 .status-update-timestamp {
   font: 100% "Courier", sans-serif; 
+  float: right;
 }
 
 .comment-update-username {
   font: 100% "Courier", sans-serif; 
   font-weight:bold;  
+  float: left;
 }
 
 .comment-update-timestamp {
   font: 100% "Courier", sans-serif; 
+  float: right;
 }
 
 #status {
