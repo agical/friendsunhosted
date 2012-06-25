@@ -28,7 +28,7 @@
     </div>
     <div class="login-area">
       <div class="not-logged-in" data-bind="visible: !loggedIn()">
-        <input placeholder="username@storageserver" id="username" data-bind="value: username" />
+        <input placeholder="username@storageserver.com" id="username" data-bind="value: username" />
         <button id="do-login" data-bind="click: login">Login</button>    
       </div>
       <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >
@@ -127,7 +127,7 @@
     <div class="info-box">
       <h3>How do I add friends?</h3>
       <p>
-      To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address: username@someunhostedserver.com. You add that address to your F#U friends, and then you can see the updates of your friend.
+      To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address: <span class="storage-id">username@storageserver.com</span>. You add that address to your F#U friends, and then you can see the updates of your friend.
       </p>
       <h5>How do I find my friends?</h5>
       <p>
