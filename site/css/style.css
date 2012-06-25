@@ -41,6 +41,8 @@ body{
 .footer {
   float: left;
   clear: both;
+  padding: 3px;
+  margin: 3px;
   background-color: #bbb;
   width: 100%;
 }
@@ -79,14 +81,12 @@ body{
 .friends {
   float: left;
   clear: left;
-  width: 420px;
+  width: 300px;
   text-align:left;
 }
 
-.status-update {
+#profile {
   float: left;
-  clear: right;
-  width: 100%;
 }
 
 .status-stream {
@@ -101,8 +101,6 @@ body{
   border-left:0px;
   border-right:0px;
   */
-  margin: 5px;
-  margin-bottom: 15px;
 }
 
 
@@ -112,7 +110,6 @@ body{
 }
 
 .comments {
-  margin-left: 10px;
   background-color: #bbb;
   float: left;
 }
@@ -121,10 +118,8 @@ body{
   float: left;
 }
 
-
-
 .status-update {
-  width: 400px;
+  width: 410px;
   margin: 5px;
   margin-bottom: 15px;
   float: left;
@@ -132,35 +127,41 @@ body{
 }
 
 .comment {
-  float: left;
+  float: right;
   width: 375px;
 }
 
 .comment-update {
-  font: 100% "Courier", serif; 
   float: left;
   clear: both;
+  padding: 5px;
 }
 
 .status-update-username {
   float: left;
+  padding: 5px;
 }
 
 .comment-update-username {
   float: left;
+  padding: 5px;
 }
 
 .status-update-timestamp {
   font: 100% "Courier", sans-serif; 
   float: right;
+  padding: 5px;
 }
 
 .comment-update-timestamp {
   font: 100% "Courier", sans-serif; 
   float: right;
+  padding: 5px;
 }
 
-
+button {
+  float:right;
+}
 
 p, h1, h2, h3, h4{
   margin: 10px;
