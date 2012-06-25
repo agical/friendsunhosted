@@ -30,7 +30,6 @@
   float: left;
   clear: right;
 }
-
 .conversation {
   border-style:solid;
   border-top:2px double #ccc;
@@ -41,9 +40,29 @@
   margin-bottom: 15px;
 }
 
+
+.status-details {
+  float: left;
+
+}
+
 .status-update {
   margin: 5px;
   margin-bottom: 15px;
+  float: left;
+  clear:both;
+}
+
+.status-update-username {
+  font: 100% "Courier", sans-serif;
+  font-weight:bold;  
+  float: left;
+  clear: right;
+}
+
+.status-update-timestamp {
+  font: 100% "Courier", sans-serif; 
+  float: top right;
 }
 
 .comments {
@@ -53,23 +72,16 @@
 }
 
 .comment {
-}
-
-
-.status-details {
-  float: left;
-
-}
-
-.status-update-username {
-  font: 100% "Courier", sans-serif;
-  font-weight:bold;  
   float: left;
 }
 
-.status-update-timestamp {
+.comment-form {
+  float: left;
+}
+
+.comment-update {
   font: 100% "Courier", sans-serif; 
-  float: right;
+  float: left;
 }
 
 .comment-update-username {
@@ -80,7 +92,9 @@
 
 .comment-update-timestamp {
   font: 100% "Courier", sans-serif; 
-  float: right;
+  float: right top;
+  
+  
 }
 
 #status {

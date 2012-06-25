@@ -49,14 +49,16 @@
         </div>
         <div class="comments">
           <!-- ko foreach: comments -->              
-            <div class="comment">
-              <span class="comment-update-username" data-bind="text: username"></span>
-              <span class="comment-update" data-bind="text: status"></span>
-              <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
-            </div>
+          <div class="comment">
+            <span class="comment-update-username" data-bind="text: username"></span>
+            <span class="comment-update" data-bind="text: status"></span>
+            <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+          </div>
           <!-- /ko -->
-          <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
-          <button class="do-comment" data-bind="click: doComment">Comment</button>   
+          <div class="comment-form">          
+            <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
+            <button class="do-comment" data-bind="click: doComment">Comment</button>   
+          </div>
         </div> 
       </div>
     </div>
