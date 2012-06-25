@@ -31,11 +31,12 @@
   clear: right;
 }
 .conversation {
-  border-style:solid;
+  /*border-style:solid;
   border-top:2px double #ccc;
   border-bottom:0px;
   border-left:0px;
   border-right:0px;
+  */
   margin: 5px;
   margin-bottom: 15px;
 }
