@@ -18,7 +18,7 @@
 
 .status {
   float: left;
-  clear: right;
+  width: 400px;
 }
 
 .status-update {
@@ -74,6 +74,7 @@
 
 .comment {
   float: left;
+  width: 400px;
 }
 
 .comment-form {
@@ -83,6 +84,7 @@
 .comment-update {
   font: 100% "Courier", sans-serif; 
   float: left;
+  clear: both;
 }
 
 .comment-update-username {
@@ -94,12 +96,12 @@
 .comment-update-timestamp {
   font: 100% "Courier", sans-serif; 
   float: right top;
-  
-  
+  clear:right;
+  vertical-align:right;
 }
 
-#status {
-  width: 400px;
+.friends {
+  float: top;
 }
 
 /*demo page css*/

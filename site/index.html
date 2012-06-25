@@ -32,7 +32,7 @@
     <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >Welcome, <span data-bind="text: username()"></span>!</div>
   </div>
 
-  <div id="status" class="logged-in" data-bind="visible: loggedIn()" >
+  <div id="status" class="status logged-in" data-bind="visible: loggedIn()" >
     
     <div class="status-update">
       <label for="status-update">Status</label>
@@ -76,7 +76,8 @@
       <p class="friend" data-bind="text: username"></p>
     </div>
   </div>
-  <div class="Profile">
+  
+  <div class="profile">
     <div class="logged-in" data-bind="visible: loggedIn()">
       <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
       <button id="refresh" data-bind="click: refresh">Refresh</button>    
