@@ -12,7 +12,11 @@
   margin: 0px;
   padding: 0px;
   float: left;
+  text-align: right;
+}
 
+#byline-top {
+  font: 125% "Tahoma", monospace;
 }
 
 .storage-id {
@@ -27,13 +31,22 @@
 }
 
 body{ 
-  font: 100% "Trebuchet MS", sans-serif; 
+  font: 100% "Verdana", sans-serif; 
   padding: 0px; 
   /*
   text-align:center;
   */
 }
 
+.footer {
+  float: left;
+  clear: both;
+  background-color: #bbb;
+  width: 100%;
+}
+
+#license {
+}
 
 .menubar {
   height: 2px;
@@ -45,6 +58,11 @@ body{
   border-top:0px;
   float: left;
   clear: both;
+}
+
+#info {
+  float: left;
+  width: 600px;
 }
 
 .status {

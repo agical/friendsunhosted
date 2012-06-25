@@ -24,12 +24,11 @@
 	<div id="header" class="header">
 	  <div class="logo">
     	<img id="logo-top" src="img/logo.png"/>
-  	  <div id="byline-top">The #unhosted friends network</div>
+  	  <div id="byline-top">Own your network!</div>
     </div>
     <div class="login-area">
       <div class="not-logged-in" data-bind="visible: !loggedIn()">
-        <label for="username">Username:</label>
-        <input id="username" data-bind="value: username" />
+        <input placeholder="username@storageserver" id="username" data-bind="value: username" />
         <button id="do-login" data-bind="click: login">Login</button>    
       </div>
       <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >
@@ -94,49 +93,63 @@
   </div>
   
   <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >
-    <div>
-    <h3>What is FRIENDS#UNHOSTED?</h3>
-    
-    <p>
-    FRIENDS#UNHOSTED is an alternative social network for those of us who want to own our social network data. With F#U, your data is not stored at a central server, but at a place of your choosing using an <a href="http://unhosted.org/" target="top">#unhosted storage</a>. You can even host the data server on your home network, given that the server is reachable from the internet. You can start a server in the cloud, or you can choose one of the online storages. Here is a list of<a href="https://github.com/unhosted/website/wiki/remoteStorage-providers" target="top">options for an online storage</a>.</p>
-    
-    <p>
-    To add a friend to your network, you need to get your friends storage address, which looks like an email address: username@someunhostedserver.com. You add that address to your F#U friends, and then you can see the updates of your friend.
-    </p>
+
+    <div class="info-box">
+      <h3>What is FRIENDS#UNHOSTED?</h3>
+      
+      <p>
+      FRIENDS#UNHOSTED is an alternative social network for those of us who want to own our social network data. With F#U, your data is not stored at a central server, but at a place of your choosing using an <a href="http://unhosted.org/" target="top">#unhosted storage</a>. You can even host the data server on your home network, given that the server is reachable from the internet. You can start a server in the cloud, or you can choose one of the online storages. Here is a list of<a href="https://github.com/unhosted/website/wiki/remoteStorage-providers" target="top">options for an online storage</a>.</p>
+      
+      <p>
+      To add a friend to your network, you need to get your friends storage address, which looks like an email address: username@someunhostedserver.com. You add that address to your F#U friends, and then you can see the updates of your friend.
+      </p>
+    </div>
+  
+    <div class="info-box">
+      <h3>How to signup</h3
+      <p>
+      Signing up is a little bit different than with other social sites. 
+      Since you own your data, you need to decide where to put it, we don't do that for you.
+      The easiest is to get an account on one of the following storage providers:
+      <li><a target="top" href="https://5apps.com/users/sign_up">5apps</a></li>
+      <li><a target="top" href="https://owncube.com/">OwnCube</a></li>
+      You can read more about #unhosted storage providers here, you can even host your own:
+      <li><a target="top" href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds listing of storage providers</a></li>
+      </p>
     </div>
 
-    <div>
-    <h3>Why should I care that it is #unhosted?</h3>
-    <p>
-    The big social network sites, like Facebook, Twitter, Google and many more, gives you free storage for your stuff. But, there is no such thing as a "free lunch" (or storage). They monitor and explore your social network and your personal life to launch marketing campaigns and direct ads, and sometimes they even claim ownership of the stuff you add, like status updates, pictures and documents. If that is fine with you, then excellent, give your stuff to, and share your private life with, The Big Ones!
-    </p>
-    <p>
-    If, on the other hand, you have that nagging little doubt that there is something fishy going on, FRIENDS#UNHOSTED is for you!
-    </p>
+
+    <div class="info-box">
+      <h3>Give me the technical details!</h3>
+      <p>
+      Regarding how #unhosted works, please read the material on <a href="http://unhosted.org/">unhosted.org</a>. Simply put, it is a secure, standardized, API for storing key-value data pairs in different categories. 
+      </p>
+      
+      <p>
+      F#U uses (as of now in early beta) the <em>public</em> category storage of your unhosted account. This means that anyone can see your 
+      updates and your list of friends, in a twitterish style. The plan for the future is to share keys to lock the stuff you
+       only want your friends to see, so stay tuned for that.
+      </p>
     </div>
     
-    <div>
-    <h3>How do I get an account?</h3>
-    <p>
-    There are several places that provides #unhosted storage. Link, link, link. If you want to host your own server: Link, link. If you want to start a server in the cloud: Link.
-    </p>
+    <div class="more-info-box" >
+      <h3>Why should I care that it is #unhosted?</h3>
+      <p>
+      The big social network sites, like Facebook, Twitter, Google and many more, gives you free storage for your stuff. But, there is no such thing as a "free lunch" (or storage). They monitor and explore your social network and your personal life to launch marketing campaigns and direct ads, and sometimes they even claim ownership of the stuff you add, like status updates, pictures and documents. If that is fine with you, then excellent, give your stuff to, and share your private life with, The Big Ones!
+      </p>
+      <p>
+      If, on the other hand, you have that nagging little doubt that there is something fishy going on, FRIENDS#UNHOSTED is for you!
+      </p>
     </div>
-    
-    <div>
-    <h3>Give me the technical details!</h3>
-    <p>
-    Regarding how #unhosted works, please read the material on <a href="http://unhosted.org/">unhosted.org</a>. Simply put, it is a secure, standardized, API for storing key-value data pairs in different categories. 
-    </p>
-    
-    <p>
-    F#U uses (as of now in early beta) the <em>public</em> category storage of your unhosted account. This means that anyone can see your 
-    updates and your list of friends, in a twitterish style. The plan for the future is to share keys to lock the stuff you
-     only want your friends to see, so stay tuned for that.
-    </p>
-    </div>
-    <div><h3></h3><p></p></div>
-    
   </div>  
+
+  <div class="footer">
+    <div id="bitcoin">BitCoin</div>
+    <div id="flattr">Flattr</div>
+    <div id="license">
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+    </div>
+  </div>
 
 	</body>
 </html>
