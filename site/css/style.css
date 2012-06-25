@@ -48,6 +48,7 @@
 }
 
 .status-update {
+  width: 400px;
   margin: 5px;
   margin-bottom: 15px;
   float: left;
@@ -58,12 +59,11 @@
   font: 100% "Courier", sans-serif;
   font-weight:bold;  
   float: left;
-  clear: right;
 }
 
 .status-update-timestamp {
   font: 100% "Courier", sans-serif; 
-  float: top right;
+  float: right;
 }
 
 .comments {
@@ -95,9 +95,7 @@
 
 .comment-update-timestamp {
   font: 100% "Courier", sans-serif; 
-  float: right top;
-  clear:right;
-  vertical-align:right;
+  float: right;
 }
 
 .friends {
