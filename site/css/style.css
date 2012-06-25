@@ -16,19 +16,45 @@
   margin: 0px;  
 }
 
+body{ 
+  font: 100% "Trebuchet MS", sans-serif; 
+  padding: 0px; 
+  text-align:center;
+}
+
+
 .status {
   float: left;
-  width: 400px;
+  width: 420px;
+  text-align:left;
+  border-style:solid;
+  border-left:2px double #ccc;
+  border-right:2px double #ccc;
+  border-bottom:0px;
+  border-top:0px;
+}
+
+.friends {
+  float: left;
+  width: 420px;
+  text-align:left;
+  border-style:solid;
+  border-left:2px double #ccc;
+  border-right:2px double #ccc;
+  border-bottom:0px;
+  border-top:0px;
 }
 
 .status-update {
   float: left;
   clear: right;
+  width: 100%;
 }
 
 .status-stream {
   float: left;
   clear: right;
+  width: 100%;
 }
 .conversation {
   /*border-style:solid;
@@ -47,6 +73,18 @@
 
 }
 
+.comments {
+  margin-left: 10px;
+  background-color: #bbb;
+  float: left;
+}
+
+.comment-form {
+  float: left;
+}
+
+
+
 .status-update {
   width: 400px;
   margin: 5px;
@@ -55,8 +93,25 @@
   clear:both;
 }
 
+.comment {
+  float: left;
+  width: 375px;
+}
+
+.comment-update {
+  font: 100% "Courier", sans-serif; 
+  float: left;
+  clear: both;
+}
+
 .status-update-username {
   font: 100% "Courier", sans-serif;
+  font-weight:bold;  
+  float: left;
+}
+
+.comment-update-username {
+  font: 100% "Courier", sans-serif; 
   font-weight:bold;  
   float: left;
 }
@@ -66,48 +121,12 @@
   float: right;
 }
 
-.comments {
-  margin-left: 10px;
-  background-color: #bbb;
-  float: left;
-}
-
-.comment {
-  float: left;
-  width: 400px;
-}
-
-.comment-form {
-  float: left;
-}
-
-.comment-update {
-  font: 100% "Courier", sans-serif; 
-  float: left;
-  clear: both;
-}
-
-.comment-update-username {
-  font: 100% "Courier", sans-serif; 
-  font-weight:bold;  
-  float: left;
-}
-
 .comment-update-timestamp {
   font: 100% "Courier", sans-serif; 
   float: right;
 }
 
-.friends {
-  float: top;
-}
 
-/*demo page css*/
-body{ 
-  font: 100% "Trebuchet MS", sans-serif; 
-  margin: 0px;
-  padding: 0px;
-}
 
 p, h1, h2, h3, h4{
   margin: 10px;
