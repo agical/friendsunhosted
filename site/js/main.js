@@ -68,6 +68,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         localStorage.setItem('username', JSON.stringify(self.username()));
         localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
         authorize(['public']);
+        init();
       });
     };
   

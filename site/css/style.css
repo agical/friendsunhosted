@@ -1,26 +1,166 @@
 #header {
+}
+
+.login-area {
+  float: right;
+}
+
+.logo {
   left: 0;
   right: 0;
   top: 0;
   margin: 0px;
-  padding: 5px;
-  background: #999; /* for non-css3 browsers */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#222222', endColorstr='#dddddd'); /* for IE */
-  background: -webkit-gradient(linear, left top, left bottom, from(#222), to(#ddd)); /* for webkit browsers */
-  background: -moz-linear-gradient(top,  #222,  #ddd); /* for firefox 3.6+ */ 
+  padding: 0px;
+  float: left;
+  text-align: right;
 }
 
+#byline-top {
+  font: 125% "Tahoma", monospace;
+}
+
+.storage-id {
+  font: 100% "Tahoma", sans-serif;
+  font-weight:bold;   
+  color: #333;
+}
 
 #logo-top {
   padding-left: 10px;  
   margin: 0px;  
 }
 
-/*demo page css*/
 body{ 
-  font: 100% "Trebuchet MS", sans-serif; 
-  margin: 0px;
-  padding: 0px;
+  font: 100% "Verdana", sans-serif; 
+  padding: 0px; 
+  /*
+  text-align:center;
+  */
+}
+
+.footer {
+  float: left;
+  clear: both;
+  padding: 3px;
+  margin: 3px;
+  background-color: #bbb;
+  width: 100%;
+}
+
+#license {
+}
+
+.menubar {
+  height: 2px;
+  width: 100%;
+  border-style:solid;
+  border-bottom:2px double #ccc;
+  border-right:0px;
+  border-left:0px;
+  border-top:0px;
+  float: left;
+  clear: both;
+}
+
+#info {
+  float: left;
+  width: 600px;
+}
+
+.status {
+  float: left;
+  width: 420px;
+  text-align:left;
+  border-style:solid;
+  border-left:2px double #ccc;
+  border-right:2px double #ccc;
+  border-bottom:0px;
+  border-top:0px;
+}
+
+.friends {
+  float: left;
+  clear: left;
+  width: 300px;
+  text-align:left;
+}
+
+#profile {
+  float: left;
+}
+
+.status-stream {
+  float: left;
+  clear: right;
+  width: 100%;
+}
+.conversation {
+  /*border-style:solid;
+  border-top:2px double #ccc;
+  border-bottom:0px;
+  border-left:0px;
+  border-right:0px;
+  */
+}
+
+
+.status-details {
+  float: left;
+
+}
+
+.comments {
+  background-color: #bbb;
+  float: left;
+}
+
+.comment-form {
+  float: left;
+}
+
+.status-update {
+  width: 410px;
+  margin: 5px;
+  margin-bottom: 15px;
+  float: left;
+  clear:both;
+}
+
+.comment {
+  float: right;
+  width: 375px;
+}
+
+.comment-update {
+  float: left;
+  clear: both;
+  padding: 5px;
+}
+
+.status-update-username {
+  float: left;
+  padding: 5px;
+}
+
+.comment-update-username {
+  float: left;
+  padding: 5px;
+}
+
+.status-update-timestamp {
+  font: 100% "Courier", sans-serif; 
+  float: right;
+  padding: 5px;
+}
+
+.comment-update-timestamp {
+  font: 100% "Courier", sans-serif; 
+  float: right;
+  padding: 5px;
+}
+
+button {
+  float:right;
 }
 
 p, h1, h2, h3, h4{
