@@ -64,7 +64,23 @@ body{
 
 #info {
   float: left;
-  width: 600px;
+  width: 1200px;
+}
+
+.info-box, .more-info-box {
+  background-color: #fff  ;
+  padding: 10px;
+  margin: 10px;
+  width: 380px;
+  height: 100%;
+  float: left;
+  border-style:solid;
+  border-width:5px;
+  border-color:#f60;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */
 }
 
 .status {
