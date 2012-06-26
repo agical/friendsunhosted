@@ -34,6 +34,9 @@
       <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >
         Welcome, <span class="storage-id" data-bind="text: username()"></span>!
       </div>
+      <div class="logged-in" data-bind="visible: loggedIn()" >
+        <button id="do-logout" data-bind="click: logout">Logout</button>    
+      </div>
     </div>
     <div id="support">
         <div id="bitcoin">BitCoin</div>

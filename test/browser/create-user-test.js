@@ -38,6 +38,9 @@ function createTestBrowser(done) {
   client.cssCondition = function(cssSelector, condition) {
     return client.getText(cssSelector, function(val) {condition(val.value)});
   };
+  client.cssAssert = function(func, cssSelector, condition) {
+    return client[func](cssSelector, function(val) {console.log(val);condition(val);});
+  };
   return client;
 }
 
@@ -219,6 +222,19 @@ function createNewUser(username, password, cb) {
               .waitFor("#status-stream :first-child .status-update", 2000)
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
               .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
+              .end(done);
+        });
+    },
+
+    "-can logout user": function (done) {
+        this.timeout = 25000;
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .click("#do-logout")
+              .cssAssert("isVisible", "#username", assert)
+              .refresh()
+              .cssAssert("isVisible", "#username", assert)
               .end(done);
         });
     },

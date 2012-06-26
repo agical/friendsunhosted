@@ -71,6 +71,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         init();
       });
     };
+
+    self.logout = function() {
+      localStorage.clear();
+      window.location.href = "/";
+    };
   
     self.refresh = function() {
       if(localStorage.getItem('bearerToken') && self.allFriends().length>0) {
