@@ -76,14 +76,14 @@ body{
 .info-box {
   background-color: #f60;
   width: 410px;
-  height: 300px;
+  height: 400px;
   float: left;
 }
 
 .more-info-box {
   font: 75% "Tahoma", sans-serif;
   width: 257px;
-  height: 330px;
+  height: 350px;
   float: left;
 }
 
@@ -103,13 +103,13 @@ body{
 
 .status {
   float: left;
-  width: 380px;
+  width: 410px;
 }
 
 .friends {
   float: left;
   clear: left;
-  width: 380px;
+  width: 410px;
 }
 
 #profile {
