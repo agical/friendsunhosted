@@ -1,35 +1,234 @@
-require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStorage) {
+require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function($, _, ui, ko, remoteStorage, when) {
 
-  function LoginViewModel() {
+  function FriendsViewModel() {
     var self = this;
+    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
+    var FRIENDS_KEY = 'friendsunhosted_friends';
     
     self.loggedIn = ko.observable(false);
     
     self.username = ko.observable("");
-    self.password = ko.observable("");
-    self.statusUpdate = ko.observable("");
-    self.allStatuses = ko.observableArray([]);
+    self.statusUpdate = ko.observable("");    
     
-    self.clearAllUpdates = function() {
-      var token = localStorage.getItem('bearerToken');
-      if(token) {
+    self.allStatuses = ko.observableArray([]);
+    self.allRootStatuses = ko.computed(function() {
+      return _.filter(self.allStatuses(), function(item) {return !item.inReplyTo;});
+    });
+    self.allFriends = ko.observableArray([]);
+
+    function StatusUpdate(suData) {
+      var su = this;
+      su.status = suData.status;
+      su.timestamp = suData.timestamp;
+      su.username = suData.username;
+      su.inReplyTo = suData.inReplyTo;
+      su.comment = ko.observable("");
+          
+      su.id = ko.computed(function() {
+        return su.timestamp + ":" + su.username;
+      });
+      
+      su.comments = ko.computed(function() {
+        var res = _.filter(self.allStatuses(), function(item) {
+          return item.inReplyTo == su.id();
+        });
+        return res;
+      });
+      
+      su.doComment = function() {
+        self.addNewStatus({
+          'username': self.username(),
+          'timestamp': new Date().getTime(),
+          'status': su.comment(),
+          'inReplyTo': su.id(),
+        });
+      }
+    }
+
+    function init() {
+      var localUsername = localStorage.getItem('username');
+      if(localUsername) {
+        self.username(JSON.parse(localUsername));
+        self.loggedIn(true);
+        fetchUserData(FRIENDS_KEY).then(function(value) {
+          value = value || [];
+          self.allFriends(value);
+        }, onError)
+        fetchUserData(STATUS_KEY).then(function(value) {
+          value = value || [];
+          addStatusUpdates(value);
+        }, onError)
+      }
+    }
+
+    self.addFriendsUsername = ko.observable("");
+    
+    self.login = function() {
+      connect(self.username(), function(err, storageInfo) {
+        localStorage.setItem('username', JSON.stringify(self.username()));
+        localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
+        authorize(['public']);
+        init();
+      });
+    };
+
+    self.logout = function() {
+      localStorage.clear();
+      window.location.href = "/";
+    };
+  
+    self.refresh = function() {
+      if(localStorage.getItem('bearerToken') && self.allFriends().length>0) {
+        updateFriends(self.allFriends());
+      }
+    };
+
+    var onError = function(err) { console.log(err) };
+    
+    var updateFriends = function(newFriendsList) {
+      _.each(newFriendsList, function(friendData) {
+        connect(friendData.username, function(err1, storageInfo) {
+          var client = remoteStorage.createClient(storageInfo, 'public');
+          client.get(STATUS_KEY, function(err, dataStr) {
+            if(err) {
+              console.log("Error when reading status update for key:", key, " Error:", err);
+            } else {
+              addStatusUpdates(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
+            }
+          });
+        });
+      });
+    };
+    
+    self.allFriends.subscribe(updateFriends);
+        
+    self.addFriend = function() {
+      var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
+      
+      if(!self.addFriendsUsername() || !emailRegex.test(self.addFriendsUsername())) {
+        alert("Invalid username: " + self.addFriendsUsername());
+        return;
+      }
+      if(_.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
+        return;
+      } 
+      var friendData = {"username": self.addFriendsUsername(),
+                        "timestamp": new Date().getTime()};
+      fetchUserData(FRIENDS_KEY).then(function(value) {
+        value = value || [];
+        value.push(friendData);
+        putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+          self.allFriends.push(friendData);
+          self.addFriendsUsername("");
+        }, onError); 
+      }, onError)
+    };
+    
+    
+    function addStatusUpdates(statusUpdatesArray) {
+      function statusEquals(s1, s2) {
+          return s1.username == s2.username && 
+                 s1.timestamp == s2.timestamp;
+      }
+      var existingStatuses = self.allStatuses();
+      var newUpdates = _.filter(statusUpdatesArray, function(item) {
+        return !existingStatuses || _.all(existingStatuses, function(existing) {
+            return !statusEquals(existing, item);
+          });
+      });
+      var newUpdatesAsObjects = _.map(newUpdates, function(item) {
+        return new StatusUpdate(item);
+      });
+      var all = _.union(existingStatuses, newUpdatesAsObjects);
+      var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
+      self.allStatuses(allSorted);
+    }
+
+
+    function getUserStorageClient(category) {
+        var token = localStorage.getItem('bearerToken');
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-        var client = remoteStorage.createClient(storageInfo, 'public', token);
-        var key = 'friendsunhosted.com/statusupdate/testing';
-        client.put(key, JSON.stringify(null), function(err) {
-          if(err) {
-            console.log("Error when clearing updates:", err);
-          } else {
-            self.allStatuses([]);
+        var client = remoteStorage.createClient(storageInfo, category, token);
+        return client;      
+    }
+  
+    function fetchUserData(key, category) {
+      category = category || 'public';
+      var deferred = when.defer();
+      
+      var client = getUserStorageClient(category);
+      client.get(key, function(err, dataStr) {
+        if(err) {
+          deferred.reject(err);
+        } else {
+          try {
+            deferred.resolve(dataStr?JSON.parse(dataStr):null);
+          } catch(e) {
+            deferred.reject(e);
           }
-         });
-      }    
+        }
+      });
+      return deferred.promise;
+    };
+
+    function putUserData(key, value, category) {
+      category = category || 'public';
+      var deferred = when.defer();
+      
+      var client = getUserStorageClient(category);
+      client.put(key, JSON.stringify(value), function(err) {
+        if(err) {
+          deferred.reject(err);
+        } else {
+          deferred.resolve({"key": key, "value": value, "category": category});
+        }
+      });
+      return deferred.promise;
+    };
+    
+    self.updateStatus = function() {
+      if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {return;}
+      self.addNewStatus(
+          {"status": self.statusUpdate(),
+           "timestamp": new Date().getTime(),
+           "username": self.username()});
+    };
+    
+    self.addNewStatus = function(statusUpdate) {
+      fetchUserData(STATUS_KEY).then(function(statusUpdates) {
+        statusUpdates = statusUpdates || [];
+        statusUpdates.push(statusUpdate);
+        putUserData(STATUS_KEY, statusUpdates).then(function() {
+          addStatusUpdates(statusUpdates);
+          self.statusUpdate('');
+        });
+      });
+    };
+
+    self.clearAll = function() {
+      var client = getUserStorageClient('public');
+
+      client.delete(STATUS_KEY, function(err) {
+        if(err) {
+          console.log("Error when clearing updates:", err);
+        } else {
+          self.allStatuses([]);
+        }
+      });
+
+      client.delete(FRIENDS_KEY, function(err) {
+        if(err) {
+          console.log("Error when clearing updates:", err);
+        } else {
+          self.allFriends([]);
+        }
+      });
     }
     
     function connect(userAddress, callback) {
       remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
         if(error) {
-          alert('Could not load storage info');
+          alert('Could not load storage info:' + error);
           console.log(error);
         } else {
           console.log('Storage info received:');
@@ -40,12 +239,6 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
       });
     }
 
-    // Getting data from the "public" category doesn't require any credentials.
-    // For writing to a user's public data, or reading/writing any of the other
-    // categories, we need to do an OAuth request first to obtain a token.
-
-    // This method opens a popup that sends the user to the OAuth dialog of the
-    // remoteStorage provider.
     function authorize(categories) {
       var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
       var redirectUri = location.protocol + '//' + location.host + '/receive_token.html';
@@ -54,8 +247,6 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
       var popup = window.open(oauthPage);
     }
 
-    // To get the OAuth token we listen for the `message` event from the
-    // receive_token.html that sends it back to us.
     window.addEventListener('message', function(event) {
       if(event.origin == location.protocol +'//'+ location.host) {
         console.log('Received an OAuth token: ' + event.data);
@@ -64,44 +255,12 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
       }
     }, false);
 
-    // Operations
-    self.login = function() {
-      connect(self.username(), function(err, storageInfo) {
-        localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-        authorize(['public', 'friends']);
-      });
+    setInterval( self.refresh, 30000);
       
-    };
-    
-    self.updateStatus = function() {
-      var token = localStorage.getItem('bearerToken');
-      if(token) {
-        var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-        var client = remoteStorage.createClient(storageInfo, 'public', token);
-        var key = 'friendsunhosted.com/statusupdate/testing';
-        client.get(key, function(err, data) {
-          if(err) {
-            console.log("Error when reading status update:", err);
-            return;
-          };
-          var data = data!="null" ? JSON.parse(data) : [];
-          var update = {"status": self.statusUpdate()};
-          data.push(update);
-          client.put(key, JSON.stringify(data), function(err) {
-            if(err) {
-              console.log("Error when writing status update:", err);
-            } else {  
-              self.allStatuses(data);
-              self.statusUpdate("");
-            }
-          });
-        });
-      }
-    };
-    
+    init();
   };
 
-  ko.applyBindings(new LoginViewModel());
+  ko.applyBindings(new FriendsViewModel());
       
     	$(function(){
 
@@ -155,3 +314,4 @@ require(['jquery', 'ui', 'ko', 'remoteStorage'], function($, ui, ko, remoteStora
 
 			});
 });
+
