@@ -6,13 +6,9 @@
 }
 
 .logo {
-  left: 0;
-  right: 0;
-  top: 0;
   margin: 0px;
   padding: 0px;
-  float: left;
-  text-align: right;
+  text-align:center;
 }
 
 #byline-top {
@@ -25,26 +21,37 @@
   color: #333;
 }
 
-#logo-top {
-  padding-left: 10px;  
-  margin: 0px;  
+#refresh-link {
+  float: right;
+}
+#all {
+  margin: 0 auto;
+  width: 900px; /* Replace the xxxx with the the width of your site (eg 800px)*/
+  text-align:left;
 }
 
 body{ 
   font: 100% "Verdana", sans-serif; 
   padding: 0px; 
-  /*
   text-align:center;
-  */
 }
 
+textarea {
+	width: 420px;
+	height: 80px;
+	border: 2px solid #cccccc;
+	padding: 3px;
+	font-family: Tahoma, sans-serif;
+	  float: left;
+  clear: both;
+}
 .footer {
+  margin-bottom: 10px;
   float: left;
   clear: both;
-  padding: 3px;
-  margin: 3px;
   background-color: #bbb;
-  width: 100%;
+  width: 900px;
+  text-align: center;
 }
 
 #license {
@@ -53,82 +60,153 @@ body{
 .menubar {
   height: 2px;
   width: 100%;
-  border-style:solid;
-  border-bottom:2px double #ccc;
-  border-right:0px;
-  border-left:0px;
-  border-top:0px;
   float: left;
   clear: both;
 }
 
 #info {
   float: left;
-  width: 600px;
+  width: 1200px;
+}
+#core {
+  float: left;
+  width: 1200px;
+}
+
+.rounded-box {
+  padding: 10px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+   border-style:solid;
+  border-width:3px;
+  border-color:#666;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
+  border-bottom:0px;
+  border-right:0px
+}
+
+
+.info-box {
+  background-color: #f60;
+  width: 428px;
+  height: 400px;
+  float: left;
+}
+
+.more-info-box {
+  font: 75% "Tahoma", sans-serif;
+  width: 271px;
+  height: 300px;
+  float: left;
+}
+
+.clearright {
+  clear: right;
+}
+
+.clearleft {
+  clear: left;
+}
+
+.doublewidth {
+  width: 900px;  
+  height: 140px;
+  background-color: #ddd;
 }
 
 .status {
-  float: left;
-  width: 420px;
-  text-align:left;
-  border-style:solid;
-  border-left:2px double #ccc;
-  border-right:2px double #ccc;
-  border-bottom:0px;
-  border-top:0px;
-}
-
-.friends {
+  padding-left: 10px;
+  padding-top: 10px;
   float: left;
   clear: left;
-  width: 300px;
-  text-align:left;
+  width: 437px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+ }
+
+.friends {
+  padding-left: 10px;
+  padding-top: 10px;
+  float: left;
+  clear: right;
+  width: 437px;
+  margin-bottom: 20px;
+}
+#profile {
+  padding-left: 10px;
+  padding-top: 10px;
+  float: left;
+  clear: right;
+  width: 437px;
+  margin-bottom: 20px;
 }
 
-#profile {
-  float: left;
+.top-left-box {
+  border-style:solid;
+  border-width:3px;
+  border-color:#666;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */
+  border-bottom:0px;
+  border-right:0px;
 }
+
+.bottom-right-box {
+  border-style:solid;
+  border-width:3px;
+  border-color:#666;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */
+  border-top:0px;
+  border-left:0px;
+}
+
 
 .status-stream {
   float: left;
-  clear: right;
   width: 100%;
 }
 .conversation {
-  /*border-style:solid;
-  border-top:2px double #ccc;
-  border-bottom:0px;
-  border-left:0px;
-  border-right:0px;
-  */
+
 }
 
 
 .status-details {
-  float: left;
-
+  float: right;
+  background-color: #f60;
+  padding: 5px;
+  width: 410px;
 }
 
 .comments {
-  background-color: #bbb;
-  float: left;
+  background-color: #ddf;
+  float: right;
+  width: 90%;
+  margin-bottom: 10px;
 }
 
 .comment-form {
-  float: left;
+  float: right;
+  padding: 10px;
 }
 
 .status-update {
-  width: 410px;
-  margin: 5px;
-  margin-bottom: 15px;
+  width: 100%;
   float: left;
+  padding: 10px;
   clear:both;
 }
 
 .comment {
   float: right;
-  width: 375px;
+  width: 100%;
 }
 
 .comment-update {
@@ -164,7 +242,7 @@ button {
 }
 
 p, h1, h2, h3, h4{
-  margin: 10px;
+  margin: 0px;
   padding: 0px;
 }
 

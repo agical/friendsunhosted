@@ -103,8 +103,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     self.allFriends.subscribe(updateFriends);
         
     self.addFriend = function() {
-      if(self.addFriendsUsername() && 
-         _.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
+      var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
+      
+      if(!self.addFriendsUsername() || !emailRegex.test(self.addFriendsUsername())) {
+        alert("Invalid username: " + self.addFriendsUsername());
+        return;
+      }
+      if(_.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
         return;
       } 
       var friendData = {"username": self.addFriendsUsername(),
@@ -182,6 +187,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     };
     
     self.updateStatus = function() {
+      if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {return;}
       self.addNewStatus(
           {"status": self.statusUpdate(),
            "timestamp": new Date().getTime(),

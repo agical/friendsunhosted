@@ -21,165 +21,195 @@
 	</head>
 	<body>
 
-	<div id="header" class="header">
-	  <div class="logo">
-    	<img id="logo-top" src="img/logo.png"/>
-  	  <div id="byline-top">Own your network!</div>
-    </div>
-    <div class="login-area">
-      <div class="not-logged-in" data-bind="visible: !loggedIn()">
-        <input placeholder="username@storageserver.com" id="username" data-bind="value: username" />
-        <button id="do-login" data-bind="click: login">Login</button>    
-      </div>
-      <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >
-        Welcome, <span class="storage-id" data-bind="text: username()"></span>!
-      </div>
-      <div class="logged-in" data-bind="visible: loggedIn()" >
-        <button id="do-logout" data-bind="click: logout">Logout</button>    
-      </div>
-    </div>
-    <div id="support">
-        <div id="bitcoin">BitCoin</div>
-        <div id="flattr">Flattr</div>
-        <div id="paypal">PayPal</div>
-    </div>
-  </div>
 
-  <div class="menubar">
-  </div>
-
-  <div class="friends logged-in" data-bind="visible: loggedIn()">
-    <h3>Friends</h3>
-    <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
-        <label for="add-friends-username storage-id ">Add a friend</label>
-        <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
-        <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
-    </div>
-    
-    <div id="friends" class="logged-in" data-bind="foreach: allFriends">
-      <p class="friend storage-id" data-bind="text: username"></p>
-    </div>
-  </div>
-  
-
-  <div id="status" class="status logged-in" data-bind="visible: loggedIn()" >
-    <h3>Status</h3>
-    
-    <div class="status-update">
-      <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
-      <button id="do-update-status" data-bind="click: updateStatus">Update</button> 
-      <button id="refresh" data-bind="click: refresh">Refresh</button>    
-    </div>
-    
-    <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
-      <div class="conversation">
-        <div class="status-details">
-          <span class="status-update-username storage-id" data-bind="text: username"></span>
-          <span class="status-update-timestamp" data-bind="text: timestamp"></span>
-          <span class="status-update" data-bind="text: status"></span>
+  <div id="all">
+	  <div id="header" class="header">
+	    <div class="logo">
+      	<img id="logo-top" src="img/logo.png"/>
+    	  <div id="byline-top">Own your network!</div>
+      </div>
+      </div>
+      <div class="login-area">
+        <div class="not-logged-in" data-bind="visible: !loggedIn()">
+          <input placeholder="username@storageserver.com" id="username" data-bind="value: username" />
+          <button id="do-login" data-bind="click: login">Login</button>    
         </div>
-        <div class="comments">
-          <!-- ko foreach: comments -->              
-          <div class="comment">
-            <span class="comment-update-username storage-id" data-bind="text: username"></span>
-            <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
-            <span class="comment-update" data-bind="text: status"></span>
+        <div id="welcome" class="logged-in" data-bind="visible: loggedIn()" >
+          Welcome, <span class="storage-id" data-bind="text: username()"></span>!
+        </div>
+        <div class="logged-in" data-bind="visible: loggedIn()" >
+          <button id="do-logout" data-bind="click: logout">Logout</button>    
+        </div>
+      </div>
+
+      <div id="support-area">
+          <div class="support" id="bitcoin">BitCoin</div>
+          <div class="support" id="flattr">Flattr</div>
+          <div class="support" id="paypal">PayPal</div>
+      </div>
+
+      <div class="menubar">
+    </div>
+
+    <div id="core">
+      <div id="status" class="top-left-box status logged-in" data-bind="visible: loggedIn()" >
+        <a href="" id="refresh-link" data-bind="click: refresh">Refresh statuses</a>    
+
+        <div class="status-update">
+          <textarea id="status-update" placeholder="What'cha doin?" data-bind="value: statusUpdate" ></textarea>
+          <button id="do-update-status" data-bind="click: updateStatus">Update status</button> 
+        </div>
+        
+        <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
+          <div class="conversation">
+            <div class="top-left-box status-details">
+              <span class="status-update-username storage-id" data-bind="text: username"></span>
+              <span class="status-update-timestamp" data-bind="text: timestamp"></span>
+              <span class="status-update" data-bind="text: status"></span>
+            </div>
+            <div class="bottom-right-box comments">
+              <!-- ko foreach: comments -->              
+              <div class="comment">
+                <span class="comment-update-username storage-id" data-bind="text: username"></span>
+                <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+                <span class="comment-update" data-bind="text: status"></span>
+              </div>
+              <!-- /ko -->
+              <div class="comment-form">          
+                <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
+                <button class="do-comment" data-bind="click: doComment">Comment</button>   
+              </div>
+            </div> 
           </div>
-          <!-- /ko -->
-          <div class="comment-form">          
-            <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
-            <button class="do-comment" data-bind="click: doComment">Comment</button>   
-          </div>
-        </div> 
+        </div>
+        
+      </div>
+
+      <div class="top-left-box friends logged-in" data-bind="visible: loggedIn()">
+        <h3>Friends</h3>
+        <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
+            <label for="add-friends-username storage-id ">Add a friend</label>
+            <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
+            <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
+        </div>
+        
+        <div id="friends" class="logged-in" data-bind="foreach: allFriends">
+          <p class="friend storage-id" data-bind="text: username"></p>
+        </div>
+      </div>
+      
+
+      <div id="profile" class="top-left-box logged-in" data-bind="visible: loggedIn()">
+        <h3>Manage your data</h3>
+        <div>
+          <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
+        </div>
+      </div>
+    </div>    
+    <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >
+
+      <div class="rounded-box info-box clearleft">
+        <h3>What is FRIENDS#UNHOSTED?</h3>
+        
+        <p>
+        FRIENDS#UNHOSTED is an alternative social network for those of us who want to own our social network data. With F#U, your data is not stored at a central server, but at a place of your choosing using an <a href="http://unhosted.org/" target="top">#unhosted remoteStorage</a>. You can even host the data server on your home network, given that the server is reachable from the internet.</p>
+        <p>
+          Signing up is a little bit different than with other social sites. 
+          Since you own your data, you need to decide where to put it, we don't do that for you. We don't own you, you do!
+        </p>
+      </div>
+
+      <div class="rounded-box info-box clearright">
+        <h3>How do I signup?</h3>
+        <p>
+        The easiest is to get an account on one of the following storage providers:
+        </p>
+        <p>
+        <ul>
+        <li><a target="top" href="https://5apps.com/users/sign_up">5apps</a></li>
+        <li><a target="top" href="https://owncube.com/">OwnCube</a></li>
+        </ul>
+        </p>
+        <p>
+        You will get a username that looks like an email address:
+        </p>
+        <p>
+          <span class="storage-id">username@storageserver.com</span>
+        </p>
+        <p>
+        Enter that username in the loginbox and press Login. You will be redirected to the storage
+        provider site to allow FRIENDS#UNHOSTED to access you storage.
+        
+        You can read more about #unhosted storage providers here, you can even host your own:
+        </p>
+        <p>
+        <ul>
+        <li>
+          <a target="top" href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds listing of storage providers</a>
+        </li>
+        </ul>
+        </p>
+      </div>
+            
+      <div class="rounded-box more-info-box clearleft">
+        <h3>How do I add friends?</h3>
+        <p>
+          To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address: 
+        </p>
+        <p>
+          <span class="storage-id">username@storageserver.com</span>
+        </p>
+        <p>
+          You add that address to your F#U friends, and then you can see the updates of your friend.
+        </p>
+        <h5>How do I find my friends?</h5>
+        <p>
+        At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!
+        </p>     
+      </div>
+
+      <div class="rounded-box  more-info-box">
+        <h3>How do I support FRIENDS#UNHOSTED?</h3>
+        <p>
+          This app has so far been developed on spare time. Hopefully, with a little help from our friends (that means You), we can start developing during normal business hours, part or full time. Please, Flattr the application with the button in the header. Send some BitCoins our way. Or donate using PayPal, if that is your only option.
+        </p>
+        <p>
+        You can also support the application by supplying patches on GitHub. As you can see, we need better design, better interaction, more features like image handling, and more. You could also just report bugs to us in a nice and consise way using the GitHub issue system.
+        </p>
+        
+      </div>
+
+
+      <div class="rounded-box  more-info-box ">
+        <h3>Give me the technical details!</h3>
+        <p>
+        Regarding how #unhosted works, please read the material on <a href="http://unhosted.org/">unhosted.org</a>. Simply put, it is a secure, standardized, API for storing key-value data pairs in different categories. 
+        </p>
+        
+        <p>
+        F#U uses (as of now in early beta) the <em>public</em> category storage of your unhosted account. This means that anyone can see your 
+        updates and your list of friends, in a twitterish style. The plan for the future is to share keys to lock the stuff you
+         only want your friends to see, so stay tuned for that.
+        </p>
+      </div>
+      
+      <div class="rounded-box  more-info-box doublewidth" >
+        <h3>Why should I care that it is #unhosted?</h3>
+        <p>
+        The big social network sites, like Facebook, Twitter, Google and many more, gives you free storage for your stuff. But, there is no such thing as a "free lunch" (or storage). They monitor and explore your social network and your personal life to launch marketing campaigns and direct ads, and sometimes they even claim ownership of the stuff you add, like status updates, pictures and documents. If that is fine with you, then excellent, give your stuff to, and share your private life with, The Big Ones!
+        </p>
+        <p>
+        If, on the other hand, you have that nagging little doubt that there is something fishy going on, FRIENDS#UNHOSTED is for you!
+        </p>
+      </div>
+    </div>  
+
+    <div class="rounded-box footer ">
+      <div id="license">
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
       </div>
     </div>
-    
   </div>
-
-  <div id="profile" class="logged-in" data-bind="visible: loggedIn()">
-    <h3>Manage your data</h3>
-    <div>
-      <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
-    </div>
-  </div>
-  
-  <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >
-
-    <div class="info-box">
-      <h3>What is FRIENDS#UNHOSTED?</h3>
-      
-      <p>
-      FRIENDS#UNHOSTED is an alternative social network for those of us who want to own our social network data. With F#U, your data is not stored at a central server, but at a place of your choosing using an <a href="http://unhosted.org/" target="top">#unhosted remoteStorage</a>. You can even host the data server on your home network, given that the server is reachable from the internet.</p>
-    </div>
-
-    <div class="info-box">
-      <h3>How do I signup?</h3>
-      <p>
-      Signing up is a little bit different than with other social sites. 
-      Since you own your data, you need to decide where to put it, we don't do that for you.
-      The easiest is to get an account on one of the following storage providers:
-      <li><a target="top" href="https://5apps.com/users/sign_up">5apps</a></li>
-      <li><a target="top" href="https://owncube.com/">OwnCube</a></li>
-      You can read more about #unhosted storage providers here, you can even host your own:
-      <li>
-        <a target="top" href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds listing of storage providers</a>
-      </li>
-      </p>
-    </div>
-          
-    <div class="info-box">
-      <h3>How do I add friends?</h3>
-      <p>
-      To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address: <span class="storage-id">username@storageserver.com</span>. You add that address to your F#U friends, and then you can see the updates of your friend.
-      </p>
-      <h5>How do I find my friends?</h5>
-      <p>
-      At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!
-      </p>     
-    </div>
-
-    <div class="info-box">
-      <h3>How do I support friends#unhosted?</h3>
-      <p>
-        This app has so far been developed on spare time. Hopefully, with a little help from our friends (that means You), we can start developing during normal business hours, part or full time. Please, Flattr the application with the button in the header. Send some BitCoins our way. Or donate using PayPal, if that is your only option.
-      </p>
-      <p>
-      You can also support the application by supplying patches on GitHub. As you can see, we need better design, better interaction, more features like image handling, and more. You could also just report bugs to us in a nice and consise way using the GitHub issue system.
-      </p>
-      
-    </div>
-
-
-    <div class="info-box">
-      <h3>Give me the technical details!</h3>
-      <p>
-      Regarding how #unhosted works, please read the material on <a href="http://unhosted.org/">unhosted.org</a>. Simply put, it is a secure, standardized, API for storing key-value data pairs in different categories. 
-      </p>
-      
-      <p>
-      F#U uses (as of now in early beta) the <em>public</em> category storage of your unhosted account. This means that anyone can see your 
-      updates and your list of friends, in a twitterish style. The plan for the future is to share keys to lock the stuff you
-       only want your friends to see, so stay tuned for that.
-      </p>
-    </div>
-    
-    <div class="more-info-box" >
-      <h3>Why should I care that it is #unhosted?</h3>
-      <p>
-      The big social network sites, like Facebook, Twitter, Google and many more, gives you free storage for your stuff. But, there is no such thing as a "free lunch" (or storage). They monitor and explore your social network and your personal life to launch marketing campaigns and direct ads, and sometimes they even claim ownership of the stuff you add, like status updates, pictures and documents. If that is fine with you, then excellent, give your stuff to, and share your private life with, The Big Ones!
-      </p>
-      <p>
-      If, on the other hand, you have that nagging little doubt that there is something fishy going on, FRIENDS#UNHOSTED is for you!
-      </p>
-    </div>
-  </div>  
-
-  <div class="footer">
-    <div id="license">
-      <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
-    </div>
-  </div>
-
 	</body>
 </html>
 
