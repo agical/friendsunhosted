@@ -57,6 +57,10 @@ body{
   float: left;
   width: 1200px;
 }
+#core {
+  float: left;
+  width: 1200px;
+}
 
 .rounded-box {
   padding: 10px;
@@ -107,24 +111,25 @@ body{
   padding-top: 10px;
   float: left;
   clear: left;
-  width: 428px;
+  width: 437px;
   margin-bottom: 20px;
+  margin-right: 20px;
  }
 
 .friends {
   padding-left: 10px;
   padding-top: 10px;
-  float: right;
+  float: left;
   clear: right;
-  width: 428px;
+  width: 437px;
   margin-bottom: 20px;
 }
 #profile {
   padding-left: 10px;
   padding-top: 10px;
-  float: right;
+  float: left;
   clear: right;
-  width: 428px;
+  width: 437px;
   margin-bottom: 20px;
 }
 

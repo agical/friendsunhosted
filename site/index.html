@@ -51,62 +51,62 @@
       <div class="menubar">
     </div>
 
-
-    <div id="status" class="top-left-box status logged-in" data-bind="visible: loggedIn()" >
-      <h3>Status</h3>
-      
-      <div class="status-update">
-        <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
-        <button id="do-update-status" data-bind="click: updateStatus">Update</button> 
-        <button id="refresh" data-bind="click: refresh">Refresh</button>    
-      </div>
-      
-      <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
-        <div class="conversation">
-          <div class="top-left-box status-details">
-            <span class="status-update-username storage-id" data-bind="text: username"></span>
-            <span class="status-update-timestamp" data-bind="text: timestamp"></span>
-            <span class="status-update" data-bind="text: status"></span>
+    <div id="core">
+      <div id="status" class="top-left-box status logged-in" data-bind="visible: loggedIn()" >
+        <h3>Status</h3>
+        
+        <div class="status-update">
+          <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
+          <button id="do-update-status" data-bind="click: updateStatus">Update</button> 
+          <button id="refresh" data-bind="click: refresh">Refresh</button>    
+        </div>
+        
+        <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
+          <div class="conversation">
+            <div class="top-left-box status-details">
+              <span class="status-update-username storage-id" data-bind="text: username"></span>
+              <span class="status-update-timestamp" data-bind="text: timestamp"></span>
+              <span class="status-update" data-bind="text: status"></span>
+            </div>
+            <div class="bottom-right-box comments">
+              <!-- ko foreach: comments -->              
+              <div class="comment">
+                <span class="comment-update-username storage-id" data-bind="text: username"></span>
+                <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+                <span class="comment-update" data-bind="text: status"></span>
+              </div>
+              <!-- /ko -->
+              <div class="comment-form">          
+                <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
+                <button class="do-comment" data-bind="click: doComment">Comment</button>   
+              </div>
+            </div> 
           </div>
-          <div class="bottom-right-box comments">
-            <!-- ko foreach: comments -->              
-            <div class="comment">
-              <span class="comment-update-username storage-id" data-bind="text: username"></span>
-              <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
-              <span class="comment-update" data-bind="text: status"></span>
-            </div>
-            <!-- /ko -->
-            <div class="comment-form">          
-              <textarea placeholder="Your reply" class="comment" data-bind="value: comment, attr: {'id':id}" ></textarea>
-              <button class="do-comment" data-bind="click: doComment">Comment</button>   
-            </div>
-          </div> 
+        </div>
+        
+      </div>
+
+      <div class="top-left-box friends logged-in" data-bind="visible: loggedIn()">
+        <h3>Friends</h3>
+        <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
+            <label for="add-friends-username storage-id ">Add a friend</label>
+            <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
+            <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
+        </div>
+        
+        <div id="friends" class="logged-in" data-bind="foreach: allFriends">
+          <p class="friend storage-id" data-bind="text: username"></p>
         </div>
       </div>
       
-    </div>
 
-    <div class="top-left-box friends logged-in" data-bind="visible: loggedIn()">
-      <h3>Friends</h3>
-      <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
-          <label for="add-friends-username storage-id ">Add a friend</label>
-          <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
-          <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
+      <div id="profile" class="top-left-box logged-in" data-bind="visible: loggedIn()">
+        <h3>Manage your data</h3>
+        <div>
+          <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
+        </div>
       </div>
-      
-      <div id="friends" class="logged-in" data-bind="foreach: allFriends">
-        <p class="friend storage-id" data-bind="text: username"></p>
-      </div>
-    </div>
-    
-
-    <div id="profile" class="top-left-box logged-in" data-bind="visible: loggedIn()">
-      <h3>Manage your data</h3>
-      <div>
-        <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
-      </div>
-    </div>
-    
+    </div>    
     <div id="info" class="not-logged-in" data-bind="visible: !loggedIn()" >
 
       <div class="rounded-box info-box clearleft">
