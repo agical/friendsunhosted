@@ -35,12 +35,11 @@ body{
 
 
 .footer {
+  margin-bottom: 10px;
   float: left;
   clear: both;
-  padding: 3px;
-  margin: 3px;
   background-color: #bbb;
-  width: 870px;
+  width: 900px;
   text-align: center;
 }
 
@@ -61,29 +60,31 @@ body{
 
 .rounded-box {
   padding: 10px;
-  margin: 10px;
-  border-style:solid;
-  border-width:5px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+   border-style:solid;
+  border-width:3px;
   border-color:#666;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px; /* future proofing */
-  -khtml-border-radius: 10px; /* for old Konqueror browsers */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
   border-bottom:0px;
-
+  border-right:0px
 }
+
 
 .info-box {
   background-color: #f60;
-  width: 410px;
+  width: 428px;
   height: 400px;
   float: left;
 }
 
 .more-info-box {
   font: 75% "Tahoma", sans-serif;
-  width: 257px;
-  height: 350px;
+  width: 271px;
+  height: 300px;
   float: left;
 }
 
@@ -96,29 +97,64 @@ body{
 }
 
 .doublewidth {
-  width: 870px;  
-  height: 180px;
+  width: 900px;  
+  height: 140px;
   background-color: #ddd;
 }
 
 .status {
-  float: left;
-  width: 410px;
-}
-
-.friends {
+  padding-left: 10px;
+  padding-top: 10px;
   float: left;
   clear: left;
-  width: 410px;
+  width: 428px;
+  margin-bottom: 20px;
+ }
+
+.friends {
+  padding-left: 10px;
+  padding-top: 10px;
+  float: right;
+  clear: right;
+  width: 428px;
+  margin-bottom: 20px;
+}
+#profile {
+  padding-left: 10px;
+  padding-top: 10px;
+  float: right;
+  clear: right;
+  width: 428px;
+  margin-bottom: 20px;
 }
 
-#profile {
-  float: left;
+.top-left-box {
+  border-style:solid;
+  border-width:3px;
+  border-color:#666;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */
+  border-bottom:0px;
+  border-right:0px;
 }
+
+.bottom-right-box {
+  border-style:solid;
+  border-width:3px;
+  border-color:#666;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */
+  border-top:0px;
+  border-left:0px;
+}
+
 
 .status-stream {
   float: left;
-  clear: right;
   width: 100%;
 }
 .conversation {
@@ -127,17 +163,21 @@ body{
 
 
 .status-details {
-  float: left;
-
+  float: right;
+  background-color: #f60;
+  padding: 5px;
+  width: 410px;
 }
 
 .comments {
-  background-color: #bbb;
-  float: left;
+  background-color: #ddf;
+  float: right;
+  width: 90%;
+  margin-bottom: 10px;
 }
 
 .comment-form {
-  float: left;
+  float: right;
 }
 
 .status-update {
@@ -184,7 +224,7 @@ button {
 }
 
 p, h1, h2, h3, h4{
-  margin: 10px;
+  margin: 0px;
   padding: 0px;
 }
 
