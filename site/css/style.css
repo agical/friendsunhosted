@@ -33,7 +33,15 @@ body{
   text-align:center;
 }
 
-
+textarea {
+	width: 420px;
+	height: 80px;
+	border: 2px solid #cccccc;
+	padding: 3px;
+	font-family: Tahoma, sans-serif;
+	  float: left;
+  clear: both;
+}
 .footer {
   margin-bottom: 10px;
   float: left;
