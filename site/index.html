@@ -53,12 +53,11 @@
 
     <div id="core">
       <div id="status" class="top-left-box status logged-in" data-bind="visible: loggedIn()" >
-        <h3>Status</h3>
-        
+        <a href="" id="refresh-link" data-bind="click: refresh">Refresh statuses</a>    
+
         <div class="status-update">
-          <textarea id="status-update" placeholder="Whazzup?" data-bind="value: statusUpdate" ></textarea>
-          <button id="do-update-status" data-bind="click: updateStatus">Update</button> 
-          <button id="refresh" data-bind="click: refresh">Refresh</button>    
+          <textarea id="status-update" placeholder="What'cha doin?" data-bind="value: statusUpdate" ></textarea>
+          <button id="do-update-status" data-bind="click: updateStatus">Update status</button> 
         </div>
         
         <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">

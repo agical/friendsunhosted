@@ -21,6 +21,9 @@
   color: #333;
 }
 
+#refresh-link {
+  float: right;
+}
 #all {
   margin: 0 auto;
   width: 900px; /* Replace the xxxx with the the width of your site (eg 800px)*/
@@ -191,11 +194,13 @@ textarea {
 
 .comment-form {
   float: right;
+  padding: 10px;
 }
 
 .status-update {
   width: 100%;
   float: left;
+  padding: 10px;
   clear:both;
 }
 
