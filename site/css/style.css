@@ -6,13 +6,9 @@
 }
 
 .logo {
-  left: 0;
-  right: 0;
-  top: 0;
   margin: 0px;
   padding: 0px;
-  float: left;
-  text-align: right;
+  text-align:center;
 }
 
 #byline-top {
@@ -25,18 +21,18 @@
   color: #333;
 }
 
-#logo-top {
-  padding-left: 100px;  
-  margin: 0px;  
+#all {
+  margin: 0 auto;
+  width: 900px; /* Replace the xxxx with the the width of your site (eg 800px)*/
+  text-align:left;
 }
 
 body{ 
   font: 100% "Verdana", sans-serif; 
   padding: 0px; 
-  /*
   text-align:center;
-  */
 }
+
 
 .footer {
   float: left;
@@ -45,6 +41,7 @@ body{
   margin: 3px;
   background-color: #bbb;
   width: 870px;
+  text-align: center;
 }
 
 #license {
@@ -101,28 +98,18 @@ body{
 .doublewidth {
   width: 870px;  
   height: 180px;
+  background-color: #ddd;
 }
 
 .status {
   float: left;
-  padding: 10px;
-  margin: 10px;
   width: 380px;
-  text-align:left;
-  border-style:solid;
-  border-left:2px double #ccc;
-  border-right:2px double #ccc;
-  border-bottom:0px;
-  border-top:0px;
 }
 
 .friends {
   float: left;
   clear: left;
-  padding: 10px;
-  margin: 10px;
   width: 380px;
-  text-align:left;
 }
 
 #profile {
