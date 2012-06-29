@@ -64,14 +64,14 @@
           <div class="conversation">
             <div class="top-left-box status-details">
               <span class="status-update-username storage-id" data-bind="text: username"></span>
-              <span class="status-update-timestamp" data-bind="text: timestamp"></span>
+              <span class="status-update-timestamp" data-bind="text: relativeTimestamp"></span>
               <span class="status-update" data-bind="text: status"></span>
             </div>
             <div class="bottom-right-box comments">
               <!-- ko foreach: comments -->              
               <div class="comment">
                 <span class="comment-update-username storage-id" data-bind="text: username"></span>
-                <span class="comment-update-timestamp" data-bind="text: timestamp"></span>
+                <span class="comment-update-timestamp" data-bind="text: relativeTimestamp"></span>
                 <span class="comment-update" data-bind="text: status"></span>
               </div>
               <!-- /ko -->

@@ -20,6 +20,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var su = this;
       su.status = suData.status;
       su.timestamp = suData.timestamp;
+      su.relativeTimestamp = ko.computed(function() {
+        var time = new Date(su.timestamp);
+        return time.getFullYear()+'-'+time.getMonth()+'-'+time.getDate()+' '+time.getHours()+':'+time.getMinutes();
+      });
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
       su.comment = ko.observable("");
@@ -84,6 +88,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     };
 
     var onError = function(err) { console.log(err) };
+    
+    function presentTimestamp(timestamp) {
+      return new Date(timestamp);
+    }
     
     var updateFriends = function(newFriendsList) {
       _.each(newFriendsList, function(friendData) {
