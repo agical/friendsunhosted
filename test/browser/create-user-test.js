@@ -166,13 +166,16 @@ function createNewUser(username, password, cb) {
                 console.log("Added:", userToBeAdded);
                 browserAndUser
                   .browser
+                    //add friend
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
                     .cssEq("#friends :first-child", userToBeAdded.username)
+                    //add same friend is ignored
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
                     .cssEq("#friends :first-child", userToBeAdded.username)
                     .cssEq("#friends :nth-child(2)", undefined)
+                    //has mailto: button
                     .end(done);
               });
             });

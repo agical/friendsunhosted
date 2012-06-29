@@ -93,7 +93,10 @@
         </div>
         
         <div id="friends" class="logged-in" data-bind="foreach: allFriends">
-          <p class="friend storage-id" data-bind="text: username"></p>
+          <div class="friend-details">
+            <span class="friend storage-id" data-bind="text: username"></span>
+            <span class="friend" data-bind="click: username"></span>
+          <div>
         </div>
       </div>
       
