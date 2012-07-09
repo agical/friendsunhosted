@@ -226,13 +226,13 @@ textarea {
 }
 
 .status-update-timestamp {
-  font: 100% "Courier", sans-serif; 
+  font: 60% "Arial", sans-serif; 
   float: right;
   padding: 5px;
 }
 
 .comment-update-timestamp {
-  font: 100% "Courier", sans-serif; 
+  font: 60% "Arial", sans-serif; 
   float: right;
   padding: 5px;
 }
