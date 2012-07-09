@@ -33,10 +33,10 @@ function createTestBrowser(done) {
   buster.testRunner.on('uncaughtException', endAndDone );
   
   client.cssEq = function(cssSelector, expected) {
-    return client.getText(cssSelector, function(val) {assert.equals(expected, val.value)});
+    return client.getText(cssSelector, function(val) {assert.equals(val.value, expected);});
   };
   client.cssCondition = function(cssSelector, condition) {
-    return client.getText(cssSelector, function(val) {condition(val.value)});
+    return client.getText(cssSelector, function(val) {condition(val.value);});
   };
   client.cssAssert = function(func, cssSelector, condition) {
     return client[func](cssSelector, function(val) {console.log(val);condition(val);});
@@ -72,7 +72,8 @@ function loginCreatedUser(done) {
                 whenBrowser.resolve(
                   {browser: this.window(originalWindow),
                    loggedInUser: user});
-            })});
+            });
+          });
     }, assert.fail);
   return whenBrowser.promise;
 }
@@ -174,7 +175,7 @@ function createNewUser(username, password, cb) {
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
                     .cssEq("#friends :first-child", userToBeAdded.username)
-                    .cssEq("#friends :nth-child(2)", undefined)
+                    .cssEq("#error-message", "Cannot add the same user twice")
                     //has mailto: button
                     .end(done);
               });
@@ -183,7 +184,7 @@ function createNewUser(username, password, cb) {
 
     "-can let user see friends messages": function (done) {
         this.timeout = 25000;
-        var userToBeAdded;
+        var userToBeAdded = null;
         loginCreatedUser(done)
           .then(function(browserAndUser) {
             userToBeAdded = browserAndUser.loggedInUser;

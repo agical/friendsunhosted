@@ -118,6 +118,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         return;
       }
       if(_.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
+    	$('#error-message').text('Cannot add the same user twice');
+    	$('#error-panel').slideDown();
+    	setTimeout(function() {
+    		$("#error-panel").slideUp();
+    	}, 4000);
         return;
       } 
       var friendData = {"username": self.addFriendsUsername(),

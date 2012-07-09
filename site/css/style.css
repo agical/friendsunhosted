@@ -57,6 +57,10 @@ textarea {
 #license {
 }
 
+#error-panel {
+	display: none;
+}
+
 .menubar {
   height: 2px;
   width: 100%;
