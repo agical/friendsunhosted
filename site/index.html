@@ -47,9 +47,17 @@
           <div class="support" id="flattr">Flattr</div>
           <div class="support" id="paypal">PayPal</div>
       </div>
+      <div class="ui-widget" id="error-panel">
+          <div class="ui-state-error ui-corner-all"> 
+              <p>
+                  <span class="ui-icon ui-icon-alert"></span>
+                  <strong>Alert:</strong> <span id="error-message"></span>
+              </p>
+          </div>
+      </div>
 
       <div class="menubar">
-    </div>
+      </div>
 
     <div id="core">
       <div id="status" class="top-left-box status logged-in" data-bind="visible: loggedIn()" >
@@ -86,21 +94,29 @@
       </div>
 
       <div class="top-left-box friends logged-in" data-bind="visible: loggedIn()">
-        <h3>Friends</h3>
         <div id="add-a-friend" class="logged-in" data-bind="visible: loggedIn()">
             <label for="add-friends-username storage-id ">Add a friend</label>
             <input id="add-friends-username" placeholder="friendsusername@storagelocation.com" data-bind="value: addFriendsUsername" />
             <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
         </div>
         
-        <div id="friends" class="logged-in" data-bind="foreach: allFriends">
-          <p class="friend storage-id" data-bind="text: username"></p>
+        <div id="friends" class="logged-in">
+          <!-- ko foreach: allFriends -->
+          <div class="friend-details">
+            <span class="friend storage-id" data-bind="text: username"></span>
+            <a href="#" class="remove-friend" data-bind="click: $parent.removeFriend">Remove</a>
+          </div>
+          <!-- /ko -->
+          <!-- ko if: allFriends().length==0 -->
+          <div class="friend-details">
+            <p><strong>No friends here. Add a friend in the box above!</strong></p>
+          </div>        
+          <!-- /ko -->
         </div>
       </div>
       
 
       <div id="profile" class="top-left-box logged-in" data-bind="visible: loggedIn()">
-        <h3>Manage your data</h3>
         <div>
           <button id="do-clear-all-updates" data-bind="click: clearAll">Clear all friends and updates!!</button>    
         </div>
@@ -124,12 +140,10 @@
         <p>
         The easiest is to get an account on one of the following storage providers:
         </p>
-        <p>
         <ul>
         <li><a target="top" href="https://5apps.com/users/sign_up">5apps</a></li>
         <li><a target="top" href="https://owncube.com/">OwnCube</a></li>
         </ul>
-        </p>
         <p>
         You will get a username that looks like an email address:
         </p>
@@ -142,13 +156,11 @@
         
         You can read more about #unhosted storage providers here, you can even host your own:
         </p>
-        <p>
         <ul>
         <li>
           <a target="top" href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds listing of storage providers</a>
         </li>
         </ul>
-        </p>
       </div>
             
       <div class="rounded-box more-info-box clearleft">
