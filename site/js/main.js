@@ -137,8 +137,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
-    self.removeFriend = function() {
-        self.allFriends.remove(this);
+    self.removeFriend = function(friendToRemove) {
+    	fetchUserData(FRIENDS_KEY).then(function(value) {
+	        value = value || [];
+	        if(value.pop(friendToRemove)) {
+	        	putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+	              self.allFriends.remove(friendToRemove);
+		        }, onError); 
+	        }
+	      }, onError);
     }
     
     function addStatusUpdates(statusUpdatesArray) {

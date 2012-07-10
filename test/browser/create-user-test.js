@@ -97,7 +97,7 @@ function createNewUser(username, password, cb) {
 }
 
   buster.testCase("Friends#Unhosted", {
-    "//-has a title": function (done) {
+    "-has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -109,7 +109,7 @@ function createNewUser(username, password, cb) {
           .end(done); 
     },
     
-    "//-can login a user": function (done) {
+    "-can login a user": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -120,7 +120,7 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "//-can let user add status updates": function (done) {
+    "-can let user add status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -140,7 +140,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "//-can comment on status updates": function (done) {
+    "-can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -188,7 +188,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "//-can let user see friends messages": function (done) {
+    "-can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded = null;
         loginCreatedUser(done)
@@ -219,7 +219,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "//-keeps login status on refresh": function (done) {
+    "-keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -236,7 +236,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "//-can logout user": function (done) {
+    "-can logout user": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
