@@ -20,6 +20,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       var su = this;
       su.status = suData.status;
       su.timestamp = suData.timestamp;
+      su.relativeTimestamp = ko.computed(function() {
+        var time = new Date(su.timestamp);
+        return time.getFullYear()+'-'+time.getMonth()+'-'+time.getDate()+' '+time.getHours()+':'+time.getMinutes();
+      });
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
       su.comment = ko.observable("");
@@ -85,6 +89,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
 
     var onError = function(err) { console.log(err) };
     
+    function presentTimestamp(timestamp) {
+      return new Date(timestamp);
+    }
+    
     var updateFriends = function(newFriendsList) {
       _.each(newFriendsList, function(friendData) {
         connect(friendData.username, function(err1, storageInfo) {
@@ -110,6 +118,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         return;
       }
       if(_.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
+    	$('#error-message').text('Cannot add the same user twice');
+    	$('#error-panel').slideDown();
+    	setTimeout(function() {
+    		$("#error-panel").slideUp();
+    	}, 4000);
         return;
       } 
       var friendData = {"username": self.addFriendsUsername(),
@@ -124,6 +137,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
+    self.removeFriend = function(friendToRemove) {
+    	fetchUserData(FRIENDS_KEY).then(function(value) {
+	        value = value || [];
+	        if(value.pop(friendToRemove)) {
+	        	putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+	              self.allFriends.remove(friendToRemove);
+		        }, onError); 
+	        }
+	      }, onError);
+    }
     
     function addStatusUpdates(statusUpdatesArray) {
       function statusEquals(s1, s2) {

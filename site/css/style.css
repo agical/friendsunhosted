@@ -57,6 +57,10 @@ textarea {
 #license {
 }
 
+#error-panel {
+	display: none;
+}
+
 .menubar {
   height: 2px;
   width: 100%;
@@ -226,13 +230,13 @@ textarea {
 }
 
 .status-update-timestamp {
-  font: 100% "Courier", sans-serif; 
+  font: 60% "Arial", sans-serif; 
   float: right;
   padding: 5px;
 }
 
 .comment-update-timestamp {
-  font: 100% "Courier", sans-serif; 
+  font: 60% "Arial", sans-serif; 
   float: right;
   padding: 5px;
 }
