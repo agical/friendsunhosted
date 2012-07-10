@@ -137,6 +137,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }, onError)
     };
     
+    self.removeFriend = function() {
+        self.allFriends.remove(this);
+    }
     
     function addStatusUpdates(statusUpdatesArray) {
       function statusEquals(s1, s2) {

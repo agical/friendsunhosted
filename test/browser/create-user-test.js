@@ -97,7 +97,7 @@ function createNewUser(username, password, cb) {
 }
 
   buster.testCase("Friends#Unhosted", {
-    "-has a title": function (done) {
+    "//-has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -109,7 +109,7 @@ function createNewUser(username, password, cb) {
           .end(done); 
     },
     
-    "-can login a user": function (done) {
+    "//-can login a user": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -120,7 +120,7 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "-can let user add status updates": function (done) {
+    "//-can let user add status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -140,7 +140,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "-can comment on status updates": function (done) {
+    "//-can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -157,7 +157,7 @@ function createNewUser(username, password, cb) {
     },
 
     
-    "-can let user add and list friends": function (done) {
+    "-can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         createTestUser()
           .then(function(userToBeAdded) {
@@ -167,22 +167,28 @@ function createNewUser(username, password, cb) {
                 console.log("Added:", userToBeAdded);
                 browserAndUser
                   .browser
+                  	.cssEq("#friends :first-child", "No friends here. Add a friend in the box above!")
                     //add friend
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
-                    .cssEq("#friends :first-child", userToBeAdded.username)
+                    .cssEq("#friends :first-child .friend", userToBeAdded.username)
                     //add same friend is ignored
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
-                    .cssEq("#friends :first-child", userToBeAdded.username)
+                    .cssEq("#friends :first-child .friend", userToBeAdded.username)
                     .cssEq("#error-message", "Cannot add the same user twice")
-                    //has mailto: button
+                    //can remove friend
+                    .click("#friends :first-child .remove-friend")
+                    .cssEq("#friends :first-child p", "No friends here. Add a friend in the box above!")
+                    .refresh()
+                    .waitFor("#friends :first-child p", 2000)
+                    .cssEq("#friends :first-child p", "No friends here. Add a friend in the box above!")
                     .end(done);
               });
             });
     },
 
-    "-can let user see friends messages": function (done) {
+    "//-can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded = null;
         loginCreatedUser(done)
@@ -213,7 +219,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "-keeps login status on refresh": function (done) {
+    "//-keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -230,7 +236,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "-can logout user": function (done) {
+    "//-can logout user": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser

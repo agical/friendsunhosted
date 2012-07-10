@@ -100,11 +100,18 @@
             <button id="do-add-friend" data-bind="click: addFriend">Add!</button>    
         </div>
         
-        <div id="friends" class="logged-in" data-bind="foreach: allFriends">
+        <div id="friends" class="logged-in">
+          <!-- ko foreach: allFriends -->
           <div class="friend-details">
             <span class="friend storage-id" data-bind="text: username"></span>
-            <span class="friend" data-bind="click: username"></span>
+            <a href="#" class="remove-friend" data-bind="click: $parent.removeFriend">Remove</a>
           </div>
+          <!-- /ko -->
+          <!-- ko if: allFriends().length==0 -->
+          <div class="friend-details">
+            <p><strong>No friends here. Add a friend in the box above!</strong></p>
+          </div>        
+          <!-- /ko -->
         </div>
       </div>
       
