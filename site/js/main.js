@@ -15,6 +15,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       return _.filter(self.allStatuses(), function(item) {return !item.inReplyTo;});
     });
     self.allFriends = ko.observableArray([]);
+    
+    self.loggedIn.subscribe(function(val) {
+        $('.logged-in')
+        	.addClass(val?'visible':'hidden')
+        	.removeClass(val?'hidden':'visible');
+        $('.not-logged-in')
+        	.addClass(val?'hidden':'visible')
+        	.removeClass(val?'visible':'hidden');
+    });
 
     function StatusUpdate(suData) {
       var su = this;
@@ -50,19 +59,22 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     }
 
     function init() {
-      var localUsername = localStorage.getItem('username');
-      if(localUsername) {
-        self.username(JSON.parse(localUsername));
-        self.loggedIn(true);
-        fetchUserData(FRIENDS_KEY).then(function(value) {
-          value = value || [];
-          self.allFriends(value);
-        }, onError)
-        fetchUserData(STATUS_KEY).then(function(value) {
-          value = value || [];
-          addStatusUpdates(value);
-        }, onError)
-      }
+	    var localUsername = localStorage.getItem('username');
+	    var token = localStorage.getItem('bearerToken');
+	    if(localUsername && token) {
+	        self.username(JSON.parse(localUsername));
+	        self.loggedIn(true);
+	        fetchUserData(FRIENDS_KEY).then(function(value) {
+	        	value = value || [];
+	        	self.allFriends(value);
+	        }, onError)
+	        fetchUserData(STATUS_KEY).then(function(value) {
+	        	value = value || [];
+	        	addStatusUpdates(value);
+	        }, onError)
+	    } else {
+	    	self.loggedIn(false);
+	    }
     }
 
     self.addFriendsUsername = ko.observable("");
@@ -274,7 +286,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       if(event.origin == location.protocol +'//'+ location.host) {
         console.log('Received an OAuth token: ' + event.data);
         localStorage.setItem('bearerToken', event.data);
-        self.loggedIn(event.data!=null);
+        init();
       }
     }, false);
 
