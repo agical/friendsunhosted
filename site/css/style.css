@@ -5,6 +5,14 @@
   float: right;
 }
 
+.hidden {
+  display: none;	
+}
+
+.visible {
+  display: block;  
+}
+
 .logo {
   margin: 0px;
   padding: 0px;
