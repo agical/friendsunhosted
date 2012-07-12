@@ -249,5 +249,22 @@ function createNewUser(username, password, cb) {
         });
     },
 
+    "-shows latest activity on top": function (done) {
+        this.timeout = 25000;
+         
+        loginCreatedUser(done).then(function(browserAndUser) {
+          browserAndUser
+            .browser
+              .setValue("#status-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .setValue("#status-update", "Second message")
+              .click("#do-update-status")
+              .cssEq("#status-stream :first-child .status-update", "Second message")
+              .setValue("#comment-update", "Hello, #unhosted world!")
+              .click("#do-update-status")
+              .end(done);
+        });
+    },
+
 })
 
