@@ -12,6 +12,10 @@
 .visible {
   display: block;  
 }
+#support-area * {
+	float: left;
+	padding: 3px;
+}
 
 .logo {
   margin: 0px;

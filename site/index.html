@@ -16,9 +16,18 @@
         }
       });
     </script> 
-		<script type="text/javascript">
-		</script>
-	</head>
+			<script type="text/javascript">
+			/* <![CDATA[ */
+			    (function() {
+			        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+			        s.type = 'text/javascript';
+			        s.async = true;
+			        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+			        t.parentNode.insertBefore(s, t);
+			    })();
+			/* ]]> */</script>
+  </head>
+	
 	<body>
 
 
@@ -43,9 +52,12 @@
       </div>
 
       <div id="support-area">
-          <div class="support" id="bitcoin">BitCoin</div>
-          <div class="support" id="flattr">Flattr</div>
+          <div class="support" id="flattr">
+            <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://friendsunhosted.com"></a>
+            <noscript><a href="http://flattr.com/thing/736103/FRIENDSUNHOSTED" target="_blank">
+            <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>          </div>
           <div class="support" id="paypal">PayPal</div>
+          <div class="support" id="bitcoin">BitCoin</div>
       </div>
       <div class="ui-widget" id="error-panel">
           <div class="ui-state-error ui-corner-all"> 
@@ -188,6 +200,7 @@
         <p>
         You can also support the application by supplying patches on GitHub. As you can see, we need better design, better interaction, more features like image handling, and more. You could also just report bugs to us in a nice and consise way using the GitHub issue system.
         </p>
+    
         
       </div>
 
