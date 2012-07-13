@@ -16,16 +16,6 @@
         }
       });
     </script> 
-			<script type="text/javascript">
-			/* <![CDATA[ */
-			    (function() {
-			        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
-			        s.type = 'text/javascript';
-			        s.async = true;
-			        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-			        t.parentNode.insertBefore(s, t);
-			    })();
-			/* ]]> */</script>
   </head>
 	
 	<body>
@@ -81,7 +71,7 @@
         </div>
         
         <div id="status-stream" data-bind="foreach: allRootStatuses().reverse()">
-          <div class="conversation">
+          <div class="conversation" data-bind="attr: {id: 'status-nr-'+$index()}">
             <div class="top-left-box status-details">
               <span class="status-update-username storage-id" data-bind="text: username"></span>
               <span class="status-update-timestamp" data-bind="text: relativeTimestamp"></span>
@@ -89,7 +79,7 @@
             </div>
             <div class="bottom-right-box comments">
               <!-- ko foreach: comments -->              
-              <div class="comment">
+              <div class="comment" data-bind="attr: {id: 'comment-nr-'+$index()}">
                 <span class="comment-update-username storage-id" data-bind="text: username"></span>
                 <span class="comment-update-timestamp" data-bind="text: relativeTimestamp"></span>
                 <span class="comment-update" data-bind="text: status"></span>

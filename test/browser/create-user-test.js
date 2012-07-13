@@ -249,19 +249,21 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "-shows latest activity on top": function (done) {
+    "//-shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
-              .setValue("#status-update", "Hello, #unhosted world!")
+              .setValue("#status-update", "First status")
               .click("#do-update-status")
-              .setValue("#status-update", "Second message")
+              .setValue("#status-update", "Second status")
               .click("#do-update-status")
-              .cssEq("#status-stream :first-child .status-update", "Second message")
-              .setValue("#comment-update", "Hello, #unhosted world!")
-              .click("#do-update-status")
+              .cssEq("#status-nr-0 .status-update", "Second status")
+              .setValue("#status-nr-1 .comment", "Comment that puts status on top!")
+              .click("#status-nr-1 .do-comment")
+              .pause(5000)
+              .cssEq("#status-nr-0 .status-update", "First status")
               .end(done);
         });
     },
