@@ -217,7 +217,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
     };
     
 
-    setInterval( self.refresh, 3000000);
+    setInterval( self.refresh, 15000);
       
     init();
   };
