@@ -97,7 +97,7 @@ function createNewUser(username, password, cb) {
 }
 
   buster.testCase("Friends#Unhosted", {
-    "-has a title": function (done) {
+    "- has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -109,7 +109,7 @@ function createNewUser(username, password, cb) {
           .end(done); 
     },
     
-    "-can login a user": function (done) {
+    "- can login a user": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -120,7 +120,7 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "-can let user add status updates": function (done) {
+    "- can let user add status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -140,7 +140,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "-can comment on status updates": function (done) {
+    "- can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -157,7 +157,7 @@ function createNewUser(username, password, cb) {
     },
 
     
-    "-can let user add, list and remove friends": function (done) {
+    "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         createTestUser()
           .then(function(userToBeAdded) {
@@ -188,7 +188,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "-can let user see friends messages": function (done) {
+    "- can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded = null;
         loginCreatedUser(done)
@@ -208,7 +208,6 @@ function createNewUser(username, password, cb) {
                     .browser
                       .setValue("#add-friends-username", userToBeAdded.username)
                       .click("#do-add-friend")
-                      .click("#refresh")
                       .cssEq("#status-stream :first-child .status-update", "The message of the added")
                       .setValue("#status-update", "The message of the adder")
                       .click("#do-update-status")
@@ -219,7 +218,7 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "-keeps login status on refresh": function (done) {
+    "- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -236,7 +235,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "-can logout user": function (done) {
+    "- can logout user": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -249,7 +248,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "//-shows latest activity on top": function (done) {
+    "- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -262,7 +261,9 @@ function createNewUser(username, password, cb) {
               .cssEq("#status-nr-0 .status-update", "Second status")
               .setValue("#status-nr-1 .comment", "Comment that puts status on top!")
               .click("#status-nr-1 .do-comment")
-              .pause(5000)
+              .click("#refresh-link")
+              .pause(2000)
+              .waitFor("#status-nr-0 .status-update", 2000)
               .cssEq("#status-nr-0 .status-update", "First status")
               .end(done);
         });

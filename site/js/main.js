@@ -172,8 +172,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       });
       var all = _.union(existingStatuses, newUpdatesAsObjects);
       var allSorted = _.sortBy(all, function(item) {
-          if(item.comments.length>0) {
-              var latestComment = _.max(item.comments, function(cs) {return cs.timestamp;});
+          if(item.comments().length>0) {
+              var latestComment = _.max(item.comments(), function(cs) {return cs.timestamp;});
               return latestComment.timestamp;
           } else {
               return item.timestamp;
