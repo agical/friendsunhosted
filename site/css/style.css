@@ -9,8 +9,16 @@
   display: none;	
 }
 
+.logged-in {
+  display: none;  
+}
+
 .visible {
   display: block;  
+}
+#support-area * {
+	float: left;
+	padding: 3px;
 }
 
 .logo {
