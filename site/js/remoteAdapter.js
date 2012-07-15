@@ -1,10 +1,6 @@
 define(['underscore', 'remoteStorage', 'when'], 
     function(_, remoteStorage, when) {
 
-        function onError(err) { 
-            console.log(err); 
-        };
-
         var val = {};
 
         var connect = function(userAddress, callback) {
