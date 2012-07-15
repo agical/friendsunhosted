@@ -99,7 +99,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
 
     
     self.login = function() {
-        rem.login(self.username()).then(function() {init();}, onError);
+        rem
+            .login(self.username())
+            .then(function(loggedInUser) {
+                init();
+            }, onError);
     };
 
     self.logout = function() {
@@ -149,7 +153,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
                   self.allFriends.remove(friendToRemove);
                 }, onError); 
             }
-          }, onError);
+        }, onError);
     };
     
     function addStatusUpdates(statusUpdatesArray) {
@@ -205,14 +209,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
 
     };
     
-
-    window.addEventListener('message', function(event) {
-      if(event.origin == location.protocol +'//'+ location.host) {
-        console.log('Received an OAuth token: ' + event.data);
-        localStorage.setItem('bearerToken', event.data);
-        init();
-      }
-    }, false);
 
     setInterval( self.refresh, 3000000);
       

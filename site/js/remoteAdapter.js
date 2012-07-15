@@ -34,6 +34,17 @@ define(['underscore', 'remoteStorage', 'when'],
 
         val.login = function(username) {
             var deferred = when.defer();
+            
+            window.addEventListener('message', function(event) {
+                if(event.origin == location.protocol +'//'+ location.host) {
+                    console.log('Received an OAuth token: ' + event.data);
+                    localStorage.setItem('bearerToken', event.data);
+                    deferred.resolve(username);
+                } else {
+                    deferred.reject("Could not validate access to remote storage");
+                }
+            }, false);
+
             connect(username, function(err, storageInfo) {
                   if(err) {
                       deferred.reject(err);
