@@ -171,7 +171,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
         return new StatusUpdate(item);
       });
       var all = _.union(existingStatuses, newUpdatesAsObjects);
-      var allSorted = _.sortBy(all, function(item) {return item.timestamp;});
+      var allSorted = _.sortBy(all, function(item) {
+          if(item.comments.length>0) {
+              var latestComment = _.max(item.comments, function(cs) {return cs.timestamp;});
+              return latestComment.timestamp;
+          } else {
+              return item.timestamp;
+          }
+      });
       self.allStatuses(allSorted);
     }
 
