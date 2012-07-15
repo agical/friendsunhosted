@@ -1,9 +1,17 @@
 require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function($, _, ui, ko, remoteStorage, when) {
 
+    function onError(err) { 
+        console.log(err); 
+    };
+    
+    function presentTimestamp(timestamp) {
+        return new Date(timestamp);
+    }
+    
     var daStore = function() {
         var val = {};
 
-        function connect(userAddress, callback) {
+        var connect = function(userAddress, callback) {
             remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
               if(error) {
                 alert('Could not load storage info:' + error);
@@ -17,14 +25,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
             });
         };
 
-        function getUserStorageClient(category) {
+        var getUserStorageClient = function(category) {
             var token = localStorage.getItem('bearerToken');
             var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
             var client = remoteStorage.createClient(storageInfo, category, token);
             return client;      
         };
 
-        function authorize(categories) {
+        var authorize = function(categories) {
             var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
             var redirectUri = location.protocol + '//' + location.host + '/receive_token.html';
 
@@ -62,21 +70,21 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       
         val.fetchUserData = function(key, category) {
             category = category || 'public';
-            var deferred = when.defer();
+            var deferred123 = when.defer();
           
             var client = getUserStorageClient(category);
             client.get(key, function(err, dataStr) {
                 if(err) {
-                    deferred.reject(err);
+                    deferred123.reject(err);
                 } else {
                     try {
-                        deferred.resolve(dataStr?JSON.parse(dataStr):null);
+                        deferred123.resolve(dataStr?JSON.parse(dataStr):null);
                     } catch(e) {
-                        deferred.reject(e);
+                        deferred123.reject(e);
                     }
                 }
             });
-            return deferred.promise;
+            return deferred123.promise;
         };
 
         val.putUserData = function(key, value, category) {
@@ -95,22 +103,24 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         };
 
         val.getPublicData = function(username, key) {
-            var deferred = when.defer();
+            var deferred666 = when.defer();
             
             connect(username, function(err, storageInfo) {
-                if(err) { deferred.reject(err); return;}
-                
-                var client = remoteStorage.createClient(storageInfo, 'public');
-                client.get(key, function(err2, dataStr) {
-                    if(err2) {
-                        deferred.reject("Error when reading status update for key:" + key + " Error:" + err2);
-                    } else {
-                        deferred.resolve(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
-                    }
-                });
+                if(err) { 
+                    deferred666.reject(err); 
+                } else {
+                    var client = remoteStorage.createClient(storageInfo, 'public');
+                    client.get(key, function(err2, dataStr) {
+                        if(err2) {
+                            deferred666.reject("Error when reading status update for key:" + key + " Error:" + err2);
+                        } else {
+                            deferred666.resolve(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
+                        }
+                    });
+                }                
             });
             
-            return deferred.promise();
+            return deferred666.promise;
         };
 
         val.logout = function() {
@@ -133,10 +143,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
               } else {
                 deferred.resolve(key);
               }
-        });
+            });
           
-        return deferred.promise;
-    };
+            return deferred.promise;
+        };
 
 
         window.addEventListener('message', function(event) {
@@ -258,12 +268,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
         init();
     };
 
-    var onError = function(err) { console.log(err); };
-    
-    function presentTimestamp(timestamp) {
-      return new Date(timestamp);
-    }
-    
     
         
     self.addFriend = function() {
@@ -347,11 +351,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
     
 
     self.clearAll = function() {
-      rem.deleteUserData(STATUS_KEY, function() {
+      rem.deleteUserData(STATUS_KEY).then(function() {
           self.allStatuses([]);
       }, onError);
 
-      rem.deleteUserData(FRIENDS_KEY, function() {
+      rem.deleteUserData(FRIENDS_KEY).then(function() {
           self.allFriends([]);
       }, onError);
 
@@ -366,7 +370,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when'], function(
       }
     }, false);
 
-    setInterval( self.refresh, 30000);
+    setInterval( self.refresh, 3000000);
       
     init();
   };
