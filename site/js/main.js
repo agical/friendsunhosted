@@ -1,4 +1,4 @@
-require(['jquery', 'underscore', 'ui', 'ko', 'remoteStorage', 'when', 'remoteAdapter'], function($, _, ui, ko, remoteStorage, when, rem) {
+require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function($, _, ui, ko, when, rem) {
 
     function onError(err) { 
         console.log(err); 
