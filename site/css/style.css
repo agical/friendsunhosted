@@ -9,6 +9,10 @@
   display: none;	
 }
 
+.logged-in {
+  display: none;  
+}
+
 .visible {
   display: block;  
 }
