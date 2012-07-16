@@ -24,7 +24,8 @@ define(['underscore', 'remoteStorage', 'when'],
             return client;      
         };
 
-        val.login = function(username) {
+        val.login = function(username, categories) {
+            var categories = categories || ['public'];
             var deferred = when.defer();
 
             connect(username, function(err, storageInfo) {
@@ -33,7 +34,6 @@ define(['underscore', 'remoteStorage', 'when'],
                 } else {
                     localStorage.setItem('username', JSON.stringify(username));
                     localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-                    var categories = ['public'];
                     var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
                     var redirectUri = location.protocol + '//' + location.host;
                     
