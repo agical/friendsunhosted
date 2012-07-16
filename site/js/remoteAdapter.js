@@ -24,42 +24,32 @@ define(['underscore', 'remoteStorage', 'when'],
             return client;      
         };
 
-        var authorize = function(categories) {
-            var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-            var redirectUri = location.protocol + '//' + location.host + '/receive_token.html';
-
-            var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
-            window.open(oauthPage); //returns popup
-        };
-
         val.login = function(username) {
             var deferred = when.defer();
-            
-            window.addEventListener('message', function(event) {
-                if(event.origin == location.protocol +'//'+ location.host) {
-                    console.log('Received an OAuth token: ' + event.data);
-                    localStorage.setItem('bearerToken', event.data);
-                    deferred.resolve(username);
-                } else {
-                    deferred.reject("Could not validate access to remote storage");
-                }
-            }, false);
 
             connect(username, function(err, storageInfo) {
-                  if(err) {
-                      deferred.reject(err);
-                  } else {
-                      localStorage.setItem('username', JSON.stringify(username));
-                      localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-                      authorize(['public']);
-                  }
+                if(err) {
+                    deferred.reject(err);
+                } else {
+                    localStorage.setItem('username', JSON.stringify(username));
+                    localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
+                    var categories = ['public'];
+                    var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
+                    var redirectUri = location.protocol + '//' + location.host;
+                    
+                    var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
+                    window.location = oauthPage;
+                }
             });
             return deferred.promise;
         };
 
         val.init = function() {
             var deferred = when.defer();
-            
+
+            var token = remoteStorage.receiveToken();
+            localStorage.setItem('bearerToken', token);
+
             var localUsername = localStorage.getItem('username');
             var token = localStorage.getItem('bearerToken');
             
@@ -162,4 +152,5 @@ define(['underscore', 'remoteStorage', 'when'],
 
         return val;
     }
+
 );
