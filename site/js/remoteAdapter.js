@@ -48,7 +48,9 @@ define(['underscore', 'remoteStorage', 'when'],
             var deferred = when.defer();
 
             var token = remoteStorage.receiveToken();
-            localStorage.setItem('bearerToken', token);
+            if(token) {
+                localStorage.setItem('bearerToken', token);
+            }
 
             var localUsername = localStorage.getItem('username');
             var token = localStorage.getItem('bearerToken');
