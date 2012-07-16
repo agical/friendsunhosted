@@ -26,6 +26,7 @@ define(['underscore', 'remoteStorage', 'when'],
 
         val.login = function(username, categories) {
             var categories = categories || ['public'];
+            
             var deferred = when.defer();
 
             connect(username, function(err, storageInfo) {
@@ -141,15 +142,6 @@ define(['underscore', 'remoteStorage', 'when'],
           
             return deferred.promise;
         };
-
-
-        window.addEventListener('message', function(event) {
-            if(event.origin == location.protocol +'//'+ location.host) {
-                console.log('Received an OAuth token: ' + event.data);
-                localStorage.setItem('bearerToken', event.data);
-                val.init();
-            }
-        }, false);
 
         return val;
     }
