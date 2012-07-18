@@ -130,14 +130,8 @@ textarea {
   margin-right: 20px;
   margin-bottom: 20px;
    border-style:solid;
-  border-width:3px;
+  border-width:0px;
   border-color:#666;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px; /* future proofing */
-  -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
-  border-bottom:0px;
-  border-right:0px
 }
 
 
@@ -174,7 +168,7 @@ textarea {
   padding-top: 10px;
   float: left;
   clear: left;
-  width: 437px;
+  width: 600px;
   margin-bottom: 20px;
   margin-right: 20px;
  }
@@ -184,7 +178,7 @@ textarea {
   padding-top: 10px;
   float: left;
   clear: right;
-  width: 437px;
+  width: 300px;
   margin-bottom: 20px;
 }
 #profile {
@@ -200,10 +194,6 @@ textarea {
   border-style:solid;
   border-width:3px;
   border-color:#666;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px; /* future proofing */
-  -khtml-border-radius: 10px; /* for old Konqueror browsers */
   border-bottom:0px;
   border-right:0px;
 }
@@ -212,10 +202,6 @@ textarea {
   border-style:solid;
   border-width:3px;
   border-color:#666;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px; /* future proofing */
-  -khtml-border-radius: 10px; /* for old Konqueror browsers */
   border-top:0px;
   border-left:0px;
 }
@@ -234,7 +220,7 @@ textarea {
   float: right;
   background-color: #f60;
   padding: 5px;
-  width: 410px;
+  width: 100%;
 }
 
 .comments {
