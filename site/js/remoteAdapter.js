@@ -38,7 +38,7 @@ define(['underscore', 'remoteStorage', 'when'],
                     var redirectUri = location.protocol + '//' + location.host;
                     
                     var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
-                    window.location = oauthPage;
+                    window.location.replace(oauthPage);
                 }
             });
             return deferred.promise;
