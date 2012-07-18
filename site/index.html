@@ -69,13 +69,13 @@
 		</div>
 
     <div id="menubar">
-      <span class="menu-bar-item" id="" data-bind="">Welcome!</span>
-      <span class="menu-bar-item" id="" data-bind="">Whazzup?</span>
-      <span class="menu-bar-item" id="" data-bind="">Friends</span>
-      <span class="menu-bar-item" id="" data-bind="">Profile</span>
-      <span class="menu-bar-item" id="" data-bind="">Settings</span>
-      <span class="menu-bar-item" id="" data-bind="">Support</span>
-      <span class="menu-bar-item" id="" data-bind="">About</span>
+      <a class="menu-bar-item" href="#welcome" data-bind="click: selectTab">Welcome!</a>
+      <a class="menu-bar-item" href="#status" data-bind="click: selectTab, visible: loggedIn()">Whazzup?</a>
+      <a class="menu-bar-item" href="#myfriends" data-bind="click: selectTab, visible: loggedIn()">Friends</a>
+      <a class="menu-bar-item" href="#profile" data-bind="click: selectTab, visible: loggedIn()">Profile</a>
+      <a class="menu-bar-item" href="#settings" data-bind="click: selectTab, visible: loggedIn()">Settings</a>
+      <a class="menu-bar-item" href="#support" data-bind="click: selectTab">Support</a>
+      <a class="menu-bar-item" href="#about" data-bind="click: selectTab">About</a>
       <br class="clearboth"/>
     </div>
 
@@ -90,91 +90,90 @@
 		</div>
 
 
-		<div id="core">
-			<div id="status" class="status logged-in"
-				data-bind="visible: loggedIn()">
-				<a href="" id="refresh-link" data-bind="click: refresh">Refresh
-					statuses</a>
+		<div id="status" class="status logged-in"
+			data-bind="visible: (loggedIn() && selectedTab() == 'status')">
+			<a href="" id="refresh-link" data-bind="click: refresh">Refresh
+				statuses</a>
 
-				<div class="status-update">
-					<textarea id="status-update" placeholder="What'cha doin?"
-						data-bind="value: statusUpdate"></textarea>
-					<button id="do-update-status" data-bind="click: updateStatus">Update
-						status</button>
-				</div>
+			<div class="status-update">
+				<textarea id="status-update" placeholder="What'cha doin?"
+					data-bind="value: statusUpdate"></textarea>
+				<button id="do-update-status" data-bind="click: updateStatus">Update
+					status</button>
+			</div>
 
-				<div id="status-stream"
-					data-bind="foreach: allRootStatuses().reverse()">
-					<div class="conversation"
-						data-bind="attr: {id: 'status-nr-'+$index()}">
-						<div class="top-left-box status-details">
-							<span class="status-update-username storage-id"
+			<div id="status-stream"
+				data-bind="foreach: allRootStatuses().reverse()">
+				<div class="conversation"
+					data-bind="attr: {id: 'status-nr-'+$index()}">
+					<div class="top-left-box status-details">
+						<span class="status-update-username storage-id"
+							data-bind="text: username"></span> <span
+							class="status-update-timestamp"
+							data-bind="text: relativeTimestamp"></span> <span
+							class="status-update" data-bind="text: status"></span>
+					</div>
+					<div class="bottom-right-box comments">
+						<!-- ko foreach: comments -->
+						<div class="comment"
+							data-bind="attr: {id: 'comment-nr-'+$index()}">
+							<span class="comment-update-username storage-id"
 								data-bind="text: username"></span> <span
-								class="status-update-timestamp"
+								class="comment-update-timestamp"
 								data-bind="text: relativeTimestamp"></span> <span
-								class="status-update" data-bind="text: status"></span>
+								class="comment-update" data-bind="text: status"></span>
 						</div>
-						<div class="bottom-right-box comments">
-							<!-- ko foreach: comments -->
-							<div class="comment"
-								data-bind="attr: {id: 'comment-nr-'+$index()}">
-								<span class="comment-update-username storage-id"
-									data-bind="text: username"></span> <span
-									class="comment-update-timestamp"
-									data-bind="text: relativeTimestamp"></span> <span
-									class="comment-update" data-bind="text: status"></span>
-							</div>
-							<!-- /ko -->
-							<div class="comment-form">
-								<textarea placeholder="Your reply" class="comment"
-									data-bind="value: comment, attr: {'id':id}"></textarea>
-								<button class="do-comment" data-bind="click: doComment">Comment</button>
-							</div>
+						<!-- /ko -->
+						<div class="comment-form">
+							<textarea placeholder="Your reply" class="comment"
+								data-bind="value: comment, attr: {'id':id}"></textarea>
+							<button class="do-comment" data-bind="click: doComment">Comment</button>
 						</div>
 					</div>
 				</div>
-
 			</div>
 
-			<div class="top-left-box friends logged-in"
-				data-bind="visible: loggedIn()">
-				<div id="add-a-friend" class="logged-in"
-					data-bind="visible: loggedIn()">
-					<label for="add-friends-username storage-id ">Add a friend</label>
-					<input id="add-friends-username"
-						placeholder="friendsusername@storagelocation.com"
-						data-bind="value: addFriendsUsername" />
-					<button id="do-add-friend" data-bind="click: addFriend">Add!</button>
-				</div>
+		</div>
 
-				<div id="friends" class="logged-in">
-					<!-- ko foreach: allFriends -->
-					<div class="friend-details">
-						<span class="friend storage-id" data-bind="text: username"></span>
-						<a href="#" class="remove-friend"
-							data-bind="click: $parent.removeFriend">Remove</a>
-					</div>
-					<!-- /ko -->
-					<!-- ko if: allFriends().length==0 -->
-					<div class="friend-details">
-						<p>
-							<strong>No friends here. Add a friend in the box above!</strong>
-						</p>
-					</div>
-					<!-- /ko -->
-				</div>
+		<div id="myfriends" class="top-left-box friends logged-in"
+			data-bind="visible: (loggedIn() && selectedTab() == 'myfriends')">
+			<div id="add-a-friend" class="logged-in"
+				data-bind="visible: loggedIn()">
+				<label for="add-friends-username storage-id ">Add a friend</label>
+				<input id="add-friends-username"
+					placeholder="friendsusername@storagelocation.com"
+					data-bind="value: addFriendsUsername" />
+				<button id="do-add-friend" data-bind="click: addFriend">Add!</button>
 			</div>
 
-
-			<div id="profile" class="top-left-box logged-in"
-				data-bind="visible: loggedIn()">
-				<div>
-					<button id="do-clear-all-updates" data-bind="click: clearAll">Clear
-						all friends and updates!!</button>
+			<div id="friends" class="logged-in">
+				<!-- ko foreach: allFriends -->
+				<div class="friend-details">
+					<span class="friend storage-id" data-bind="text: username"></span>
+					<a href="#" class="remove-friend"
+						data-bind="click: $parent.removeFriend">Remove</a>
 				</div>
+				<!-- /ko -->
+				<!-- ko if: allFriends().length==0 -->
+				<div class="friend-details">
+					<p>
+						<strong>No friends here. Add a friend in the box above!</strong>
+					</p>
+				</div>
+				<!-- /ko -->
 			</div>
 		</div>
-		<div id="info" class="not-logged-in" data-bind="visible: !loggedIn()">
+
+
+		<div id="settings" class="top-left-box logged-in"
+			data-bind="visible: loggedIn() && selectedTab()=='settings'">
+			<div>
+				<button id="do-clear-all-updates" data-bind="click: clearAll">Clear
+					all friends and updates!!</button>
+			</div>
+		</div>
+		
+		<div id="welcome" data-bind="visible: selectedTab()=='welcome'">
 
 			<div class="rounded-box info-box clearleft">
 				<h3>What is FRIENDS#UNHOSTED?</h3>

@@ -45,7 +45,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     self.allFriends.subscribe(updateFriends);
       
-    
+    self.selectedTab = ko.observable("welcome");
+    self.selectTab = function(data, event) {
+        console.log(event);
+        self.selectedTab(event.srcElement.href.split("#")[1]);
+        return true;
+    };
+
     function StatusUpdate(suData) {
       var su = this;
       su.status = suData.status;
