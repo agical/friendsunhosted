@@ -157,6 +157,10 @@ textarea {
   clear: left;
 }
 
+.clearboth {
+	clear: both;
+}
+
 .doublewidth {
   width: 900px;  
   height: 140px;
@@ -178,7 +182,7 @@ textarea {
   padding-top: 10px;
   float: left;
   clear: right;
-  width: 300px;
+  width: 600px;
   margin-bottom: 20px;
 }
 #profile {
@@ -186,7 +190,7 @@ textarea {
   padding-top: 10px;
   float: left;
   clear: right;
-  width: 437px;
+  width: 600px;
   margin-bottom: 20px;
 }
 
