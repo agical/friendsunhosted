@@ -1,8 +1,67 @@
+body { 
+  font: 100% "Verdana", sans-serif; 
+  padding: 0px; 
+  background: #ddd;
+}
+
+#all {
+  margin: 0 auto;
+  width: 100%; /* Replace the xxxx with the the width of your site (eg 800px)*/
+  text-align:left;
+}
+
 #header {
+  background: #777;
+  padding: 5px;
+}
+
+.logo {
+  margin: 0px;
+  padding: 10px;
+  padding-left: 40px;
+  float: left;
+  clear: left;
+}
+
+#byline-top {
+  font: 125% "Tahoma", monospace;
+  float:left;
 }
 
 .login-area {
-  float: right;
+   float: right;
+   padding: 5px;
+}
+
+
+#header, #footer, .across-all {
+  float: top;
+  clear: both;
+  width: 100%;
+  padding:5px;
+}
+
+.across-all {
+	background: #333;
+}
+
+.sub-header {
+	color: #fff;
+}
+
+#support-area {
+  padding: 5px;
+}
+
+#support-area * {
+  padding: 5px;
+  float:left;
+}
+
+
+#core {
+  float: left;
+  padding: 10px;
 }
 
 .hidden {
@@ -16,20 +75,7 @@
 .visible {
   display: block;  
 }
-#support-area * {
-	float: left;
-	padding: 3px;
-}
 
-.logo {
-  margin: 0px;
-  padding: 0px;
-  text-align:center;
-}
-
-#byline-top {
-  font: 125% "Tahoma", monospace;
-}
 
 .storage-id {
   font: 100% "Tahoma", sans-serif;
@@ -40,17 +86,7 @@
 #refresh-link {
   float: right;
 }
-#all {
-  margin: 0 auto;
-  width: 900px; /* Replace the xxxx with the the width of your site (eg 800px)*/
-  text-align:left;
-}
 
-body{ 
-  font: 100% "Verdana", sans-serif; 
-  padding: 0px; 
-  text-align:center;
-}
 
 textarea {
 	width: 420px;
@@ -61,12 +97,12 @@ textarea {
 	  float: left;
   clear: both;
 }
+
 .footer {
   margin-bottom: 10px;
   float: left;
   clear: both;
   background-color: #bbb;
-  width: 900px;
   text-align: center;
 }
 
@@ -85,10 +121,6 @@ textarea {
 }
 
 #info {
-  float: left;
-  width: 1200px;
-}
-#core {
   float: left;
   width: 1200px;
 }
