@@ -1,7 +1,7 @@
 body { 
   font: 100% "Verdana", sans-serif; 
   padding: 0px; 
-  background: #ddd;
+  background: #eed;
 }
 
 #all {
@@ -11,7 +11,7 @@ body {
 }
 
 #header {
-  background: #777;
+  background: #998;
   padding: 5px;
 }
 
@@ -34,15 +34,27 @@ body {
 }
 
 
-#header, #footer, .across-all {
+#header, #menubar, #footer, .across-all {
   float: top;
   clear: both;
   width: 100%;
   padding:5px;
 }
 
+#menubar {
+	color: #fff;
+	background: #611;
+	padding: 10px;
+  font: 200% "Tahoma", monospace;
+  font-weight: bold;
+}
+
+.menu-bar-item {
+	padding-right: 15px;
+}
+
 .across-all {
-	background: #333;
+	background: #443;
 }
 
 .sub-header {
