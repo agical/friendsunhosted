@@ -69,13 +69,13 @@
 		</div>
 
     <div id="menubar">
-      <a class="menu-bar-item" href="#welcome" data-bind="click: selectTab">Welcome!</a>
-      <a class="menu-bar-item" href="#status" data-bind="click: selectTab, visible: loggedIn()">Whazzup?</a>
-      <a class="menu-bar-item" href="#myfriends" data-bind="click: selectTab, visible: loggedIn()">Friends</a>
-      <a class="menu-bar-item" href="#profile" data-bind="click: selectTab, visible: loggedIn()">Profile</a>
-      <a class="menu-bar-item" href="#settings" data-bind="click: selectTab, visible: loggedIn()">Settings</a>
-      <a class="menu-bar-item" href="#support" data-bind="click: selectTab">Support</a>
-      <a class="menu-bar-item" href="#about" data-bind="click: selectTab">About</a>
+      <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: selectTab">Welcome!</a>
+      <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: selectTab, visible: loggedIn()">Whazzup?</a>
+      <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: selectTab, visible: loggedIn()">Friends</a>
+      <a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: selectTab, visible: loggedIn()">Profile</a>
+      <a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: selectTab, visible: loggedIn()">Settings</a>
+      <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: selectTab">Support</a>
+      <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: selectTab">About</a>
       <br class="clearboth"/>
     </div>
 
@@ -157,7 +157,7 @@
 				<!-- ko if: allFriends().length==0 -->
 				<div class="friend-details">
 					<p>
-						<strong>No friends here. Add a friend in the box above!</strong>
+						<strong id="no-friends-message">No friends here. Add a friend in the box above!</strong>
 					</p>
 				</div>
 				<!-- /ko -->

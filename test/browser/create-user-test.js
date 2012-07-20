@@ -96,8 +96,10 @@ function createNewUser(username, password, cb) {
   return deferred.promise;
 }
 
-  buster.testCase("Friends#Unhosted", {
-    "- has a title": function (done) {
+var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
+
+buster.testCase("Friends#Unhosted", {
+    "//- has a title": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -109,7 +111,7 @@ function createNewUser(username, password, cb) {
           .end(done); 
     },
     
-    "- can login a user": function (done) {
+    "//- can login a user": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -120,12 +122,14 @@ function createNewUser(username, password, cb) {
         });
     },
     
-    "- can let user add status updates": function (done) {
+    "//- can let user add status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
+              .waitFor("#menu-status", 2000)
+              .click("#menu-status")
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
@@ -140,12 +144,14 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "- can comment on status updates": function (done) {
+    "//- can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
+              .waitFor("#menu-status", 2000)
+              .click("#menu-status")
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
@@ -167,7 +173,10 @@ function createNewUser(username, password, cb) {
                 console.log("Added:", userToBeAdded);
                 browserAndUser
                   .browser
-                  	.cssEq("#friends :first-child", "No friends here. Add a friend in the box above!")
+                    .waitFor("#menu-myfriends", 2000)
+                    .click("#menu-myfriends")
+                    .waitFor("#no-friends-message", 2000)
+                  	.cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
                     //add friend
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
@@ -179,16 +188,17 @@ function createNewUser(username, password, cb) {
                     .cssEq("#error-message", "Cannot add the same user twice")
                     //can remove friend
                     .click("#friends :first-child .remove-friend")
-                    .cssEq("#friends :first-child p", "No friends here. Add a friend in the box above!")
+                    .waitFor("#no-friends-message", 2000)
+                    .cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
                     .refresh()
-                    .waitFor("#friends :first-child p", 2000)
-                    .cssEq("#friends :first-child p", "No friends here. Add a friend in the box above!")
+                    .waitFor("#no-friends-message", 2000)
+                    .cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
                     .end(done);
               });
             });
     },
 
-    "- can let user see friends messages": function (done) {
+    "//- can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded = null;
         loginCreatedUser(done)
@@ -196,6 +206,8 @@ function createNewUser(username, password, cb) {
             userToBeAdded = browserAndUser.loggedInUser;
             browserAndUser
               .browser
+                .waitFor("#menu-status", 2000)
+                .click("#menu-status")
                 .setValue("#status-update", "The message of the added")
                 .click("#do-update-status")
                 .cssEq("#status-stream :first-child .status-update", "The message of the added")
@@ -206,8 +218,12 @@ function createNewUser(username, password, cb) {
               .then(function(browserAndUser) {
                   browserAndUser
                     .browser
+                      .waitFor("#menu-myfriends", 2000)
+                      .click("#menu-myfriends")
                       .setValue("#add-friends-username", userToBeAdded.username)
                       .click("#do-add-friend")
+                      .waitFor("#menu-status", 2000)
+                      .click("#menu-status")
                       .cssEq("#status-stream :first-child .status-update", "The message of the added")
                       .setValue("#status-update", "The message of the adder")
                       .click("#do-update-status")
@@ -218,11 +234,13 @@ function createNewUser(username, password, cb) {
             });
     },
 
-    "- keeps login status on refresh": function (done) {
+    "//- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
+              .waitFor("#menu-status", 2000)
+              .click("#menu-status")
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
@@ -235,7 +253,7 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "- can logout user": function (done) {
+    "//- can logout user": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -248,12 +266,14 @@ function createNewUser(username, password, cb) {
         });
     },
 
-    "- shows latest activity on top": function (done) {
+    "//- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
+              .waitFor("#menu-status", 2000)
+              .click("#menu-status")
               .setValue("#status-update", "First status")
               .click("#do-update-status")
               .setValue("#status-update", "Second status")

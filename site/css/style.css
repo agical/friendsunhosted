@@ -12,7 +12,7 @@ body {
 }
 
 #header {
-  background: #988;
+  background: #fff;
   padding: 5px;
 }
 
@@ -43,25 +43,25 @@ body {
 }
 
 #menubar {
-	color: #fff;
-	background: #611;
+	color: #444;
+	background: #fff;
 	padding: 10px;
+  padding-right: 0px;
+  border-top-width: 4px;
+  border-color: #ddd;
+  border-top-style: solid;
   font: 200% "Tahoma", monospace;
   font-weight: bold;
 }
 
 .menu-bar-item {
+  color: #444;
 	padding-right: 15px;
-	color: #fff;
 	text-decoration: none;
 }
 
 .across-all {
 	background: #443;
-}
-
-.sub-header {
-	color: #fff;
 }
 
 #support-area {
