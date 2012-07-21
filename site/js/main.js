@@ -45,17 +45,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     self.allFriends.subscribe(updateFriends);
       
-    self.selectedTab = ko.observable("");
-    self.selectTab = function(data, event) {
-        self.selectedTab(event.srcElement.href.split("#")[1]);
-        return true;
-    };
+    self.selectedTab = ko.observable("welcome");
 
     self.selectedTab.subscribe(function(val) {
         $('.menu-bar-item').removeClass('menu-selected');
         $('#menu-'+val).addClass('menu-selected');
     });
     
+    self.selectTab = function(data, event) {
+        self.selectedTab(event.srcElement.href.split("#")[1]);
+        return true;
+    };
+
     function StatusUpdate(suData) {
       var su = this;
       su.status = suData.status;
