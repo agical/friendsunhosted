@@ -45,6 +45,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     self.allFriends.subscribe(updateFriends);
       
+    self.selectedTab = ko.observable("");
+    self.selectTab = function(data, event) {
+        self.selectedTab(event.srcElement.href.split("#")[1]);
+        return true;
+    };
+
+    self.selectedTab.subscribe(function(val) {
+        $('.menu-bar-item').removeClass('menu-selected');
+        $('#menu-'+val).addClass('menu-selected');
+    });
     
     function StatusUpdate(suData) {
       var su = this;
@@ -83,6 +93,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
         rem.init().then(function(localUsername) {
             self.username(localUsername);
             self.loggedIn(true);
+            if(window.location.href.indexOf('#access_token') > 0) {
+                window.location.replace(location.protocol + '//' + location.host + "#status");
+                self.selectedTab("status");
+            } else if(window.location.href.indexOf('#') > 0) {
+                self.selectedTab(window.location.href.substring(window.location.href.indexOf('#', 0)+1));
+            } else {
+                window.location.replace(location.protocol + '//' + location.host + "#welcome");
+                self.selectedTab("welcome");
+            }
             rem.fetchUserData(FRIENDS_KEY).then(function(value) {
                 value = value || [];
                 self.allFriends(value);
