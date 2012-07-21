@@ -96,8 +96,10 @@ function createNewUser(username, password, cb) {
   return deferred.promise;
 }
 
-  buster.testCase("Friends#Unhosted", {
-    "- has a title": function (done) {
+var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
+
+buster.testCase("Friends#Unhosted", {
+    "- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -106,6 +108,7 @@ function createNewUser(username, password, cb) {
           .getTitle(function(title) { 
               assert.equals('FRIENDS#UNHOSTED - the #unhosted friends network', title); 
           })
+          .cssEq('#welcome h3', "What is FRIENDS#UNHOSTED?")
           .end(done); 
     },
     
@@ -167,7 +170,10 @@ function createNewUser(username, password, cb) {
                 console.log("Added:", userToBeAdded);
                 browserAndUser
                   .browser
-                  	.cssEq("#friends :first-child", "No friends here. Add a friend in the box above!")
+                    .waitFor("#menu-myfriends", 2000)
+                    .click("#menu-myfriends")
+                    .waitFor("#no-friends-message", 2000)
+                  	.cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
                     //add friend
                     .setValue("#add-friends-username", userToBeAdded.username)
                     .click("#do-add-friend")
@@ -179,10 +185,11 @@ function createNewUser(username, password, cb) {
                     .cssEq("#error-message", "Cannot add the same user twice")
                     //can remove friend
                     .click("#friends :first-child .remove-friend")
-                    .cssEq("#friends :first-child p", "No friends here. Add a friend in the box above!")
+                    .waitFor("#no-friends-message", 2000)
+                    .cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
                     .refresh()
-                    .waitFor("#friends :first-child p", 2000)
-                    .cssEq("#friends :first-child p", "No friends here. Add a friend in the box above!")
+                    .waitFor("#no-friends-message", 2000)
+                    .cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
                     .end(done);
               });
             });
@@ -206,8 +213,12 @@ function createNewUser(username, password, cb) {
               .then(function(browserAndUser) {
                   browserAndUser
                     .browser
+                      .waitFor("#menu-myfriends", 2000)
+                      .click("#menu-myfriends")
                       .setValue("#add-friends-username", userToBeAdded.username)
                       .click("#do-add-friend")
+                      .waitFor("#menu-status", 2000)
+                      .click("#menu-status")
                       .cssEq("#status-stream :first-child .status-update", "The message of the added")
                       .setValue("#status-update", "The message of the adder")
                       .click("#do-update-status")
