@@ -89,7 +89,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
         rem.init().then(function(localUsername) {
             self.username(localUsername);
             self.loggedIn(true);
-            self.selectedTab(window.location.href.substring(window.location.href.indexOf('#', 0)+1));
+            if(window.location.href.indexOf('#access_token') > 0) {
+                window.location.replace(location.protocol + '//' + location.host + "#status");
+                self.selectedTab("status");
+            } else {
+                self.selectedTab(window.location.href.substring(window.location.href.indexOf('#', 0)+1));
+            }
             rem.fetchUserData(FRIENDS_KEY).then(function(value) {
                 value = value || [];
                 self.allFriends(value);

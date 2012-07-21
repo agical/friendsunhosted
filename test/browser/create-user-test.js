@@ -128,8 +128,6 @@ buster.testCase("Friends#Unhosted", {
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
-              .waitFor("#menu-status", 2000)
-              .click("#menu-status")
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
@@ -150,8 +148,6 @@ buster.testCase("Friends#Unhosted", {
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
-              .waitFor("#menu-status", 2000)
-              .click("#menu-status")
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
@@ -206,8 +202,6 @@ buster.testCase("Friends#Unhosted", {
             userToBeAdded = browserAndUser.loggedInUser;
             browserAndUser
               .browser
-                .waitFor("#menu-status", 2000)
-                .click("#menu-status")
                 .setValue("#status-update", "The message of the added")
                 .click("#do-update-status")
                 .cssEq("#status-stream :first-child .status-update", "The message of the added")
@@ -239,8 +233,6 @@ buster.testCase("Friends#Unhosted", {
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
-              .waitFor("#menu-status", 2000)
-              .click("#menu-status")
               .setValue("#status-update", "Hello, #unhosted world!")
               .click("#do-update-status")
               .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
@@ -272,8 +264,6 @@ buster.testCase("Friends#Unhosted", {
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
-              .waitFor("#menu-status", 2000)
-              .click("#menu-status")
               .setValue("#status-update", "First status")
               .click("#do-update-status")
               .setValue("#status-update", "Second status")
