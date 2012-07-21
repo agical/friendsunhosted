@@ -166,6 +166,6 @@ define(
     return {
       get: get,
       put: put,
-      delete: delete_
+      'delete': delete_
     };
 });
