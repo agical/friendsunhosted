@@ -99,7 +99,7 @@ function createNewUser(username, password, cb) {
 var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
 
 buster.testCase("Friends#Unhosted", {
-    "- has a title": function (done) {
+    "- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createTestBrowser(done)
@@ -108,6 +108,7 @@ buster.testCase("Friends#Unhosted", {
           .getTitle(function(title) { 
               assert.equals('FRIENDS#UNHOSTED - the #unhosted friends network', title); 
           })
+          .cssEq('#welcome h3', "What is FRIENDS#UNHOSTED?")
           .end(done); 
     },
     

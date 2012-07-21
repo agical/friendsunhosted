@@ -96,8 +96,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
             if(window.location.href.indexOf('#access_token') > 0) {
                 window.location.replace(location.protocol + '//' + location.host + "#status");
                 self.selectedTab("status");
-            } else {
+            } else if(window.location.href.indexOf('#') > 0) {
                 self.selectedTab(window.location.href.substring(window.location.href.indexOf('#', 0)+1));
+            } else {
+                window.location.replace(location.protocol + '//' + location.host + "#welcome");
+                self.selectedTab("welcome");
             }
             rem.fetchUserData(FRIENDS_KEY).then(function(value) {
                 value = value || [];

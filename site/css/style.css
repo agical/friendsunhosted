@@ -139,14 +139,14 @@ textarea {
   width: 1200px;
 }
 
-.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box {
+.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer {
 	-moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px; /* future proofing */
   -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
 }
 
-.rounded-box{
+.rounded-box, .info-box, .more-info-box, #footer {
   padding: 10px;
   margin-right: 20px;
   margin-bottom: 20px;
