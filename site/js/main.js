@@ -47,11 +47,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     self.selectedTab = ko.observable("welcome");
     self.selectTab = function(data, event) {
-        console.log(event);
         self.selectedTab(event.srcElement.href.split("#")[1]);
         return true;
     };
 
+    self.selectedTab.subscribe(function(val) {
+        $('.menu-bar-item').removeClass('menu-selected');
+        $('#menu-'+val).addClass('menu-selected');
+    });
+    
     function StatusUpdate(suData) {
       var su = this;
       su.status = suData.status;

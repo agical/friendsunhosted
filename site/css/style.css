@@ -35,7 +35,7 @@ body {
 }
 
 
-#header, #menubar, #footer, .across-all {
+#header, #footer, .across-all {
   float: top;
   clear: both;
   width: 100%;
@@ -43,23 +43,30 @@ body {
 }
 
 #menubar {
+  float: top;
+  clear: both;
+  width: 100%;
 	color: #444;
-	background: #fff;
-	padding: 10px;
-  padding-right: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #fff;
   border-top-width: 4px;
   border-bottom-width: 4px;
   border-color: #ddd;
   border-top-style: solid;
   border-bottom-style: solid;
-  font: 200% "Tahoma", monospace;
+  font: 200% "Tahoma", monospace;  
   font-weight: bold;
 }
 
 .menu-bar-item {
   color: #444;
-	padding-right: 15px;
+	padding: 5px;
 	text-decoration: none;
+}
+
+.menu-selected {
+	background: #ddd;
 }
 
 .across-all {
@@ -154,14 +161,14 @@ textarea {
 
 .info-box {
   background-color: #f60;
-  width: 428px;
+  width: 580px;
   height: 400px;
   float: left;
 }
 
 .more-info-box {
   font: 75% "Tahoma", sans-serif;
-  width: 271px;
+  width: 380px;
   height: 300px;
   float: left;
 }
@@ -179,7 +186,7 @@ textarea {
 }
 
 .doublewidth {
-  width: 900px;  
+  width: 1200px;  
   height: 140px;
   background-color: #ddd;
 }
@@ -189,7 +196,7 @@ textarea {
   padding-top: 10px;
   float: left;
   clear: left;
-  width: 600px;
+  width: 900px;
   margin-bottom: 20px;
   margin-right: 20px;
  }
