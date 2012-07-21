@@ -132,7 +132,7 @@ define(['underscore', 'remoteStorage', 'when'],
             
             var client = getUserStorageClient('public');
 
-            client.delete(key, function(err) {
+            client['delete'](key, function(err) {
               if(err) {
                 deferred.reject(err);
               } else {
