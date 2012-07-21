@@ -8,7 +8,8 @@ body {
 #all {
   margin: 0px;
   margin-left: 10px;
-  width: 100%; /* Replace the xxxx with the the width of your site (eg 800px)*/
+  margin-right: 10px;
+  width: 90%; /* Replace the xxxx with the the width of your site (eg 800px)*/
   text-align:left;
 }
 
@@ -183,7 +184,7 @@ textarea {
 }
 
 .doublewidth {
-  width: 1200px;  
+  width: 900px;  
   height: 140px;
   background-color: #ddd;
 }

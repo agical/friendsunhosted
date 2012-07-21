@@ -45,7 +45,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     self.allFriends.subscribe(updateFriends);
       
-    self.selectedTab = ko.observable("welcome");
+    self.selectedTab = ko.observable("");
     self.selectTab = function(data, event) {
         self.selectedTab(event.srcElement.href.split("#")[1]);
         return true;
