@@ -1,12 +1,13 @@
 body { 
   font: 100% "Verdana", sans-serif; 
   padding: 0px; 
-  background: #eed;
+  background: #fff;
   margin: 0px;
 }
 
 #all {
   margin: 0px;
+  margin-left: 10px;
   width: 100%; /* Replace the xxxx with the the width of your site (eg 800px)*/
   text-align:left;
 }
@@ -47,14 +48,9 @@ body {
   clear: both;
   width: 100%;
 	color: #444;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 15px;
+  padding-left: 15px;
   background: #fff;
-  border-top-width: 4px;
-  border-bottom-width: 4px;
-  border-color: #ddd;
-  border-top-style: solid;
-  border-bottom-style: solid;
   font: 200% "Tahoma", monospace;  
   font-weight: bold;
 }
@@ -63,6 +59,7 @@ body {
   color: #444;
 	padding: 5px;
 	text-decoration: none;
+	background: #eee;
 }
 
 .menu-selected {
@@ -137,24 +134,24 @@ textarea {
 	display: none;
 }
 
-.menubar {
-  height: 2px;
-  width: 100%;
-  float: left;
-  clear: both;
-}
-
 #info {
   float: left;
   width: 1200px;
 }
 
-.rounded-box {
+.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box {
+	-moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
+}
+
+.rounded-box{
   padding: 10px;
   margin-right: 20px;
   margin-bottom: 20px;
-   border-style:solid;
-  border-width:0px;
+  border-style:solid;
+  border-width:3px;
   border-color:#666;
 }
 

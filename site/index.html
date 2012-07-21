@@ -106,14 +106,14 @@
 				data-bind="foreach: allRootStatuses().reverse()">
 				<div class="conversation"
 					data-bind="attr: {id: 'status-nr-'+$index()}">
-					<div class="top-left-box status-details">
+					<div class="status-details">
 						<span class="status-update-username storage-id"
 							data-bind="text: username"></span> <span
 							class="status-update-timestamp"
 							data-bind="text: relativeTimestamp"></span> <span
 							class="status-update" data-bind="text: status"></span>
 					</div>
-					<div class="bottom-right-box comments">
+					<div class="comments">
 						<!-- ko foreach: comments -->
 						<div class="comment"
 							data-bind="attr: {id: 'comment-nr-'+$index()}">
@@ -135,7 +135,7 @@
 
 		</div>
 
-		<div id="myfriends" class="top-left-box friends logged-in"
+		<div id="myfriends" class="friends logged-in"
 			data-bind="visible: (loggedIn() && selectedTab() == 'myfriends')">
 			<div id="add-a-friend" class="logged-in"
 				data-bind="visible: loggedIn()">
