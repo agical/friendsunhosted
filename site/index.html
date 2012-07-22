@@ -67,7 +67,7 @@
 		</div>
 
     <div id="menubar">
-      <a class="menu-bar-item menu-selected" id="menu-welcome" href="#welcome" data-bind="click: selectTab">Welcome!</a>
+      <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: selectTab">Welcome!</a>
       <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: selectTab, visible: loggedIn()">Whazzup?</a>
       <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: selectTab, visible: loggedIn()">Friends</a>
       <a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: selectTab, visible: loggedIn()">Profile</a>
@@ -87,7 +87,7 @@
       <br class="clearboth"/>
 		</div>
 
-    <div id="about" class="about full-page-text" data-bind="visible: selectedTab() == 'about'">
+    <div id="page-about" class="page about full-page-text hidden" data-bind="visible: selectedTab() == 'about'">
       <h3>About FRIENDS#UNHOSTED</h3>
       <p>
 	      FRIENDS#UNHOSTED is developed by the staff at <a href="http://agical.com" target="_blank">Agical</a>, 
@@ -103,11 +103,33 @@
       </p>
     </div>
 
-    <div id="support" class="support full-page-text"  data-bind="visible: selectedTab() == 'support'">
+    <div id="page-support" class="page support full-page-text hidden"  data-bind="visible: selectedTab() == 'support'">
       <h3>Support us!</h3>
       <p>
-      If you like what we do, please support us by sending us some Flattrings, some BitCoins, or making a donation 
-      on PayPal. By doing so, you will enable us to increase the amount of time we can spend on FRIENDS#UNHOSTED. 
+      If you like what we do, please support us by sending us some donations using one of:  
+      </p>
+      <p>        
+      Flattr: <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
+        target="_blank"> <img src="/img/flattr-badge-large.png"
+        alt="Flattr this" title="Flattr this" border="0" />
+      </a>
+      <br/>
+      <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
+        target="_blank">
+        <input type="hidden" name="cmd" value="_s-xclick" /> <input
+          type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> 
+        PayPal: <input
+          type="image" src="/img/btn_donate_SM.gif" border="0" name="submit"
+          alt="PayPal - The safer, easier way to pay online!" />
+      </form>
+      <br/>
+      BitCoin: <a
+        href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
+        target="_blank"> <img src="/img/bitcoin.png"
+        alt="BitCoin donation" /> BitCoin
+      </a>
+      </p>
+      <p>By doing so, you will enable us to increase the amount of time we can spend on FRIENDS#UNHOSTED. 
       Then we will be able to... 
       </p>
 
@@ -134,7 +156,7 @@
       
     </div>
 
-		<div id="status" class="status logged-in"
+		<div id="page-status" class="page status logged-in hidden"
 			data-bind="visible: (loggedIn() && selectedTab() == 'status')">
 			<a href="" id="refresh-link" data-bind="click: refresh">Refresh
 				statuses</a>
@@ -180,7 +202,7 @@
 
 		</div>
 
-		<div id="myfriends" class="friends logged-in"
+		<div id="page-myfriends" class="page friends logged-in hidden"
 			data-bind="visible: (loggedIn() && selectedTab() == 'myfriends')">
 			<div id="add-a-friend" class="logged-in"
 				data-bind="visible: loggedIn()">
@@ -211,7 +233,7 @@
 		</div>
 
 
-		<div id="settings" class="logged-in"
+		<div id="page-settings" class="page logged-in hidden"
 			data-bind="visible: loggedIn() && selectedTab()=='settings'">
 			<div>
 				<button id="do-clear-all-updates" data-bind="click: clearAll">Clear
@@ -220,7 +242,7 @@
       <br class="clearboth"/>
 		</div>
 		
-		<div id="welcome" data-bind="visible: selectedTab()=='welcome'">
+		<div id="page-welcome" class="hidden" data-bind="visible: selectedTab()=='welcome'">
 
 			<div id="info-what-is" class="info-box clearleft">
 				<h3>What is FRIENDS#UNHOSTED?</h3>
