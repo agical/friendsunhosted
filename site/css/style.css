@@ -1,16 +1,37 @@
 body { 
+  text-align: center;
+}
+
+#all {
   font: 100% "Verdana", sans-serif; 
   padding: 0px; 
   background: #fff;
   margin: 0px;
+	margin-left: auto;
+  margin-right: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 1200px;
+  padding: 0px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #eee;
+  border-top: none;
+  border-bottom: none;
+  text-align:left;
 }
 
-#all {
-  margin: 0px;
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 90%; /* Replace the xxxx with the the width of your site (eg 800px)*/
-  text-align:left;
+#header, #footer {
+  float: top;
+  clear: both;
+  width: auto;
+}
+
+#footer {
+  width: auto;  
+  background-color: #bbb;
+  text-align: center;
+  margin: 10px;
 }
 
 #header {
@@ -21,7 +42,7 @@ body {
 .logo {
   margin: 0px;
   padding: 10px;
-  padding-left: 40px;
+  padding-left: 10px;
   float: left;
   clear: left;
 }
@@ -37,20 +58,13 @@ body {
 }
 
 
-#header, #footer, .across-all {
-  float: top;
-  clear: both;
-  width: 100%;
-  padding:5px;
-}
 
 #menubar {
   float: top;
   clear: both;
-  width: 100%;
+  width: auto;
 	color: #444;
-  padding-bottom: 15px;
-  padding-left: 15px;
+  padding: 15px;
   background: #fff;
   font: 200% "Tahoma", monospace;  
   font-weight: bold;
@@ -80,12 +94,6 @@ body {
   float:left;
 }
 
-
-#core {
-  float: left;
-  padding: 10px;
-}
-
 .hidden {
   display: none;	
 }
@@ -111,7 +119,7 @@ body {
 
 
 textarea {
-	width: 420px;
+	width: 90%;
 	height: 80px;
 	border: 2px solid #cccccc;
 	padding: 3px;
@@ -120,24 +128,12 @@ textarea {
   clear: both;
 }
 
-.footer {
-  margin-bottom: 10px;
-  float: left;
-  clear: both;
-  background-color: #bbb;
-  text-align: center;
-}
 
 #license {
 }
 
 #error-panel {
 	display: none;
-}
-
-#info {
-  float: left;
-  width: 1200px;
 }
 
 .rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer {
@@ -149,26 +145,60 @@ textarea {
 
 .rounded-box, .info-box, .more-info-box, #footer {
   padding: 10px;
-  margin-right: 20px;
   margin-bottom: 20px;
-  border-style:solid;
+	border-style:solid;
   border-width:3px;
   border-color:#666;
 }
 
+#welcome {
+  margin: 0px;	
+  
+}
 
 .info-box {
   background-color: #f60;
-  width: 580px;
-  height: 400px;
+  width: 550px;
+  margin: 10px;
   float: left;
 }
 
+#info-what-is {
+	flow:left;
+	margin-left: 15px
+}
+
+#info-signup {
+  flow:right;
+}
+
 .more-info-box {
-  font: 75% "Tahoma", sans-serif;
-  width: 380px;
-  height: 300px;
+  font: 100% "Tahoma", sans-serif;
+  width: 351px;
+  height: 100%;
+  margin: 10px;
   float: left;
+}
+
+#more-add-friends {
+	flow: left;
+}
+
+#more-support {
+  margin-left: 14px;
+  margin-right: 13px;
+}
+
+#more-tech {
+  flow: right;
+}
+
+#bottom-box {
+  font: 100% "Tahoma", sans-serif;
+  height: auto;
+  float: left;
+  width: auto;  
+  background-color: #ddd;
 }
 
 .clearright {
@@ -183,11 +213,6 @@ textarea {
 	clear: both;
 }
 
-.doublewidth {
-  width: 900px;  
-  height: 140px;
-  background-color: #ddd;
-}
 
 .status {
   padding-left: 10px;
@@ -207,6 +232,7 @@ textarea {
   width: 600px;
   margin-bottom: 20px;
 }
+
 #profile {
   padding-left: 10px;
   padding-top: 10px;
@@ -223,15 +249,6 @@ textarea {
   border-bottom:0px;
   border-right:0px;
 }
-
-.bottom-right-box {
-  border-style:solid;
-  border-width:3px;
-  border-color:#666;
-  border-top:0px;
-  border-left:0px;
-}
-
 
 .status-stream {
   float: left;
@@ -304,19 +321,4 @@ textarea {
 button {
   float:right;
 }
-
-p, h1, h2, h3, h4{
-  margin: 0px;
-  padding: 0px;
-}
-
-#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
-
-#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
-
-ul#icons {margin: 0; padding: 0;}
-
-ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
-
-ul#icons span.ui-icon {float: left; margin: 0 4px;}
 

@@ -65,7 +65,7 @@
           </a>
         </div>
       </div>
-      <br class="clearboth"/>
+      <br />
 		</div>
 
     <div id="menubar">
@@ -76,7 +76,7 @@
       <a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: selectTab, visible: loggedIn()">Settings</a>
       <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: selectTab">Support</a>
       <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: selectTab">About</a>
-      <br class="clearboth"/>
+      <br />
     </div>
 
 		<div class="ui-widget" id="error-panel">
@@ -86,7 +86,7 @@
 					<span id="error-message"></span>
 				</p>
 			</div>
-      <br class="clear-both"/>
+      <br class="clearboth"/>
 		</div>
 
 
@@ -132,6 +132,7 @@
 					</div>
 				</div>
 			</div>
+      <br class="clearboth"/>
 
 		</div>
 
@@ -162,20 +163,22 @@
 				</div>
 				<!-- /ko -->
 			</div>
+			<br class="clearboth"/>
 		</div>
 
 
-		<div id="settings" class="top-left-box logged-in"
+		<div id="settings" class="logged-in"
 			data-bind="visible: loggedIn() && selectedTab()=='settings'">
 			<div>
 				<button id="do-clear-all-updates" data-bind="click: clearAll">Clear
 					all friends and updates!!</button>
 			</div>
+      <br class="clearboth"/>
 		</div>
 		
 		<div id="welcome" data-bind="visible: selectedTab()=='welcome'">
 
-			<div class="info-box clearleft">
+			<div id="info-what-is" class="info-box clearleft">
 				<h3>What is FRIENDS#UNHOSTED?</h3>
 
 				<p>
@@ -191,7 +194,7 @@
 					we don't do that for you. We don't own you, you do!</p>
 			</div>
 
-			<div class="info-box clearright">
+			<div id="info-signup" class="info-box clearright">
 				<h3>How do I signup?</h3>
 				<p>The easiest is to get an account on one of the following
 					storage providers:</p>
@@ -222,7 +225,7 @@
 				</p>
 			</div>
 
-			<div class=" more-info-box clearleft">
+			<div id="more-add-friend" class="more-info-box clearleft">
 				<h3>How do I add friends?</h3>
 				<p>To add a friend to your network, you need to get your friends
 					storage address. That storage address looks like an email address:
@@ -240,7 +243,7 @@
 					huh?!</p>
 			</div>
 
-			<div class="  more-info-box">
+			<div id="more-support" class="more-info-box">
 				<h3>How do I support FRIENDS#UNHOSTED?</h3>
 				<p>This app has so far been developed on spare time. Hopefully,
 					with a little help from our friends (that means You), we can start
@@ -258,7 +261,7 @@
 			</div>
 
 
-			<div class="  more-info-box ">
+			<div id="more-tech" class="more-info-box clearright">
 				<h3>Give me the technical details!</h3>
 				<p>
 					Regarding how #unhosted works, please read the material on <a
@@ -276,7 +279,7 @@
 				</p>
 			</div>
 
-			<div class="  more-info-box doublewidth">
+			<div id="bottom-box" class="more-info-box">
 				<h3>Why should I care that it is #unhosted?</h3>
 				<p>The big social network sites, like Facebook, Twitter, Google
 					and many more, gives you free storage for your stuff. But, there is
@@ -290,6 +293,7 @@
 					that there is something fishy going on, FRIENDS#UNHOSTED is for
 					you!</p>
 			</div>
+      <br class="clearboth"/>
 		</div>
 
 		<div id="footer" class="">
@@ -301,8 +305,12 @@
 					href="http://creativecommons.org/licenses/by-sa/3.0/">Creative
 					Commons Attribution-ShareAlike 3.0 Unported License</a>.
 			</div>
+      <br class="clearboth"/>
 		</div>
+    <br class="clearboth"/>
 	</div>
+  <br class="clearboth"/>
+
 </body>
 </html>
 
