@@ -212,7 +212,7 @@ var createRobot = function(done) {
             fu.b.getText("#status-stream :first-child .status-update-username", 
                     function(actualUsername) {
                         fu.user.then(function(user) {
-                            userFn_text_cb(user)(actualUsername);
+                            userFn_text_cb(user)(actualUsername.value);
                             d.resolve();
                         });
                     });
@@ -283,11 +283,11 @@ buster.testCase("Friends#Unhosted", {
             .loginNewUser()
             .setStatus("Hello, #unhosted world!")
             .statusUpdate(1, assEq("Hello, #unhosted world!"))
-            //.statusUsername(1, function(user) {assEq(user.username);})
+            .statusUsername(1, function(user) {return assEq(user.username);})
             .statusTimeStamp(1, assert)
             .setStatus("Second message")
             .statusUpdate(1, assEq("Second message"))
-            //.statusUsername(1, function(user) {assEq(user.username);})
+            .statusUsername(1, function(user) {return assEq(user.username);})
             .statusTimeStamp(1, assert)
         .end();
         /*
