@@ -22,6 +22,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
     self.allRootStatuses = ko.computed(function() {
       return _.filter(self.allStatuses(), function(item) {return !item.inReplyTo;});
     });
+
+    self.getPageFromLocation = function () {
+        try {
+            var page = window.location.href.substring(window.location.href.indexOf('#', 0)+1);
+            return page;
+        } catch(e) {
+            return "welcome";
+        }
+    };
     
     self.addFriendsUsername = ko.observable("");
     self.allFriends = ko.observableArray([]);
@@ -45,15 +54,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     self.allFriends.subscribe(updateFriends);
       
-    self.selectedTab = ko.observable("welcome");
+    self.selectedTab = ko.observable('');
 
     self.selectedTab.subscribe(function(val) {
         $('.menu-bar-item').removeClass('menu-selected');
         $('#menu-'+val).addClass('menu-selected');
+        $('.page').hide();
+        $('#page-'+val).show();
     });
     
     self.selectTab = function(data, event) {
-        self.selectedTab(event.srcElement.href.split("#")[1]);
+        var tab = event.srcElement.href.split("#")[1];
+        self.selectedTab(tab);
+        
         return true;
     };
 
@@ -98,7 +111,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
                 window.location.replace(location.protocol + '//' + location.host + "#status");
                 self.selectedTab("status");
             } else if(window.location.href.indexOf('#') > 0) {
-                self.selectedTab(window.location.href.substring(window.location.href.indexOf('#', 0)+1));
+                self.selectedTab(self.getPageFromLocation());
             } else {
                 window.location.replace(location.protocol + '//' + location.host + "#welcome");
                 self.selectedTab("welcome");
@@ -111,8 +124,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
                 value = value || [];
                 addStatusUpdates(value);
             }, onError);
-        }, function(errMsg) {
-            console.log(errMsg);
+        }, function(notLoggedInMsg) {
+            console.log(notLoggedInMsg);
+            self.selectedTab("welcome");
             self.loggedIn(false);
         });
     };
@@ -128,7 +142,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
 
     self.logout = function() {
         rem.logout().then(function() {
-            window.location.href = "/";
+            self.loggedIn(false);
+            self.selectedTab("support");
         });
     };
   

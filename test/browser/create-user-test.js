@@ -108,7 +108,7 @@ buster.testCase("Friends#Unhosted", {
           .getTitle(function(title) { 
               assert.equals('FRIENDS#UNHOSTED - the #unhosted friends network', title); 
           })
-          .cssEq('#welcome h3', "What is FRIENDS#UNHOSTED?")
+          .cssEq('#page-welcome h3', "What is FRIENDS#UNHOSTED?")
           .end(done); 
     },
     
