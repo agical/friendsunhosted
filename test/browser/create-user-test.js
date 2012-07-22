@@ -309,7 +309,7 @@ buster.testCase("Friends#Unhosted", {
         */
     },
 
-    "//- can comment on status updates": function (done) {
+    "- can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -326,7 +326,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "//- can let user add, list and remove friends": function (done) {
+    "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         createTestUser()
           .then(function(userToBeAdded) {
@@ -361,7 +361,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "//- can let user see friends messages": function (done) {
+    "- can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded = null;
         loginCreatedUser(done)
@@ -395,7 +395,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "//- keeps login status on refresh": function (done) {
+    "- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -412,7 +412,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "//- can logout user": function (done) {
+    "- can logout user": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -425,7 +425,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "//- shows latest activity on top": function (done) {
+    "- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
