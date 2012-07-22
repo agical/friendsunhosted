@@ -215,21 +215,12 @@ buster.testCase("Friends#Unhosted", {
     "- can login a user": function (done) {
         this.timeout = 25000;
             
-            createRobot(done)  
-                .loginNewUser()
-                .welcomeMessage(function(user) {
-                    return assEq("Welcome, " + user.username + "!");
-                })
-            .end();
-            
-            /*
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .cssEq("#welcome-message", "Welcome, " + browserAndUser.loggedInUser.username + "!")
-              .end(done);
-        });
-        */
+        createRobot(done)  
+            .loginNewUser()
+            .welcomeMessage(function(user) {
+                return assEq("Welcome, " + user.username + "!");
+            })
+        .end();
     },
     
     "- can let user add status updates": function (done) {
