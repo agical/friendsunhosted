@@ -96,20 +96,56 @@ function createNewUser(username, password, cb) {
   return deferred.promise;
 }
 
+var createRobot = function(done) {
+    var fu = {};
+    fu.b = createTestBrowser(done).init();
+    
+    fu.openStartPage = function() {
+        fu.b.url("http://localhost:8000/");
+        return fu;
+    };
+    
+    fu.title = function(title_cb) {
+        fu.b.getTitle(function(t) { 
+            title_cb(t); 
+        });
+        return fu;
+    };
+    
+    fu.welcomeMessage = function(message_cb) {
+        fu.b.getText('#page-welcome h3', function(t) {
+            message_cb(t.value);
+        });
+        return fu;
+    };
+
+    fu.end = function() {
+        fu.b.end(done);
+        return fu;
+    };
+    
+    return fu;
+};
+
 var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
+
+var assEq = function(expected) {
+    return (function(e) { 
+                return function(actual) {
+                    assert.equals(e, actual);
+                };
+    })(expected);
+};
 
 buster.testCase("Friends#Unhosted", {
     "- has a title and info on load": function (done) {
         this.timeout = 5000;
         
-        createTestBrowser(done)
-          .init()
-          .url("http://localhost:8000/")
-          .getTitle(function(title) { 
-              assert.equals('FRIENDS#UNHOSTED - the #unhosted friends network', title); 
-          })
-          .cssEq('#page-welcome h3', "What is FRIENDS#UNHOSTED?")
-          .end(done); 
+        createRobot(done)   
+            .openStartPage()
+            .title(assEq('FRIENDS#UNHOSTED - the #unhosted friends network'))
+            .welcomeMessage(assEq('What is FRIENDS#UNHOSTED?'))
+            .end();
     },
     
     "- can login a user": function (done) {
