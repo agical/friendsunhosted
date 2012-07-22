@@ -1,24 +1,38 @@
 body { 
   text-align: center;
+  margin: 0px;
+  padding: 0px;
+}
+
+button {
+  float:right;
+}
+
+h3 {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 #all {
+  width: 1200px;
+  
   font: 100% "Verdana", sans-serif; 
-  padding: 0px; 
+  text-align:left;
   background: #fff;
+  
   margin: 0px;
 	margin-left: auto;
   margin-right: auto;
+  
+  padding: 0px;
   padding-left: 10px;
   padding-right: 10px;
-  width: 1200px;
-  padding: 0px;
+  
   border-style: solid;
   border-width: 1px;
   border-color: #eee;
   border-top: none;
   border-bottom: none;
-  text-align:left;
 }
 
 #header, #footer {
@@ -47,17 +61,31 @@ body {
   clear: left;
 }
 
-#byline-top {
-  font: 125% "Tahoma", monospace;
-  float:left;
-}
-
 .login-area {
    float: right;
    padding: 5px;
+   clear:right;
+}
+
+.login-area button {
+   float: right;
+}
+
+.login-area input, #welcome-message {
+   float: left;
 }
 
 
+#support-area {
+  padding-top: 10px;
+  padding-left: 10px;
+  float: right;
+}
+
+#support-area * {
+  padding: 3px;
+  float: left;
+}
 
 #menubar {
   float: top;
@@ -83,15 +111,6 @@ body {
 
 .across-all {
 	background: #443;
-}
-
-#support-area {
-  padding: 5px;
-}
-
-#support-area * {
-  padding: 5px;
-  float:left;
 }
 
 .hidden {
@@ -317,8 +336,3 @@ textarea {
   float: right;
   padding: 5px;
 }
-
-button {
-  float:right;
-}
-

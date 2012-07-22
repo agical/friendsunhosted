@@ -118,7 +118,7 @@ buster.testCase("Friends#Unhosted", {
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
-              .cssEq("#welcome", "Welcome, " + browserAndUser.loggedInUser.username + "!")
+              .cssEq("#welcome-message", "Welcome, " + browserAndUser.loggedInUser.username + "!")
               .end(done);
         });
     },

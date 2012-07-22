@@ -26,22 +26,22 @@
 		<div id="header" >
 			<div class="logo">
 				<img id="logo-top" src="img/logo.png" />
-				<div id="byline-top">Own your network!</div>
 			</div>
       <div class="login-area">
         <div class="not-logged-in" data-bind="visible: !loggedIn()">
           <input placeholder="username@storageserver.com" id="username"
-            data-bind="value: username" />
+            data-bind="value: username" size="26"/>
           <button id="do-login" data-bind="click: login">Login</button>
         </div>
-        <div id="welcome" class="logged-in" data-bind="visible: loggedIn()">
-          Welcome, <span class="storage-id" data-bind="text: username()"></span>!
+        <div id="welcome-message" class="logged-in" data-bind="visible: loggedIn()">
+          <span>Welcome, <span class="storage-id" data-bind="text: username()"></span>!</span>
         </div>
         <div class="logged-in" data-bind="visible: loggedIn()">
           <button id="do-logout" data-bind="click: logout">Logout</button>
         </div>
       </div>
       <div id="support-area">
+      
         <div class="support" id="flattr">
           <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
             target="_blank"> <img src="/img/flattr-badge-large.png"
@@ -61,11 +61,11 @@
           <a
             href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
             target="_blank"> <img src="/img/bitcoin.png"
-            alt="BitCoin donation" /> Send us some BitCoins!
+            alt="BitCoin donation" /> BitCoin
           </a>
         </div>
+        <br class="clearboth"/>
       </div>
-      <br />
 		</div>
 
     <div id="menubar">
@@ -76,7 +76,7 @@
       <a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: selectTab, visible: loggedIn()">Settings</a>
       <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: selectTab">Support</a>
       <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: selectTab">About</a>
-      <br />
+      <br class="clearboth"/>
     </div>
 
 		<div class="ui-widget" id="error-panel">
@@ -235,7 +235,7 @@
 				</p>
 				<p>You add that address to your F#U friends, and then you can
 					see the updates of your friend.</p>
-				<h5>How do I find my friends?</h5>
+				<h3>How do I find my friends?</h3>
 				<p>At the moment, there is no central server where you can find
 					your friends, that would kind of defeat the purpose of the unhosted
 					thing. Since there is no central server, you need to get in contact
@@ -305,11 +305,8 @@
 					href="http://creativecommons.org/licenses/by-sa/3.0/">Creative
 					Commons Attribution-ShareAlike 3.0 Unported License</a>.
 			</div>
-      <br class="clearboth"/>
 		</div>
-    <br class="clearboth"/>
 	</div>
-  <br class="clearboth"/>
 
 </body>
 </html>
