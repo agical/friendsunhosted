@@ -164,7 +164,7 @@ textarea {
 	display: none;
 }
 
-.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer {
+.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer, .full-page-text {
 	-moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px; /* future proofing */
@@ -179,7 +179,7 @@ textarea {
 	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#808080');
 }
 
-.rounded-box, .info-box, .more-info-box, #footer {
+.rounded-box, .info-box, .more-info-box, #footer, .full-page-text  {
   padding: 10px;
   margin-bottom: 20px;
 	border-style:solid;
@@ -209,7 +209,7 @@ textarea {
   flow:right;
 }
 
-.more-info-box {
+.more-info-box, .full-page-text{
   font: 100% "Tahoma", sans-serif;
   width: 351px;
   height: 100%;
@@ -230,7 +230,7 @@ textarea {
   flow: right;
 }
 
-#bottom-box {
+#bottom-box, .full-page-text {
   font: 100% "Tahoma", sans-serif;
   height: auto;
   float: left;

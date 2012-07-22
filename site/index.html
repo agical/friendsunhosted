@@ -87,6 +87,52 @@
       <br class="clearboth"/>
 		</div>
 
+    <div id="about" class="about full-page-text" data-bind="visible: selectedTab() == 'about'">
+      <h3>About FRIENDS#UNHOSTED</h3>
+      <p>
+	      FRIENDS#UNHOSTED is developed by the staff at <a href="http://agical.com" target="_blank">Agical</a>, 
+	      a Swedish IT consultancy firm with a passion for building the software community and for open source. 
+	      F#U is open source and released with some rights reserved, under the Creative Commons Attribution-ShareAlike 3.0 license. 
+	      The source is available at our <a target="_blank" href="https://github.com/agical/friendsunhosted">GitHub repository</a>   
+	      Feel free to fork it and help us out.
+      </p>
+      <p>
+	      F#U (just a little pun intended) came out of the desire to have a social network where the network is owned by the 
+	      users, not by some Mega Corp. The #unhosted technology together with some neat cryptographic solutions (coming
+	      soon) makes this possible.
+      </p>
+    </div>
+
+    <div id="support" class="support full-page-text"  data-bind="visible: selectedTab() == 'support'">
+      <h3>Support us!</h3>
+      <p>
+      If you like what we do, please support us by sending us some Flattrings, some BitCoins, or making a donation 
+      on PayPal. By doing so, you will enable us to increase the amount of time we can spend on FRIENDS#UNHOSTED. 
+      Then we will be able to... 
+      </p>
+
+      <h3>Support you!</h3>
+      <p>
+      We are developing FRIENDS#UNHOSTED on our spare time, hence we have a very limited amount of time 
+      available for developing the site, or help out with any support issues. But there is a solution...
+      </p>
+
+      <h3>Support us!</h3>
+      <p>
+      We won't put any adds on the site, and there will never be a gigantic social network database hosted on our 
+      servers that make investors drool money over us. Well, maybe they will drool money all over us, but not 
+      because of adds or a social network database. Therefore, we need direct sponsorship from anyone that think
+      this is a good idea. You can also check out the 
+      <a target="_blank" href="https://github.com/agical/friendsunhosted">GitHub repository</a> if there is anything 
+      you can help out with. Maybe you can even... 
+      </p>
+
+      <h3>Support you!</h3>
+      <p>
+      By submitting patches for the site you might even be able to help yourself! That is so open source!!
+      </p>
+      
+    </div>
 
 		<div id="status" class="status logged-in"
 			data-bind="visible: (loggedIn() && selectedTab() == 'status')">
