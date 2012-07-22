@@ -181,6 +181,59 @@ var createRobot = function(done) {
         return fu;
     };
     
+    fu.setStatus = function(status) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b
+                .setValue("#status-update", status)
+                .click("#do-update-status", d.resolve);
+        });   
+        return fu;
+    };
+    
+    fu.statusUpdate = function(nr, text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText("#status-stream :first-child .status-update", 
+                    function(t) {
+                        text_cb(t.value);
+                        d.resolve();
+                    });
+        });
+        return fu;        
+    };
+
+    fu.statusUsername = function(nr, userFn_text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText("#status-stream :first-child .status-update-username", 
+                    function(actualUsername) {
+                        fu.user.then(function(user) {
+                            userFn_text_cb(user)(actualUsername);
+                            d.resolve();
+                        });
+                    });
+        });   
+        return fu;        
+    };
+
+    fu.statusTimeStamp = function(nr, text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText("#status-stream :first-child .status-update-timestamp", 
+                    function(t) {
+                        text_cb(t.value);
+                        d.resolve();
+                    });
+        });   
+        return fu;        
+    };
+
+    
     fu.end = function() {
         defPeek().then(function() {
             fu.b.end(done);
@@ -225,7 +278,19 @@ buster.testCase("Friends#Unhosted", {
     
     "- can let user add status updates": function (done) {
         this.timeout = 25000;
-         
+
+        createRobot(done)  
+            .loginNewUser()
+            .setStatus("Hello, #unhosted world!")
+            .statusUpdate(1, assEq("Hello, #unhosted world!"))
+            //.statusUsername(1, function(user) {assEq(user.username);})
+            .statusTimeStamp(1, assert)
+            .setStatus("Second message")
+            .statusUpdate(1, assEq("Second message"))
+            //.statusUsername(1, function(user) {assEq(user.username);})
+            .statusTimeStamp(1, assert)
+        .end();
+        /*
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
@@ -241,9 +306,10 @@ buster.testCase("Friends#Unhosted", {
               .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
               .end(done);
         });
+        */
     },
 
-    "- can comment on status updates": function (done) {
+    "//- can comment on status updates": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
@@ -260,7 +326,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "- can let user add, list and remove friends": function (done) {
+    "//- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         createTestUser()
           .then(function(userToBeAdded) {
@@ -295,7 +361,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "- can let user see friends messages": function (done) {
+    "//- can let user see friends messages": function (done) {
         this.timeout = 25000;
         var userToBeAdded = null;
         loginCreatedUser(done)
@@ -329,7 +395,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "- keeps login status on refresh": function (done) {
+    "//- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -346,7 +412,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "- can logout user": function (done) {
+    "//- can logout user": function (done) {
         this.timeout = 25000;
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
@@ -359,7 +425,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "- shows latest activity on top": function (done) {
+    "//- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         loginCreatedUser(done).then(function(browserAndUser) {
