@@ -129,26 +129,16 @@ var createRobot = function(done) {
             });
         fu.user.promise.then(function(user)  {
             fu.b
-                .init()
                 .url("http://localhost:8000/")
                 .setValue("#username", user.username)
                 .click("#do-login")
-                .pause(100)
-                .windowHandles(function(data) {
-                    var popupWindow = data.value[1];
-                    console.log("popupWindow is", popupWindow);
-                    this.window(popupWindow)
-                        .waitFor('input[name="password"]', 500) 
-                        .setValue('input[name="password"]', user.password)
-                        .submitForm("form")
-                            .windowHandles(function(data){
-                                var originalWindow = data.value[0];
-                                d.resolve(
-                                    {browser: this.window(originalWindow),
-                                    loggedInUser: user});
-                            });
+                .waitFor('input[name="password"]', 500) 
+                .setValue('input[name="password"]', user.password)
+                .submitForm("form", function() {
+                    d.resolve(
+                            {browser: fu.b,
+                            loggedInUser: user});
                 });
-
         });
         return fu;
     };
