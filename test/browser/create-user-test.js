@@ -99,28 +99,102 @@ function createNewUser(username, password, cb) {
 var createRobot = function(done) {
     var fu = {};
     fu.b = createTestBrowser(done).init();
+    fu.user = null;
+    fu.lastFn = null;
+    
+    function defPush() {
+        fu.lastFn = when.defer();
+        return fu.lastFn;
+    }
+
+    function defPeek() {
+        return fu.lastFn;
+    }
     
     fu.openStartPage = function() {
-        fu.b.url("http://localhost:8000/");
-        return fu;
-    };
-    
-    fu.title = function(title_cb) {
-        fu.b.getTitle(function(t) { 
-            title_cb(t); 
+        var d = defPush();
+        fu.b.url("http://localhost:8000/", function() {
+            d.resolve();
         });
         return fu;
     };
     
-    fu.welcomeMessage = function(message_cb) {
-        fu.b.getText('#page-welcome h3', function(t) {
-            message_cb(t.value);
+    fu.loginNewUser = function() {
+        var d = defPush();
+        
+        fu.user = when.defer();
+        createTestUser()
+            .then(function(user) {
+                fu.user.resolve(user);                
+            });
+        fu.user.promise.then(function(user)  {
+            fu.b
+                .init()
+                .url("http://localhost:8000/")
+                .setValue("#username", user.username)
+                .click("#do-login")
+                .pause(100)
+                .windowHandles(function(data) {
+                    var popupWindow = data.value[1];
+                    console.log("popupWindow is", popupWindow);
+                    this.window(popupWindow)
+                        .waitFor('input[name="password"]', 500) 
+                        .setValue('input[name="password"]', user.password)
+                        .submitForm("form")
+                            .windowHandles(function(data){
+                                var originalWindow = data.value[0];
+                                d.resolve(
+                                    {browser: this.window(originalWindow),
+                                    loggedInUser: user});
+                            });
+                });
+
+        });
+        return fu;
+    };
+     
+    fu.title = function(title_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getTitle(function(t) { 
+                title_cb(t);
+                d.resolve();
+            });
+        });
+        return fu;
+    };
+    
+    fu.welcomeHeadline = function(text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText('#page-welcome h3', function(t) {
+                text_cb(t.value);
+                d.resolve();
+            });
         });
         return fu;
     };
 
+    fu.welcomeMessage = function(userFn_message_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText('#welcome-message', function(t) {
+                fu.user.then(function(user) {
+                    userFn_message_cb(user)(t.value);
+                    d.resolve();
+                });
+            });
+        });
+        return fu;
+    };
+    
     fu.end = function() {
-        fu.b.end(done);
+        defPeek().then(function() {
+            fu.b.end(done);
+        });
         return fu;
     };
     
@@ -144,19 +218,28 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)   
             .openStartPage()
             .title(assEq('FRIENDS#UNHOSTED - the #unhosted friends network'))
-            .welcomeMessage(assEq('What is FRIENDS#UNHOSTED?'))
-            .end();
+            .welcomeHeadline(assEq('What is FRIENDS#UNHOSTED?'))
+        .end();
     },
     
     "- can login a user": function (done) {
         this.timeout = 25000;
-         
+            
+            createRobot(done)  
+                .loginNewUser()
+                .welcomeMessage(function(user) {
+                    return assEq("Welcome, " + user.username + "!");
+                })
+            .end();
+            
+            /*
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
               .cssEq("#welcome-message", "Welcome, " + browserAndUser.loggedInUser.username + "!")
               .end(done);
         });
+        */
     },
     
     "- can let user add status updates": function (done) {
