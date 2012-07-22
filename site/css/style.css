@@ -1,16 +1,53 @@
 body { 
-  font: 100% "Verdana", sans-serif; 
-  padding: 0px; 
-  background: #fff;
+  text-align: center;
   margin: 0px;
+  padding: 0px;
+  background: #1A0041;
+}
+
+button {
+  float:right;
+}
+
+h3 {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 #all {
-  margin: 0px;
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 90%; /* Replace the xxxx with the the width of your site (eg 800px)*/
+  width: 1200px;
+  height: 100%;
+
+  font: 100% "Verdana", sans-serif; 
   text-align:left;
+  background: #fff;
+  
+  margin: 0px;
+	margin-left: auto;
+  margin-right: auto;
+  
+  padding: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  
+  border-style: solid;
+  border-width: 1px;
+  border-color: #eee;
+  border-top: none;
+  border-bottom: none;
+}
+
+#header, #footer {
+  float: top;
+  clear: both;
+  width: auto;
+}
+
+#footer {
+  width: auto;  
+  background-color: #bbb;
+  text-align: center;
+  margin: 10px;
 }
 
 #header {
@@ -21,69 +58,68 @@ body {
 .logo {
   margin: 0px;
   padding: 10px;
-  padding-left: 40px;
+  padding-top: 0px;
   float: left;
   clear: left;
-}
-
-#byline-top {
-  font: 125% "Tahoma", monospace;
-  float:left;
 }
 
 .login-area {
    float: right;
    padding: 5px;
+   padding-top: 20px;
+   clear:right;
+}
+
+.login-area button {
+   float: right;
+}
+
+.login-area input, #welcome-message {
+   float: left;
+   padding-right: 10px;
 }
 
 
-#header, #footer, .across-all {
-  float: top;
-  clear: both;
-  width: 100%;
-  padding:5px;
+#support-area {
+  padding-top: 10px;
+  padding-left: 10px;
+  float: right;
+}
+
+#support-area * {
+  padding: 3px;
+  float: left;
 }
 
 #menubar {
   float: top;
   clear: both;
-  width: 100%;
+  width: auto;
 	color: #444;
-  padding-bottom: 15px;
-  padding-left: 15px;
-  background: #fff;
-  font: 200% "Tahoma", monospace;  
+  padding: 15px;
+  font: 150% "Courier", sans-serif;  
   font-weight: bold;
+}
+
+#menu-about, #menu-support {
+  float: right;
+  margin-top: -3px;
 }
 
 .menu-bar-item {
   color: #444;
-	padding: 5px;
+  background: #eee; 
+  padding: 5px;
+	margin-left: 10px;
 	text-decoration: none;
-	background: #eee;
 }
 
 .menu-selected {
-	background: #ddd;
+  background: #FD7A23; 
 }
 
 .across-all {
 	background: #443;
-}
-
-#support-area {
-  padding: 5px;
-}
-
-#support-area * {
-  padding: 5px;
-  float:left;
-}
-
-
-#core {
-  float: left;
-  padding: 10px;
 }
 
 .hidden {
@@ -111,7 +147,7 @@ body {
 
 
 textarea {
-	width: 420px;
+	width: 90%;
 	height: 80px;
 	border: 2px solid #cccccc;
 	padding: 3px;
@@ -120,13 +156,6 @@ textarea {
   clear: both;
 }
 
-.footer {
-  margin-bottom: 10px;
-  float: left;
-  clear: both;
-  background-color: #bbb;
-  text-align: center;
-}
 
 #license {
 }
@@ -135,40 +164,78 @@ textarea {
 	display: none;
 }
 
-#info {
-  float: left;
-  width: 1200px;
-}
-
-.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer {
+.rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer, .full-page-text {
 	-moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px; /* future proofing */
   -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
+
+  -moz-box-shadow: 3px 3px 4px #888;
+	-webkit-box-shadow: 3px 3px 4px #888;
+	box-shadow: 3px 3px 4px #888;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#808080')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#808080');
 }
 
-.rounded-box, .info-box, .more-info-box, #footer {
+.rounded-box, .info-box, .more-info-box, #footer, .full-page-text  {
   padding: 10px;
-  margin-right: 20px;
   margin-bottom: 20px;
-  border-style:solid;
+	border-style:solid;
   border-width:3px;
   border-color:#666;
 }
 
+#welcome {
+  margin: 0px;	
+  
+}
 
 .info-box {
-  background-color: #f60;
-  width: 580px;
-  height: 400px;
+	color: #000;
+  background-color: #FD7A23;
+  width: 550px;
+  margin: 10px;
   float: left;
 }
 
-.more-info-box {
-  font: 75% "Tahoma", sans-serif;
-  width: 380px;
-  height: 300px;
+#info-what-is {
+	flow:left;
+	margin-left: 15px
+}
+
+#info-signup {
+  flow:right;
+}
+
+.more-info-box, .full-page-text{
+  font: 100% "Tahoma", sans-serif;
+  width: 351px;
+  height: 100%;
+  margin: 10px;
   float: left;
+}
+
+#more-add-friends {
+	flow: left;
+}
+
+#more-support {
+  margin-left: 14px;
+  margin-right: 13px;
+}
+
+#more-tech {
+  flow: right;
+}
+
+#bottom-box, .full-page-text {
+  font: 100% "Tahoma", sans-serif;
+  height: auto;
+  float: left;
+  width: auto;  
+  background-color: #ddd;
 }
 
 .clearright {
@@ -183,11 +250,6 @@ textarea {
 	clear: both;
 }
 
-.doublewidth {
-  width: 900px;  
-  height: 140px;
-  background-color: #ddd;
-}
 
 .status {
   padding-left: 10px;
@@ -207,6 +269,7 @@ textarea {
   width: 600px;
   margin-bottom: 20px;
 }
+
 #profile {
   padding-left: 10px;
   padding-top: 10px;
@@ -224,15 +287,6 @@ textarea {
   border-right:0px;
 }
 
-.bottom-right-box {
-  border-style:solid;
-  border-width:3px;
-  border-color:#666;
-  border-top:0px;
-  border-left:0px;
-}
-
-
 .status-stream {
   float: left;
   width: 100%;
@@ -241,10 +295,9 @@ textarea {
 
 }
 
-
 .status-details {
   float: right;
-  background-color: #f60;
+  background-color: #FD7A23;
   padding: 5px;
   width: 100%;
 }
@@ -300,23 +353,3 @@ textarea {
   float: right;
   padding: 5px;
 }
-
-button {
-  float:right;
-}
-
-p, h1, h2, h3, h4{
-  margin: 0px;
-  padding: 0px;
-}
-
-#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
-
-#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
-
-ul#icons {margin: 0; padding: 0;}
-
-ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
-
-ul#icons span.ui-icon {float: left; margin: 0 4px;}
-
