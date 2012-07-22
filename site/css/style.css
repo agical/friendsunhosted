@@ -2,6 +2,7 @@ body {
   text-align: center;
   margin: 0px;
   padding: 0px;
+  background: #1A0041;
 }
 
 button {
@@ -96,27 +97,25 @@ h3 {
   width: auto;
 	color: #444;
   padding: 15px;
-  background: #fff;
   font: 150% "Courier", sans-serif;  
   font-weight: bold;
 }
 
 #menu-about, #menu-support {
   float: right;
-  background: #f60; 
   margin-top: -3px;
 }
 
 .menu-bar-item {
   color: #444;
-	padding: 5px;
+  background: #eee; 
+  padding: 5px;
 	margin-left: 10px;
 	text-decoration: none;
-	background: #eee;
 }
 
 .menu-selected {
-	background: #ddd;
+  background: #FD7A23; 
 }
 
 .across-all {
@@ -170,6 +169,14 @@ textarea {
   -webkit-border-radius: 10px;
   border-radius: 10px; /* future proofing */
   -khtml-border-radius: 10px; /* for old Konqueror browsers */ 
+
+  -moz-box-shadow: 3px 3px 4px #888;
+	-webkit-box-shadow: 3px 3px 4px #888;
+	box-shadow: 3px 3px 4px #888;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#808080')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#808080');
 }
 
 .rounded-box, .info-box, .more-info-box, #footer {
@@ -186,7 +193,8 @@ textarea {
 }
 
 .info-box {
-  background-color: #f60;
+	color: #000;
+  background-color: #FD7A23;
   width: 550px;
   margin: 10px;
   float: left;
@@ -287,10 +295,9 @@ textarea {
 
 }
 
-
 .status-details {
   float: right;
-  background-color: #f60;
+  background-color: #FD7A23;
   padding: 5px;
   width: 100%;
 }
