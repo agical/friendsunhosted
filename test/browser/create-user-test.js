@@ -198,6 +198,14 @@ buster.testCase("Friends#Unhosted", {
 
     "- keeps login status on refresh": function (done) {
         this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .setStatus("Hello, #unhosted world!")
+            .refresh()
+            .status(assEq("Hello, #unhosted world!"))
+        .end();
+        
+        /*
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
@@ -211,6 +219,7 @@ buster.testCase("Friends#Unhosted", {
               .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
               .end(done);
         });
+        */
     },
 
     "- can logout user": function (done) {
