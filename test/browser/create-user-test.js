@@ -234,26 +234,7 @@ buster.testCase("Friends#Unhosted", {
             .addComment(2, "Comment that puts status on top!")
             .refreshStatuses()
             .statusUpdate(1, assEq("First status"))
-         .end();   
-            
-        /*
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .setValue("#status-update", "First status")
-              .click("#do-update-status")
-              .setValue("#status-update", "Second status")
-              .click("#do-update-status")
-              .cssEq("#status-nr-0 .status-update", "Second status")
-              .setValue("#status-nr-1 .comment", "Comment that puts status on top!")
-              .click("#status-nr-1 .do-comment")
-              .click("#refresh-link")
-              .pause(2000)
-              .waitFor("#status-nr-0 .status-update", 2000)
-              .cssEq("#status-nr-0 .status-update", "First status")
-              .end(done);
-        });
-        */
+        .end();               
     },
 
 })
