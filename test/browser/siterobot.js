@@ -162,6 +162,20 @@
             return fu;
         };
         
+        var isVisible = function(css, element_cb) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                console.log(fu.b);
+                fu.b
+                    .waitFor(css, 1000) 
+                    .isVisible(css, function(visible) {
+                        element_cb(visible);
+                        d.resolve();
+                    });
+            });   
+            return fu;
+        };
         
     
         fu.openStartPage = function() {
@@ -271,8 +285,16 @@
                 fu.b.refresh(d.resolve);
             });
             return fu;
-        }
-         
+        };
+        
+        fu.logout = function() {
+            return click("#do-logout");
+        };
+        
+        fu.visibleLoginBox = function(element_cb) {
+            return isVisible("#username", element_cb); 
+        }; 
+        
         fu.end = function() {
             defPeek().then(function() {
                 fu.b.end(done);

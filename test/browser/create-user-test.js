@@ -91,6 +91,12 @@ var assEq = function(expected) {
     })(expected);
 };
 
+var assertVisible = function() {
+    return function(b) {
+                assert(b.isVisible(css));
+            };
+};
+
 buster.testCase("Friends#Unhosted", {
     "- has a title and info on load": function (done) {
         this.timeout = 5000;
@@ -208,15 +214,13 @@ buster.testCase("Friends#Unhosted", {
 
     "- can logout user": function (done) {
         this.timeout = 25000;
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .click("#do-logout")
-              .cssAssert("isVisible", "#username", assert)
-              .refresh()
-              .cssAssert("isVisible", "#username", assert)
-              .end(done);
-        });
+        
+        createRobot(done).loginNewUser()
+            .logout()
+            .visibleLoginBox(assert)
+            .refresh()
+            .visibleLoginBox(assert)
+        .end();
     },
 
     "- shows latest activity on top": function (done) {
