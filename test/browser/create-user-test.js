@@ -2,6 +2,7 @@ var buster = require("buster");
 var http = require("http");
 var webdriverjs = require("webdriverjs");
 var when = require("when");
+var siterobot = require("siterobot");
 
 var assert = buster.assertions.assert;
 
@@ -284,6 +285,8 @@ var createRobot = function(done) {
 
 var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
 
+var createRobot = siterobot.createRobot(done);
+
 var assEq = function(expected) {
     return (function(e) { 
                 return function(actual) {
@@ -361,39 +364,6 @@ buster.testCase("Friends#Unhosted", {
            .end();
         });
         
-        /*
-        createTestUser()
-          .then(function(userToBeAdded) {
-            loginCreatedUser(done)
-              .then(function(browserAndUser) {
-                console.log("Adder:", browserAndUser.loggedInUser);
-                console.log("Added:", userToBeAdded);
-                browserAndUser
-                  .browser
-                    .waitFor("#menu-myfriends", 2000)
-                    .click("#menu-myfriends")
-                    .waitFor("#no-friends-message", 2000)
-                  	.cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
-                    //add friend
-                    .setValue("#add-friends-username", userToBeAdded.username)
-                    .click("#do-add-friend")
-                    .cssEq("#friends :first-child .friend", userToBeAdded.username)
-                    //add same friend is ignored
-                    .setValue("#add-friends-username", userToBeAdded.username)
-                    .click("#do-add-friend")
-                    .cssEq("#friends :first-child .friend", userToBeAdded.username)
-                    .cssEq("#error-message", "Cannot add the same user twice")
-                    //can remove friend
-                    .click("#friends :first-child .remove-friend")
-                    .waitFor("#no-friends-message", 2000)
-                    .cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
-                    .refresh()
-                    .waitFor("#no-friends-message", 2000)
-                    .cssEq("#no-friends-message", NO_FRIENDS_MESSAGE)
-                    .end(done);
-              });
-            });
-            */
     },
 
     "- can let user see friends messages": function (done) {

@@ -5,7 +5,7 @@ config["unit"] = {
     rootPath: "../",
     tests: ["test/browser/**/*-test.js"],
     //resources: ["**/*.js"],
-}
+};
 
 
 
