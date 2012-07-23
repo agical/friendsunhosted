@@ -1,5 +1,10 @@
 (function siterobot() {   
     var val = {};
+
+    var http = require("http");
+    var webdriverjs = require("webdriverjs");
+    var when = require("when");
+
     
     function createChromeDriver() {
       return webdriverjs.remote({desiredCapabilities:{
@@ -277,9 +282,7 @@
         return fu;
     };
     
-    val.createRobot = createRobot;
-    val.createNewUser = createNewUser;
-    
-    exports.siterobot = val;
-    
+    exports.createRobot = createRobot;
+    exports.createNewUser = createNewUser;
+
 })();
