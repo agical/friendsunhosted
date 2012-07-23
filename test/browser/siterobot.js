@@ -49,6 +49,25 @@
       return createNewUser("genUser" + new Date().getTime(), "1234568");
     }
     
+    
+    function createNewUser(username, password, cb) {
+      var options = {
+        host: 'localhost',
+        port: 80,
+        path: '/create_user/localhost/' +  username + "/" + password
+      };
+      var deferred = when.defer();
+      
+      http.get(options, function(res) {
+        deferred.resolve(
+          {username: username + "@" + options.host,
+           password: password });
+      })
+      .on('error', deferred.reject);
+        
+      return deferred.promise;
+    }
+
     function loginCreatedUser(done) {
       var whenBrowser = when.defer();
       
@@ -77,24 +96,6 @@
               });
         }, assert.fail);
       return whenBrowser.promise;
-    }
-    
-    function createNewUser(username, password, cb) {
-      var options = {
-        host: 'localhost',
-        port: 80,
-        path: '/create_user/localhost/' +  username + "/" + password
-      };
-      var deferred = when.defer();
-      
-      http.get(options, function(res) {
-        deferred.resolve(
-          {username: username + "@" + options.host,
-           password: password });
-      })
-      .on('error', deferred.reject);
-        
-      return deferred.promise;
     }
     
     var createRobot = function(done) {
@@ -283,6 +284,6 @@
     };
     
     exports.createRobot = createRobot;
-    exports.createNewUser = createNewUser;
+    exports.createTestUser = createTestUser;
 
 })();

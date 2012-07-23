@@ -2,7 +2,11 @@ var buster = require("buster");
 var http = require("http");
 var webdriverjs = require("webdriverjs");
 var when = require("when");
+
 var siterobot = require("./siterobot");
+var createRobot = siterobot.createRobot;
+var createTestUser = siterobot.createTestUser;
+
 
 var assert = buster.assertions.assert;
 
@@ -45,10 +49,6 @@ function createTestBrowser(done) {
   return client;
 }
 
-function createTestUser() {
-  return createNewUser("genUser" + new Date().getTime(), "1234568");
-}
-
 function loginCreatedUser(done) {
   var whenBrowser = when.defer();
   
@@ -79,29 +79,9 @@ function loginCreatedUser(done) {
   return whenBrowser.promise;
 }
 
-function createNewUser(username, password, cb) {
-  var options = {
-    host: 'localhost',
-    port: 80,
-    path: '/create_user/localhost/' +  username + "/" + password
-  };
-  var deferred = when.defer();
-  
-  http.get(options, function(res) {
-    deferred.resolve(
-      {username: username + "@" + options.host,
-       password: password });
-  })
-  .on('error', deferred.reject);
-    
-  return deferred.promise;
-}
 
 
 var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
-console.log(siterobot);
-var createRobot = siterobot.createRobot;
-console.log(createRobot);
 
 var assEq = function(expected) {
     return (function(e) { 
