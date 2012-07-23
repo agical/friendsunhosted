@@ -202,24 +202,8 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done).loginNewUser()
             .setStatus("Hello, #unhosted world!")
             .refresh()
-            .status(assEq("Hello, #unhosted world!"))
+            .statusUpdate(1, assEq("Hello, #unhosted world!"))
         .end();
-        
-        /*
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .setValue("#status-update", "Hello, #unhosted world!")
-              .click("#do-update-status")
-              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
-              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
-              .refresh()
-              .waitFor("#status-stream :first-child .status-update", 2000)
-              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
-              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
-              .end(done);
-        });
-        */
     },
 
     "- can logout user": function (done) {
