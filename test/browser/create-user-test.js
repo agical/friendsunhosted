@@ -226,6 +226,17 @@ buster.testCase("Friends#Unhosted", {
     "- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
+        createRobot(done).loginNewUser()
+            .setStatus("First status")
+            .setStatus("Second status")
+            .statusUpdate(1, assEq("Second status"))
+            .statusUpdate(2, assEq("First status"))
+            .addComment(2, "Comment that puts status on top!")
+            .refreshStatuses()
+            .statusUpdate(1, assEq("First status"))
+         .end();   
+            
+        /*
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
@@ -242,6 +253,7 @@ buster.testCase("Friends#Unhosted", {
               .cssEq("#status-nr-0 .status-update", "First status")
               .end(done);
         });
+        */
     },
 
 })

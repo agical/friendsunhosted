@@ -5,7 +5,6 @@
     var webdriverjs = require("webdriverjs");
     var when = require("when");
 
-    
     function createChromeDriver() {
       return webdriverjs.remote({desiredCapabilities:{
         browserName:"chrome", 
@@ -100,6 +99,13 @@
     
     var createRobot = function(done) {
         var fu = {};
+
+        var onError = function(err) {
+            console.log("============ Error:\n", err);
+            fu.end();
+        };
+        
+
         fu.b = createTestBrowser(done).init();
         fu.user = null;
         fu.lastFn = null;
@@ -118,12 +124,17 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
-                    .waitFor(css, 1000) 
+                    .waitFor(css, 2000) 
                     .getText(css, function(v) {
-                        cb(v.value);
-                        d.resolve();
+                        if(v.value) {
+                            cb(v.value);
+                            d.resolve();
+                        } else {
+                            console.log("Value is undefined for " + css);
+                            d.reject("Value is undefined for " + css);
+                        }
                     });
-            });
+            }, onError);
     
             return fu;
         };
@@ -235,23 +246,23 @@
         };
         
         fu.statusUpdate = function(nr, text_cb) {
-            return text("#status-stream :first-child .status-update", text_cb);
+            return text('#status-nr-' + nr + ' .status-update', text_cb);
         };
     
         fu.statusUsername = function(nr, userFn_text_cb) {
-            return userAndText('#status-stream :first-child .status-update-username', userFn_text_cb);
+            return userAndText('#status-nr-' + nr + ' .status-update-username', userFn_text_cb);
         };
     
         fu.statusTimeStamp = function(nr, text_cb) {
-            return text("#status-stream :first-child .status-update-timestamp", text_cb);
+            return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
     
         fu.addComment = function(statusNr, comment) {
-            return setAndClick("#status-stream :first-child .comment", comment, "#status-stream :first-child .do-comment");
+            return setAndClick('#status-nr-' + statusNr + ' .comment', comment, '#status-nr-' + statusNr + ' .do-comment');
         };
     
         fu.comment = function(statusNr, commentNr, text_cb) {
-            return text("#status-stream :first-child .comments .comment-update", text_cb);
+            return text('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', text_cb);
         };
     
         fu.selectFriendsInMenu = function() {
@@ -285,6 +296,10 @@
                 fu.b.refresh(d.resolve);
             });
             return fu;
+        };
+        
+        fu.refreshStatuses = function() {
+            return click("#refresh-link");
         };
         
         fu.logout = function() {
