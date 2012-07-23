@@ -325,19 +325,6 @@ buster.testCase("Friends#Unhosted", {
             .addComment(1, "Hello to you!")
             .comment(1, 1, assEq("Hello to you!"))
         .end();
-        /*    
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .setValue("#status-update", "Hello, #unhosted world!")
-              .click("#do-update-status")
-              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
-              .setValue("#status-stream :first-child .comment", "Hello to you!")
-              .click("#status-stream :first-child .do-comment")
-               .cssEq("#status-stream :first-child .comments .comment-update", "Hello to you!")
-              .end(done);
-        });
-        */
     },
 
     
