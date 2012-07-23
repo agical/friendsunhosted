@@ -217,16 +217,7 @@ var createRobot = function(done) {
     };
 
     fu.statusTimeStamp = function(nr, text_cb) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b.getText("#status-stream :first-child .status-update-timestamp", 
-                    function(t) {
-                        text_cb(t.value);
-                        d.resolve();
-                    });
-        });   
-        return fu;        
+        return text("#status-stream :first-child .status-update-timestamp", text_cb);
     };
 
     fu.addComment = function(statusNr, comment) {
@@ -242,16 +233,7 @@ var createRobot = function(done) {
     };
 
     fu.comment = function(statusNr, commentNr, text_cb) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b.getText("#status-stream :first-child .comments .comment-update", 
-                    function(t) {
-                        text_cb(t.value);
-                        d.resolve();
-                    });
-        });
-        return fu;        
+        return text("#status-stream :first-child .comments .comment-update", text_cb);
     };
 
     fu.end = function() {
