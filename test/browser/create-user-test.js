@@ -102,15 +102,53 @@ var createRobot = function(done) {
     fu.user = null;
     fu.lastFn = null;
     
-    function defPush() {
+    var defPush = function() {
         fu.lastFn = when.defer();
         return fu.lastFn;
-    }
+    };
 
-    function defPeek() {
+    var defPeek = function() {
         return fu.lastFn;
-    }
+    };
     
+    var text = function(css, cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText(css, function(v) {
+                cb(v.value);
+                d.resolve();
+            });
+        });
+
+        return fu;
+    };
+    
+    var userAndText = function(css, user_text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.user.then(function(user) {
+                fu.b.getText(css, function(t) {
+                    user_text_cb(user)(t.value);
+                    d.resolve();
+                });
+            });
+        });
+        return fu;
+    };
+
+    var setAndClick = function(setCss, val, clickCss) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b
+                .setValue(setCss, val)
+                .click(clickCss, d.resolve);
+        });   
+        return fu;
+    };
+
     fu.openStartPage = function() {
         var d = defPush();
         fu.b.url("http://localhost:8000/", function() {
@@ -155,43 +193,6 @@ var createRobot = function(done) {
         return fu;
     };
     
-    var text = function(css, cb) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b.getText(css, function(v) {
-                cb(v.value);
-                d.resolve();
-            });
-        });
-
-        return fu;
-    };
-    
-    var userAndText = function(css, user_text_cb) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.user.then(function(user) {
-                fu.b.getText(css, function(t) {
-                    user_text_cb(user)(t.value);
-                    d.resolve();
-                });
-            });
-        });
-        return fu;
-    };
-
-    var setAndClick = function(setCss, val, clickCss) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b
-                .setValue(setCss, val)
-                .click(clickCss, d.resolve);
-        });   
-        return fu;
-    };
         
     fu.welcomeHeadline = function(text_cb) {
         return text('#page-welcome h3', text_cb);
@@ -219,7 +220,7 @@ var createRobot = function(done) {
 
     fu.addComment = function(statusNr, comment) {
         return setAndClick("#status-stream :first-child .comment", comment, "#status-stream :first-child .do-comment");
-   };
+    };
 
     fu.comment = function(statusNr, commentNr, text_cb) {
         return text("#status-stream :first-child .comments .comment-update", text_cb);
