@@ -115,10 +115,12 @@ var createRobot = function(done) {
         var last = defPeek();
         var d = defPush();
         last.promise.then(function() {
-            fu.b.getText(css, function(v) {
-                cb(v.value);
-                d.resolve();
-            });
+            fu.b
+                .waitFor(css, 1000) 
+                .getText(css, function(v) {
+                    cb(v.value);
+                    d.resolve();
+                });
         });
 
         return fu;
@@ -148,6 +150,17 @@ var createRobot = function(done) {
         });   
         return fu;
     };
+    
+    var click = function(clickCss) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.click(clickCss, d.resolve);
+        });   
+        return fu;
+    };
+    
+    
 
     fu.openStartPage = function() {
         var d = defPush();
@@ -226,6 +239,39 @@ var createRobot = function(done) {
         return text("#status-stream :first-child .comments .comment-update", text_cb);
     };
 
+    fu.selectFriendsInMenu = function() {
+        return click("#menu-myfriends");
+    };
+    
+    fu.noFriendsMessage = function(text_cb) {
+        return text("#no-friends-message", text_cb);
+    };
+    
+    fu.addFriend = function(user) {
+        return setAndClick("#add-friends-username", user.username, "#do-add-friend");
+    };
+    
+    fu.friend = function(nr, text_cb) {
+        return text("#friends :first-child .friend", text_cb);
+    }
+    
+    fu.removeFriend = function(nr) {
+        return click("#friends :first-child .remove-friend");
+    };
+    
+    fu.errorMessage = function(text_cb) {
+        return text("#error-message", text_cb);
+    };
+    
+    fu.refresh = function() {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.refresh(d.resolve);
+        });
+        return fu;
+    }
+     
     fu.end = function() {
         defPeek().then(function() {
             fu.b.end(done);
@@ -298,6 +344,24 @@ buster.testCase("Friends#Unhosted", {
     
     "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
+        
+        createTestUser().then(function(userToBeAdded) {
+           createRobot(done)
+               .loginNewUser()
+               .selectFriendsInMenu()
+               .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
+               .addFriend(userToBeAdded)
+               .friend(1, assEq(userToBeAdded.username))
+               .addFriend(userToBeAdded)
+               .errorMessage(assEq("Cannot add the same user twice"))
+               .removeFriend(1)
+               .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
+               .refresh()
+               .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
+           .end();
+        });
+        
+        /*
         createTestUser()
           .then(function(userToBeAdded) {
             loginCreatedUser(done)
@@ -329,6 +393,7 @@ buster.testCase("Friends#Unhosted", {
                     .end(done);
               });
             });
+            */
     },
 
     "- can let user see friends messages": function (done) {
