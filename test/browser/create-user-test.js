@@ -188,19 +188,6 @@ var createRobot = function(done) {
 
     fu.welcomeMessage = function(userFn_message_cb) {
         return userAndText('#welcome-message', userFn_message_cb);
-        /*
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b.getText('#welcome-message', function(t) {
-                fu.user.then(function(user) {
-                    userFn_message_cb(user)(t.value);
-                    d.resolve();
-                });
-            });
-        });
-        return fu;
-        */
     };
     
     fu.setStatus = function(status) {
@@ -219,18 +206,7 @@ var createRobot = function(done) {
     };
 
     fu.statusUsername = function(nr, userFn_text_cb) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b.getText("#status-stream :first-child .status-update-username", 
-                    function(actualUsername) {
-                        fu.user.then(function(user) {
-                            userFn_text_cb(user)(actualUsername.value);
-                            d.resolve();
-                        });
-                    });
-        });   
-        return fu;        
+        return userAndText('#status-stream :first-child .status-update-username', userFn_text_cb);
     };
 
     fu.statusTimeStamp = function(nr, text_cb) {
