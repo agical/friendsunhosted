@@ -233,7 +233,31 @@ var createRobot = function(done) {
         return fu;        
     };
 
-    
+    fu.addComment = function(statusNr, comment) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b
+            .setValue("#status-stream :first-child .comment", comment)
+            .click("#status-stream :first-child .do-comment", d.resolve);
+        });   
+        return fu;
+            
+    };
+
+    fu.comment = function(statusNr, commentNr, text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b.getText("#status-stream :first-child .comments .comment-update", 
+                    function(t) {
+                        text_cb(t.value);
+                        d.resolve();
+                    });
+        });
+        return fu;        
+    };
+
     fu.end = function() {
         defPeek().then(function() {
             fu.b.end(done);
@@ -290,28 +314,18 @@ buster.testCase("Friends#Unhosted", {
             .statusUsername(1, function(user) {return assEq(user.username);})
             .statusTimeStamp(1, assert)
         .end();
-        /*
-        loginCreatedUser(done).then(function(browserAndUser) {
-          browserAndUser
-            .browser
-              .setValue("#status-update", "Hello, #unhosted world!")
-              .click("#do-update-status")
-              .cssEq("#status-stream :first-child .status-update", "Hello, #unhosted world!")
-              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
-              .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
-              .setValue("#status-update", "Second message")
-              .click("#do-update-status")
-              .cssEq("#status-stream :first-child .status-update", "Second message")
-              .cssEq("#status-stream :first-child .status-update-username", browserAndUser.loggedInUser.username)
-              .cssCondition("#status-stream :first-child .status-update-timestamp", assert)
-              .end(done);
-        });
-        */
     },
 
     "- can comment on status updates": function (done) {
         this.timeout = 25000;
-         
+        createRobot(done)  
+            .loginNewUser()
+            .setStatus("Hello, #unhosted world!")
+            .statusUpdate(1, assEq("Hello, #unhosted world!"))
+            .addComment(1, "Hello to you!")
+            .comment(1, 1, assEq("Hello to you!"))
+        .end();
+        /*    
         loginCreatedUser(done).then(function(browserAndUser) {
           browserAndUser
             .browser
@@ -323,6 +337,7 @@ buster.testCase("Friends#Unhosted", {
                .cssEq("#status-stream :first-child .comments .comment-update", "Hello to you!")
               .end(done);
         });
+        */
     },
 
     
