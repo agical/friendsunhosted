@@ -168,11 +168,27 @@ var createRobot = function(done) {
         return fu;
     };
     
+    var userAndText = function(css, user_text_cb) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.user.then(function(user) {
+                fu.b.getText(css, function(t) {
+                    user_text_cb(user)(t.value);
+                    d.resolve();
+                });
+            });
+        });
+        return fu;
+    };
+    
     fu.welcomeHeadline = function(text_cb) {
         return text('#page-welcome h3', text_cb);
     };
 
     fu.welcomeMessage = function(userFn_message_cb) {
+        return userAndText('#welcome-message', userFn_message_cb);
+        /*
         var last = defPeek();
         var d = defPush();
         last.promise.then(function() {
@@ -184,6 +200,7 @@ var createRobot = function(done) {
             });
         });
         return fu;
+        */
     };
     
     fu.setStatus = function(status) {
