@@ -155,16 +155,21 @@ var createRobot = function(done) {
         return fu;
     };
     
-    fu.welcomeHeadline = function(text_cb) {
+    var text = function(css, cb) {
         var last = defPeek();
         var d = defPush();
         last.promise.then(function() {
-            fu.b.getText('#page-welcome h3', function(t) {
-                text_cb(t.value);
+            fu.b.getText(css, function(v) {
+                cb(v.value);
                 d.resolve();
             });
         });
+
         return fu;
+    };
+    
+    fu.welcomeHeadline = function(text_cb) {
+        return text('#page-welcome h3', text_cb);
     };
 
     fu.welcomeMessage = function(userFn_message_cb) {
@@ -193,16 +198,7 @@ var createRobot = function(done) {
     };
     
     fu.statusUpdate = function(nr, text_cb) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b.getText("#status-stream :first-child .status-update", 
-                    function(t) {
-                        text_cb(t.value);
-                        d.resolve();
-                    });
-        });
-        return fu;        
+        return text("#status-stream :first-child .status-update", text_cb);
     };
 
     fu.statusUsername = function(nr, userFn_text_cb) {
