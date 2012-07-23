@@ -181,7 +181,18 @@ var createRobot = function(done) {
         });
         return fu;
     };
-    
+
+    var setAndClick = function(setCss, val, clickCss) {
+        var last = defPeek();
+        var d = defPush();
+        last.promise.then(function() {
+            fu.b
+                .setValue(setCss, val)
+                .click(clickCss, d.resolve);
+        });   
+        return fu;
+    };
+        
     fu.welcomeHeadline = function(text_cb) {
         return text('#page-welcome h3', text_cb);
     };
@@ -191,14 +202,7 @@ var createRobot = function(done) {
     };
     
     fu.setStatus = function(status) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b
-                .setValue("#status-update", status)
-                .click("#do-update-status", d.resolve);
-        });   
-        return fu;
+        return setAndClick("#status-update", status, "#do-update-status");
     };
     
     fu.statusUpdate = function(nr, text_cb) {
@@ -214,16 +218,8 @@ var createRobot = function(done) {
     };
 
     fu.addComment = function(statusNr, comment) {
-        var last = defPeek();
-        var d = defPush();
-        last.promise.then(function() {
-            fu.b
-            .setValue("#status-stream :first-child .comment", comment)
-            .click("#status-stream :first-child .do-comment", d.resolve);
-        });   
-        return fu;
-            
-    };
+        return setAndClick("#status-stream :first-child .comment", comment, "#status-stream :first-child .do-comment");
+   };
 
     fu.comment = function(statusNr, commentNr, text_cb) {
         return text("#status-stream :first-child .comments .comment-update", text_cb);
