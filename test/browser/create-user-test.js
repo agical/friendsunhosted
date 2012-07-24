@@ -1,85 +1,11 @@
 var buster = require("buster");
-var http = require("http");
-var webdriverjs = require("webdriverjs");
 var when = require("when");
 
 var siterobot = require("./siterobot");
 var createRobot = siterobot.createRobot;
 var createTestUser = siterobot.createTestUser;
 
-
 var assert = buster.assertions.assert;
-
-function createChromeDriver() {
-  return webdriverjs.remote({desiredCapabilities:{
-    browserName:"chrome", 
-    seleniumProtocol: 'WebDriver',
-    'chrome.switches': ['--start-maximized','--disable-popup-blocking']}});
-}
-
-function createFirefoxDriver() {
-  return webdriverjs.remote({desiredCapabilities:{
-    browserName:"firefox", 
-    seleniumProtocol: 'WebDriver',
-  }});
-}
-
-function createTestBrowser(done) {
-  var client = createChromeDriver();
-
-  var endAndDone =  function(error) {
-                      console.log("Exiting browsers");
-                      client.end();
-                      done();
-                    };
-  buster.testRunner.on('test:failure', endAndDone );
-  buster.testRunner.on('test:error', endAndDone );
-  buster.testRunner.on('test:timeout', endAndDone );
-  buster.testRunner.on('uncaughtException', endAndDone );
-  
-  client.cssEq = function(cssSelector, expected) {
-    return client.getText(cssSelector, function(val) {assert.equals(val.value, expected);});
-  };
-  client.cssCondition = function(cssSelector, condition) {
-    return client.getText(cssSelector, function(val) {condition(val.value);});
-  };
-  client.cssAssert = function(func, cssSelector, condition) {
-    return client[func](cssSelector, function(val) {console.log(val);condition(val);});
-  };
-  return client;
-}
-
-function loginCreatedUser(done) {
-  var whenBrowser = when.defer();
-  
-  createTestUser()
-    .then(function(user) {
-      var browser = createTestBrowser(done);
-      browser
-        .init()
-        .url("http://localhost:8000/")
-        .setValue("#username", user.username)
-        .click("#do-login")
-        .pause(100)
-        .windowHandles(function(data) {
-          var popupWindow = data.value[1];
-          console.log("popupWindow is", popupWindow);
-          this.window(popupWindow)
-            .waitFor('input[name="password"]', 500) 
-            .setValue('input[name="password"]', user.password)
-            .submitForm("form")
-            .windowHandles(function(data){
-                var originalWindow = data.value[0];
-                whenBrowser.resolve(
-                  {browser: this.window(originalWindow),
-                   loggedInUser: user});
-            });
-          });
-    }, assert.fail);
-  return whenBrowser.promise;
-}
-
-
 
 var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
 
@@ -195,37 +121,6 @@ buster.testCase("Friends#Unhosted", {
                 .end();
             });
         });
-        /*
-        loginCreatedUser(done)
-          .then(function(browserAndUser) {
-            userToBeAdded = browserAndUser.loggedInUser;
-            browserAndUser
-              .browser
-                .setValue("#status-update", "The message of the added")
-                .click("#do-update-status")
-                .cssEq("#status-stream :first-child .status-update", "The message of the added")
-                .end();
-          })
-          .then(function() {
-            loginCreatedUser(done)
-              .then(function(browserAndUser) {
-                  browserAndUser
-                    .browser
-                      .waitFor("#menu-myfriends", 2000)
-                      .click("#menu-myfriends")
-                      .setValue("#add-friends-username", userToBeAdded.username)
-                      .click("#do-add-friend")
-                      .waitFor("#menu-status", 2000)
-                      .click("#menu-status")
-                      .cssEq("#status-stream :first-child .status-update", "The message of the added")
-                      .setValue("#status-update", "The message of the adder")
-                      .click("#do-update-status")
-                      .cssEq("#status-stream :first-child .status-update", "The message of the adder")
-                      .cssEq("#status-stream :nth-child(2) .status-update", "The message of the added")
-                      .end(done);
-              });
-            });
-            */
     },
 
     "- keeps login status on refresh": function (done) {
