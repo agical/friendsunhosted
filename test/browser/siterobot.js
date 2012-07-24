@@ -66,36 +66,6 @@
         
       return deferred.promise;
     }
-
-    function loginCreatedUser(done) {
-      var whenBrowser = when.defer();
-      
-      createTestUser()
-        .then(function(user) {
-          var browser = createTestBrowser(done);
-          browser
-            .init()
-            .url("http://localhost:8000/")
-            .setValue("#username", user.username)
-            .click("#do-login")
-            .pause(100)
-            .windowHandles(function(data) {
-              var popupWindow = data.value[1];
-              console.log("popupWindow is", popupWindow);
-              this.window(popupWindow)
-                .waitFor('input[name="password"]', 500) 
-                .setValue('input[name="password"]', user.password)
-                .submitForm("form")
-                .windowHandles(function(data){
-                    var originalWindow = data.value[0];
-                    whenBrowser.resolve(
-                      {browser: this.window(originalWindow),
-                       loggedInUser: user});
-                });
-              });
-        }, assert.fail);
-      return whenBrowser.promise;
-    }
     
     var createRobot = function(done) {
         var fu = {};
