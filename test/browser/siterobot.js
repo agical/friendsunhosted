@@ -39,7 +39,7 @@
         return client.getText(cssSelector, function(val) {condition(val.value);});
       };
       client.cssAssert = function(func, cssSelector, condition) {
-        return client[func](cssSelector, function(val) {console.log(val);condition(val);});
+        return client[func](cssSelector, function(val) {condition(val);});
       };
       return client;
     }
@@ -124,7 +124,9 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
-                    .waitFor(css, 2000) 
+                    .waitFor(css, 2000, function() {
+                        console.log("About to get ", css);
+                    }) 
                     .getText(css, function(v) {
                         if(v.value) {
                             cb(v.value);
@@ -143,11 +145,13 @@
             var last = defPeek();
             var d = defPush();
             last.promise.then(function() {
-                fu.user.then(function(user) {
-                    fu.b.getText(css, function(t) {
-                        user_text_cb(user)(t.value);
-                        d.resolve();
-                    });
+                fu.user.promise.then(function(user) {
+                    fu.b
+                        .waitFor(css, 2000) 
+                        .getText(css, function(t) {
+                            user_text_cb(user)(t.value);
+                            d.resolve();
+                        });
                 });
             });
             return fu;
@@ -158,6 +162,7 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
+                    .waitFor(setCss, 2000) 
                     .setValue(setCss, val)
                     .click(clickCss, d.resolve);
             });   
@@ -168,7 +173,9 @@
             var last = defPeek();
             var d = defPush();
             last.promise.then(function() {
-                fu.b.click(clickCss, d.resolve);
+                fu.b
+                    .waitFor(clickCss, 2000) 
+                    .click(clickCss, d.resolve);
             });   
             return fu;
         };
@@ -177,9 +184,8 @@
             var last = defPeek();
             var d = defPush();
             last.promise.then(function() {
-                console.log(fu.b);
                 fu.b
-                    .waitFor(css, 1000) 
+                    .waitFor(css, 2000) 
                     .isVisible(css, function(visible) {
                         element_cb(visible);
                         d.resolve();
@@ -187,7 +193,30 @@
             });   
             return fu;
         };
+    
+        fu.debug = function(cb) {
+            cb("On setup", fu);
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                cb("In execution", fu);
+                d.resolve();
+            });
+            cb("After setup", fu);
+    
+            return fu;
+        };
         
+        fu.pause = function(millis) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                fu.b.pause(millis, d.resolve);
+            });
+    
+            return fu;
+            
+        };
     
         fu.openStartPage = function() {
             var d = defPush();
@@ -201,10 +230,12 @@
             var d = defPush();
             
             fu.user = when.defer();
-            createTestUser()
-                .then(function(user) {
-                    fu.user.resolve(user);                
-                });
+            
+            
+            createTestUser().then(function(user) {
+                fu.user.resolve(user);                
+            });
+            
             fu.user.promise.then(function(user)  {
                 fu.b
                     .url("http://localhost:8000/")
@@ -220,6 +251,7 @@
             });
             return fu;
         };
+
         fu.title = function(title_cb) {
             var last = defPeek();
             var d = defPush();
@@ -231,7 +263,6 @@
             });
             return fu;
         };
-        
             
         fu.welcomeHeadline = function(text_cb) {
             return text('#page-welcome h3', text_cb);
@@ -252,7 +283,11 @@
         fu.statusUsername = function(nr, userFn_text_cb) {
             return userAndText('#status-nr-' + nr + ' .status-update-username', userFn_text_cb);
         };
-    
+
+        fu.statusGetUsername = function(nr, text_cb) {
+            return text('#status-nr-' + nr + ' .status-update-username', text_cb);
+        };
+
         fu.statusTimeStamp = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
@@ -266,15 +301,21 @@
         };
     
         fu.selectFriendsInMenu = function() {
-            return click("#menu-myfriends");
+            var r = click("#menu-myfriends");
+            return r;
+        };
+
+        fu.selectStatusesInMenu = function() {
+            return click("#menu-status");
         };
         
         fu.noFriendsMessage = function(text_cb) {
             return text("#no-friends-message", text_cb);
         };
         
-        fu.addFriend = function(user) {
-            return setAndClick("#add-friends-username", user.username, "#do-add-friend");
+        fu.addFriend = function(username) {
+            var r = setAndClick("#add-friends-username", username, "#do-add-friend"); 
+            return r;
         };
         
         fu.friend = function(nr, text_cb) {

@@ -98,7 +98,7 @@ var assertVisible = function() {
 };
 
 buster.testCase("Friends#Unhosted", {
-    "- has a title and info on load": function (done) {
+    "//- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createRobot(done)   
@@ -108,7 +108,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can login a user": function (done) {
+    "//- can login a user": function (done) {
         this.timeout = 25000;
             
         createRobot(done)  
@@ -119,7 +119,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can let user add status updates": function (done) {
+    "//- can let user add status updates": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -135,7 +135,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can comment on status updates": function (done) {
+    "//- can comment on status updates": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -147,7 +147,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "- can let user add, list and remove friends": function (done) {
+    "//- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -170,7 +170,31 @@ buster.testCase("Friends#Unhosted", {
 
     "- can let user see friends messages": function (done) {
         this.timeout = 25000;
-        var userToBeAdded = null;
+
+        var waitForUserAddingStatus = when.defer();
+        
+        var b1 = createRobot(function() {waitForUserAddingStatus.resolve();})
+            .loginNewUser()
+            .setStatus("The message of the added")
+            .statusUpdate(1, assEq("The message of the added"))
+            .logout()
+        .end();
+        
+        waitForUserAddingStatus.promise.then(function() {
+            b1.user.promise.then(function(user) {
+                createRobot(done).loginNewUser()
+                    .selectFriendsInMenu()
+                    .addFriend(user.username)
+                    .selectStatusesInMenu()
+                    .statusUpdate(1, assEq("The message of the added"))
+                    .statusGetUsername(1, assEq(user.username))
+                    .setStatus("The message of the adder")
+                    .statusUpdate(1, assEq("The message of the adder"))
+                    .statusUpdate(2, assEq("The message of the added"))
+                .end();
+            });
+        });
+        /*
         loginCreatedUser(done)
           .then(function(browserAndUser) {
             userToBeAdded = browserAndUser.loggedInUser;
@@ -200,9 +224,10 @@ buster.testCase("Friends#Unhosted", {
                       .end(done);
               });
             });
+            */
     },
 
-    "- keeps login status on refresh": function (done) {
+    "//- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -212,7 +237,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can logout user": function (done) {
+    "//- can logout user": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -223,7 +248,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- shows latest activity on top": function (done) {
+    "//- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         createRobot(done).loginNewUser()
