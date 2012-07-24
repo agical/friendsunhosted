@@ -100,7 +100,7 @@ buster.testCase("Friends#Unhosted", {
 
         var waitForUserAddingStatus = when.defer();
         
-        var b1 = createRobot(function() {waitForUserAddingStatus.resolve();})
+        var b1 = createRobot(waitForUserAddingStatus.resolve)
             .loginNewUser()
             .setStatus("The message of the added")
             .statusUpdate(1, assEq("The message of the added"))
