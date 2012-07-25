@@ -259,6 +259,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
 
     $(function(){
         ko.applyBindings(new FriendsViewModel());
+        $('#loading-screen').hide();
+        $('#all').slideDown();
     });
   
 });
