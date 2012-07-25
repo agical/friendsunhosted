@@ -1,4 +1,4 @@
-require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function($, _, ui, ko, when, rem) {
+require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageConversion'], function($, _, ui, ko, when, rem, storageConversion) {
 
     function onError(err) { 
         console.log(err); 
@@ -256,11 +256,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     init();
   };
-
+  
     $(function(){
-        ko.applyBindings(new FriendsViewModel());
-        $('#loading-screen').hide();
-        $('#all').slideDown();
+        storageConversion.convertStorage().then(function(){
+            ko.applyBindings(new FriendsViewModel());
+            $('#loading-screen').hide();
+            $('#all').slideDown();
+        });
     });
   
 });

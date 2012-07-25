@@ -39,6 +39,8 @@ h3 {
   border-color: #eee;
   border-top: none;
   border-bottom: none;
+
+  overflow: auto;
 }
 
 #header, #footer {
