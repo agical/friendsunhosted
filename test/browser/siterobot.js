@@ -211,6 +211,7 @@
             fu.user.promise.then(function(user)  {
                 fu.b
                     .url("http://localhost:8000/")
+                    .waitFor("#username", 2000)
                     .setValue("#username", user.username)
                     .click("#do-login")
                     .waitFor('input[name="password"]', 500) 
