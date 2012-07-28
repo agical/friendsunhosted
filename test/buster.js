@@ -4,11 +4,9 @@ config["functional-selenium"] = {
     environment: "node",
     rootPath: "../",
     tests: ["test/browser/**" + "/*-test.js"],
-    //resources: ["**" + "/*.js"],
 };
 
 config["unit"] = {
-       // id:null,
         environment: "browser",
         rootPath: "..",
         sources: [
