@@ -17,7 +17,8 @@ config["unit"] = {
     ],
     libs: [
         "test/require-config.js",
-        "test/require-jquery.js"
+        "test/require-jquery.js",
+        "test/fake/*.js"
     ],
     extensions: [
         require("buster-amd")
