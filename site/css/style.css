@@ -18,6 +18,10 @@ h3 {
   margin-bottom: 0px;
 }
 
+#upgrading-storage-screen {
+	display: none;
+}
+
 #all {
   width: 1200px;
   height: 100%;

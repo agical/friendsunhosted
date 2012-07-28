@@ -103,32 +103,42 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
       };
     }
 
-    function init() {
-        rem.init().then(function(localUsername) {
-            self.username(localUsername);
-            self.loggedIn(true);
-            if(window.location.href.indexOf('#access_token') > 0) {
-                window.location.replace(location.protocol + '//' + location.host + "#status");
-                self.selectedTab("status");
-            } else if(window.location.href.indexOf('#') > 0) {
-                self.selectedTab(self.getPageFromLocation());
-            } else {
-                window.location.replace(location.protocol + '//' + location.host + "#welcome");
-                self.selectedTab("welcome");
-            }
-            rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-                value = value || [];
-                self.allFriends(value);
-            }, onError);
-            rem.fetchUserData(STATUS_KEY).then(function(value) {
-                value = value || [];
-                addStatusUpdates(value);
-            }, onError);
-        }, function(notLoggedInMsg) {
-            console.log(notLoggedInMsg);
+    function setPageFromUrl() {
+        if(window.location.href.indexOf('#access_token') > 0) {
+            window.location.replace(location.protocol + '//' + location.host + "#status");
+            self.selectedTab("status");
+        } else if(window.location.href.indexOf('#') > 0) {
+            self.selectedTab(self.getPageFromLocation());
+        } else {
+            window.location.replace(location.protocol + '//' + location.host + "#welcome");
             self.selectedTab("welcome");
-            self.loggedIn(false);
-        });
+        }
+    }
+    
+    function init() {
+        rem.init()
+            .then(function(localUsername) { 
+                    self.username(localUsername);
+                    self.loggedIn(true);
+
+                    setPageFromUrl();
+                    
+                    storageConversion.convertStorage().then(function() {
+                        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
+                            value = value || [];
+                            self.allFriends(value);
+                        }, onError);
+                        rem.fetchUserData(STATUS_KEY).then(function(value) {
+                            value = value || [];
+                            addStatusUpdates(value);
+                        }, onError);
+                    });
+                    
+                }, function(notLoggedInMsg) {
+                    console.log(notLoggedInMsg);
+                    self.selectedTab("welcome");
+                    self.loggedIn(false);
+                }, onError);
     };
 
     
@@ -136,7 +146,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         rem
             .login(self.username())
             .then(function(loggedInUser) {
-                init();
             }, onError);
     };
 
@@ -258,11 +267,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
   };
   
     $(function(){
-        storageConversion.convertStorage().then(function(){
-            ko.applyBindings(new FriendsViewModel());
-            $('#loading-screen').hide();
-            $('#all').slideDown();
-        });
+        ko.applyBindings(new FriendsViewModel());
+        $('#loading-screen').hide();
+        $('#all').slideDown('fast');
     });
   
 });

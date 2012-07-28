@@ -72,11 +72,7 @@ define(['underscore', 'remoteStorage', 'when'],
                 if(err) {
                     deferred123.reject(err);
                 } else {
-                    try {
-                        deferred123.resolve(dataStr?JSON.parse(dataStr):null);
-                    } catch(e) {
-                        deferred123.reject(e);
-                    }
+                    deferred123.resolve(dataStr?JSON.parse(dataStr):null);
                 }
             });
             return deferred123.promise;

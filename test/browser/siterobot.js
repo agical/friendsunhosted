@@ -190,9 +190,11 @@
     
         fu.openStartPage = function() {
             var d = defPush();
-            fu.b.url("http://localhost:8000/", function() {
-                d.resolve();
-            });
+            fu.b
+                .url("http://localhost:8000/")
+                .waitFor('body', 5000, function() {
+                    d.resolve();
+                });
             return fu;
         };
         
