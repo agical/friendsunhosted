@@ -58,11 +58,31 @@ define(['underscore', 'remoteAdapter', 'when'],
             } else {
                 upgraded.resolve(actualVersion);
             }
-        });
+        }, upgraded.reject);
         
         return upgraded.promise;
     };
-    
+
+    var upgradeTo3 = function(actualVersion) {
+        var upgraded = when.defer();
+        upgradeTo2().then(function() {
+            if(actualVersion<3) {
+                // 2 -> 3
+                console.log("Upgrading 1 to 2");
+                remoteAdapter.putUserData('VERSION', 2).then(
+                    function() {
+                        upgraded.resolve(2);
+                    },
+                    upgraded.reject
+                );
+            } else {
+                upgraded.resolve(actualVersion);
+            }
+        }, upgraded.reject);
+        
+        return upgraded.promise;
+    };
+
     var convert = function(actualVersion) {
         return upgradeTo2(actualVersion);
     };
