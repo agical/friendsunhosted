@@ -16,7 +16,7 @@ function(fu, ra, when) {
         var data = {'user': 'data'};
         ra.getPublicData
             .withArgs('some@user.com', 'VERSION')
-            .returns(resolved(null));
+            .returns(resolved(version));
         ra.getPublicData
             .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
             .returns(resolved(data));
@@ -34,6 +34,22 @@ function(fu, ra, when) {
             testOldStore(this, 1, done);
         },
 
+        "- can read version 2 status updates": function(done) {
+            testOldStore(this, 2, done);
+        },
+
+        "- can read version 3 status updates": function(done) {
+            ra.getPublicData = this.stub();
+            var data = {'user': 'data'};
+            ra.getPublicData
+                .withArgs('some@user.com', 'VERSION')
+                .returns(resolved(3));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(resolved(data));
+            
+            fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
+        },
 
     });
 });
