@@ -1,6 +1,7 @@
 var require = {
     paths: {
         "storageConversion": "site/js/storageConversion",
+        "friendsUnhosted": "site/js/storageConversion",
         "underscore": "site/js/underscore",
         "remoteAdapter": "test/fake/fakeRemoteAdapter",
         
