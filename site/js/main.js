@@ -161,7 +161,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
         
     self.addFriend = function() {
-        fuapi.addFriendAPI(self.addFriendsUsername()).then(onFriendAdded, showError);
+        fuapi.addFriend(self.addFriendsUsername()).then(onFriendAdded, showError);
     };
 
     var onFriendAdded = function(friendData) {
@@ -170,7 +170,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
 
     self.removeFriend = function(friendToRemove) {
-        fuapi.removeFriendAPI(friendToRemove).then(onFriendRemoved, showError);
+        fuapi.removeFriend(friendToRemove).then(onFriendRemoved, showError);
     };
 
     var onFriendRemoved = function(friendData) {

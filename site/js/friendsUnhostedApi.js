@@ -4,10 +4,10 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     var val = {};
     var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
     var FRIENDS_KEY = 'friendsunhosted_friends';
-    
+    var userToStorageVersion = {};
     var currentUser = null;
     
-    val.addFriendAPI = function(friendsUsername) {
+    val.addFriend = function(friendsUsername) {
         var afterAdding = when.defer();
 
         var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
@@ -36,7 +36,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return afterAdding.promise;
     };
     
-    val.removeFriendAPI = function(friendToRemove) {
+    val.removeFriend = function(friendToRemove) {
         var afterRemoving = when.defer();
         
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
