@@ -78,6 +78,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
             return def.promise;
         };
         
+        val.init = function() {
+            return rem.init();
+        }
+        
         return val;
         
     };
@@ -189,8 +193,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     }
     
     function init() {
-        rem.init()
-            .then(function(localUsername) { 
+        fuapi.init()
+            .then(function(localUsername) {
                     self.username(localUsername);
                     self.loggedIn(true);
 
@@ -208,7 +212,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
                     console.log(notLoggedInMsg);
                     self.selectedTab("welcome");
                     self.loggedIn(false);
-                }, onError);
+                });
     };
 
     
