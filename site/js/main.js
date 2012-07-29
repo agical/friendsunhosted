@@ -189,6 +189,22 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
       }, onError);
     };
     
+    var addFriend = function(friendsUsername) {
+        var afterAdding = when.defer();
+        var friendData = {"username": friendsUsername,
+                "timestamp": new Date().getTime()};
+        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
+        value = value || [];
+        value.push(friendData);
+        rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+          self.allFriends.push(friendData);
+          self.addFriendsUsername("");
+        }, onError); 
+        }, onError);
+        
+        
+    };
+    
     self.removeFriend = function(friendToRemove) {
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
             value = value || [];
