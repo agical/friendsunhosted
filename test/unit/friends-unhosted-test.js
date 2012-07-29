@@ -11,19 +11,27 @@ function(fu, ra, when) {
         return function(actual) {return assert.equals(expected, actual);};
     }
 
-    buster.testCase("Friends unhosted", {
+    function testOldStore(o, version, done) {
+        ra.getPublicData = o.stub();
+        var data = {'user': 'data'};
+        ra.getPublicData
+            .withArgs('some@user.com', 'VERSION')
+            .returns(resolved(null));
+        ra.getPublicData
+            .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
+            .returns(resolved(data));
+        
+        fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
+    }
+    
+    buster.testCase("F#U API", {
 
         "- can read version 0 status updates": function(done) {
-            ra.getPublicData = this.stub();
-            var data = {'user': 'data'};
-            ra.getPublicData
-                .withArgs('some@user.com', 'VERSION')
-                .returns(resolved(null));
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(resolved(data));
-            
-            fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
+            testOldStore(this, null, done);
+        },
+
+        "- can read version 1 status updates": function(done) {
+            testOldStore(this, 1, done);
         },
 
 
