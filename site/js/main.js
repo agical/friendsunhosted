@@ -177,6 +177,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         self.addFriendsUsername("");
     };
 
+    var onFriendRemoved = function(friendData) {
+        self.allFriends.remove(friendData); //don't replace this with the function 
+    };
+    
     var addFriendAPI = function(friendsUsername) {
         var afterAdding = when.defer();
 
@@ -208,9 +212,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     
     
     self.removeFriend = function(friendToRemove) {
-        removeFriendAPI(friendToRemove).then(function(friend) {
-            self.allFriends.remove(friend);
-        }, showError);
+        removeFriendAPI(friendToRemove).then(onFriendRemoved, showError);
     };
     
     var removeFriendAPI = function(friendToRemove) {
