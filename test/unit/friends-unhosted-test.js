@@ -1,5 +1,5 @@
-define([/*'friendsUnhosted', */'remoteAdapter', 'when'], 
-function(remoteAdapter, when) {
+define(['friendsUnhostedApi', 'remoteAdapter', 'when'], 
+function(fu, ra, when) {
     
     function resolved(val) {
         var deferred = when.defer();
@@ -13,23 +13,17 @@ function(remoteAdapter, when) {
 
     buster.testCase("Friends unhosted", {
 
-        "- c": function(done) {
-            assert(true);
-            done();
-            /*
-            remoteAdapter.fetchUserData = this.stub();
-            remoteAdapter.putUserData = this.stub();
+        "- can read version 0 status updates": function(done) {
+            ra.getPublicData = this.stub();
+            var data = {'user': 'data'};
+            ra.getPublicData
+                .withArgs('some@user.com', 'VERSION')
+                .returns(resolved(null));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
+                .returns(resolved(data));
             
-            remoteAdapter.fetchUserData.withArgs('VERSION').returns(resolved(null));
-
-            fu.addStatusListener(function(actual) {
-                assert.equal(expected, actual);
-            });
-            
-            fu.fetchStatuses().then();
-            
-            fu.convertStorage().then(eq(3), eq(3)).then(done,done);
-            */
+            fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
         },
 
 
