@@ -43,48 +43,44 @@ define(['underscore', 'remoteAdapter', 'when'],
         return upgraded.promise;
     };
     
-    var upgradeTo2 = function(actualVersion) {
+    val.upgrade1to2 = function(actualVersion) {
         var upgraded = when.defer();
-        upgrade0to1().then(function() {
-            if(actualVersion<2) {
-                // 1 -> 2
-                console.log("Upgrading 1 to 2");
-                remoteAdapter.putUserData('VERSION', 2).then(
-                    function() {
-                        upgraded.resolve(2);
-                    },
-                    upgraded.reject
-                );
-            } else {
-                upgraded.resolve(actualVersion);
-            }
-        }, upgraded.reject);
+        if(actualVersion == 1) {
+            // 1 -> 2
+            console.log("Upgrading 1 to 2");
+            remoteAdapter.putUserData('VERSION', 2).then(
+                function() {
+                    upgraded.resolve(2);
+                },
+                upgraded.reject
+            );
+        } else {
+            upgraded.resolve(actualVersion);
+        }
         
         return upgraded.promise;
     };
 
-    var upgradeTo3 = function(actualVersion) {
+    val.upgrade2to3 = function(actualVersion) {
         var upgraded = when.defer();
-        upgradeTo2().then(function() {
-            if(actualVersion<3) {
-                // 2 -> 3
-                console.log("Upgrading 1 to 2");
-                remoteAdapter.putUserData('VERSION', 2).then(
-                    function() {
-                        upgraded.resolve(2);
-                    },
-                    upgraded.reject
-                );
-            } else {
-                upgraded.resolve(actualVersion);
-            }
-        }, upgraded.reject);
+        if(actualVersion == 2) {
+            // 2 -> 3
+            console.log("Upgrading 2 to 3");
+            remoteAdapter
+                .fetchUserData('friendsunhosted_statusupdate_testing')
+                .then(function(data) { return remoteAdapter.putUserData('friendsunhosted_status', data); }, upgraded.reject)
+                .then(function() { return remoteAdapter.putUserData('VERSION', 3); }, upgraded.reject)
+                .then(function() { upgraded.resolve(3); }, upgraded.reject);
+        } else {
+            upgraded.resolve(actualVersion);
+        }
         
         return upgraded.promise;
     };
 
     var convert = function(actualVersion) {
-        return upgradeTo2(actualVersion);
+        return upgrade0to1(actualVersion)
+            .then(upgrade1to2);
     };
             
     val.convertStorage = function() {
