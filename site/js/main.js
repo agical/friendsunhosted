@@ -14,6 +14,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     var fuAPI = function() {
         var val = {};
         
+        var currentUser = null;
+        
         val.addFriendAPI = function(friendsUsername) {
             var afterAdding = when.defer();
 
@@ -77,10 +79,53 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
                     def.reject);
             return def.promise;
         };
+
+        val.fetchStatusForUser = function(username) {
+            return rem.getPublicData(username, STATUS_KEY);
+        };
+        
+        var addStatusOrReply = function(statusData) {
+            var afterStatusUpdate = when.defer();
+            
+            rem.fetchUserData(STATUS_KEY).then(function(statusUpdates) {
+                statusUpdates = statusUpdates || [];
+                statusUpdates.push(statusData);
+                rem.putUserData(STATUS_KEY, statusUpdates).then(function() {
+                    afterStatusUpdate.resolve(statusUpdates);
+                }, function(err) { afterStatusUpdate.reject("Could not update status: " + err);});
+            }, function(err) { afterStatusUpdate.reject("Could access status data: " + err);});
+
+            return afterStatusUpdate.promise;
+        };
+
+        val.addStatus = function(status, username) {
+            return addStatusOrReply({
+                    "status": status,
+                    "timestamp": new Date().getTime(),
+                    "username": username,
+                });
+        };
+
+        val.addReply = function(reply, inReplyTo, username) {
+            return addStatusOrReply({
+                'username': username,
+                'timestamp': new Date().getTime(),
+                'status': reply,
+                'inReplyTo': inReplyTo,
+              });
+        };
         
         val.init = function() {
             return rem.init();
-        }
+        };
+        
+        val.login = function(username) {
+            return rem.login(username);
+        };
+        
+        val.logout = function() {
+            return rem.logout();
+        };
         
         return val;
         
@@ -106,7 +151,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
             return page;
         } catch(e) {
             return "welcome";
-        }
+        };
     };
     
     self.addFriendsUsername = ko.observable("");
@@ -123,9 +168,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
 
     var updateFriends = function(newFriendsList) {
         _.each(newFriendsList, function(friendData) {
-          rem.getPublicData(friendData.username, STATUS_KEY).then(function(parsedData) {
+            fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
               addStatusUpdates(parsedData);
-          }, onError);
+          }, showError);
         });
     };
       
@@ -171,12 +216,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
       });
       
       su.doComment = function() {
-        self.addNewStatus({
-          'username': self.username(),
-          'timestamp': new Date().getTime(),
-          'status': su.comment(),
-          'inReplyTo': su.id(),
-        });
+          fuapi.addReply(su.comment(), su.id(), self.username()).
+           then(function(updates) {
+               addStatusUpdates(updates);
+               su.comment('');
+           }, showError);
       };
     }
 
@@ -217,14 +261,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
 
     
     self.login = function() {
-        rem
-            .login(self.username())
-            .then(function(loggedInUser) {
-            }, onError);
+        fuapi.login(self.username())
+            .then(function() {;}, onError);
     };
 
     self.logout = function() {
-        rem.logout().then(function() {
+        fuapi.logout().then(function() {
             self.loggedIn(false);
             self.selectedTab("support");
         });
@@ -280,7 +322,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
               return latestComment.timestamp;
           } else {
               return item.timestamp;
-          }
+          };
       });
       self.allStatuses(allSorted);
     }
@@ -288,25 +330,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
 
     
     self.updateStatus = function() {
-      if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {return;}
-      self.addNewStatus(
-          {"status": self.statusUpdate(),
-           "timestamp": new Date().getTime(),
-           "username": self.username()});
+        if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {
+            return; // short-circuit
+        }
+      
+        fuapi.addStatus(self.statusUpdate(), self.username()).then(function(updates) {
+            addStatusUpdates(updates);
+            self.statusUpdate('');
+        }, showError);    
     };
-    
-    self.addNewStatus = function(statusUpdate) {
-      rem.fetchUserData(STATUS_KEY).then(function(statusUpdates) {
-        statusUpdates = statusUpdates || [];
-        statusUpdates.push(statusUpdate);
-        rem.putUserData(STATUS_KEY, statusUpdates).then(function() {
-          addStatusUpdates(statusUpdates);
-          self.statusUpdate('');
-        });
-      });
-    };
-
-    
 
     self.clearAll = function() {
       rem.deleteUserData(STATUS_KEY).then(function() {
