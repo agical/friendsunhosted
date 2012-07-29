@@ -11,7 +11,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     
   function FriendsViewModel() {
     var self = this;
-    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
+    var STATUS_KEY = 'friendsunhosted_status';
     var FRIENDS_KEY = 'friendsunhosted_friends';
     
     self.loggedIn = ko.observable(false);
