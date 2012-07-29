@@ -1,6 +1,6 @@
 define(['underscore', 'remoteAdapter', 'when'], 
     function(_, remoteAdapter, when) {
-    
+
     var CURRENT_VERSION = 2;
 
     var val = {};
