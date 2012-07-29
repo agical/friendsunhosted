@@ -7,12 +7,69 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
     }
-    
+
+    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
+    var FRIENDS_KEY = 'friendsunhosted_friends';
+
+    var fuAPI = function() {
+        var val = {};
+        
+        val.addFriendAPI = function(friendsUsername) {
+            var afterAdding = when.defer();
+
+            var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
+            
+            if(!friendsUsername || !emailRegex.test(friendsUsername)) {
+              afterAdding.reject("Invalid username: " + friendsUsername);
+              return afterAdding.promise;
+            }
+            
+            var friendData = {"username": friendsUsername,
+                            "timestamp": new Date().getTime()};
+            rem.fetchUserData(FRIENDS_KEY).then(function(value) {
+                value = value || [];
+                if(_.any(value, function(f) {
+                        return f.username==friendsUsername;
+                    })) {
+                    afterAdding.reject('Cannot add the same user twice');
+                } else {
+                    value.push(friendData);
+                    rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+                        afterAdding.resolve(friendData);
+                    }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
+                }
+            }, function(err) { afterAdding.reject("Could not fetch friend data from storage: "+ err);});        
+
+            return afterAdding.promise;
+        };
+        
+        val.removeFriendAPI = function(friendToRemove) {
+            var afterRemoving = when.defer();
+            
+            rem.fetchUserData(FRIENDS_KEY).then(function(value) {
+                value = value || [];
+                if(value.pop(friendToRemove)) {
+                    rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+                        afterRemoving.resolve(friendToRemove);
+                    }, function(err) {
+                        afterRemoving.reject("Could not remove friend: " + err);
+                    });
+                } else {
+                    afterRemoving.reject("No such friend");
+                }
+            }, function(err) { afterRemoving.reject("Could not fetch friend data from storage: "+ err);});
+
+            return afterRemoving.promise;
+        };
+        
+        return val;
+        
+    };
     
   function FriendsViewModel() {
     var self = this;
-    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
-    var FRIENDS_KEY = 'friendsunhosted_friends';
+    
+    var fuapi = fuAPI();
     
     self.loggedIn = ko.observable(false);
     self.username = ko.observable("");
@@ -169,7 +226,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     };
         
     self.addFriend = function() {
-      addFriendAPI(self.addFriendsUsername()).then(onFriendAdded, showError);
+        fuapi.addFriendAPI(self.addFriendsUsername()).then(onFriendAdded, showError);
     };
 
     var onFriendAdded = function(friendData) {
@@ -177,63 +234,17 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         self.addFriendsUsername("");
     };
 
-    var onFriendRemoved = function(friendData) {
-        self.allFriends.remove(friendData); //don't replace this with the function 
-    };
-    
-    var addFriendAPI = function(friendsUsername) {
-        var afterAdding = when.defer();
-
-        var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
-        
-        if(!friendsUsername || !emailRegex.test(friendsUsername)) {
-          afterAdding.reject("Invalid username: " + friendsUsername);
-          return afterAdding.promise;
-        }
-        
-        var friendData = {"username": friendsUsername,
-                        "timestamp": new Date().getTime()};
-        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-            value = value || [];
-            if(_.any(value, function(f) {
-                    return f.username==friendsUsername;
-                })) {
-                afterAdding.reject('Cannot add the same user twice');
-            } else {
-                value.push(friendData);
-                rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-                    afterAdding.resolve(friendData);
-                }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
-            }
-        }, function(err) { afterAdding.reject("Could not fetch friend data from storage: "+ err);});        
-
-        return afterAdding.promise;
-    };
-    
-    
     self.removeFriend = function(friendToRemove) {
-        removeFriendAPI(friendToRemove).then(onFriendRemoved, showError);
+        fuapi.removeFriendAPI(friendToRemove).then(onFriendRemoved, showError);
     };
-    
-    var removeFriendAPI = function(friendToRemove) {
-        var afterRemoving = when.defer();
-        
-        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-            value = value || [];
-            if(value.pop(friendToRemove)) {
-                rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-                    afterRemoving.resolve(friendToRemove);
-                }, function(err) {
-                    afterRemoving.reject("Could not remove friend: " + err);
-                });
-            } else {
-                afterRemoving.reject("No such friend");
-            }
-        }, function(err) { afterRemoving.reject("Could not fetch friend data from storage: "+ err);});
 
-        return afterRemoving.promise;
+    var onFriendRemoved = function(friendData) {
+        self.allFriends.remove(friendData); //don't use this instead of the function 
     };
     
+    
+
+ 
     function addStatusUpdates(statusUpdatesArray) {
       function statusEquals(s1, s2) {
           return s1.username == s2.username && 
