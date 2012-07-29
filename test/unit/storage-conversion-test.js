@@ -64,6 +64,15 @@ function(storageConversion, remoteAdapter, when) {
             verifyPromise(storageConversion.upgrade2to3(2), eq(3), done);
         },
 
+        "- convert calls upgrades 0 to 3": function(done) {
+            remoteAdapter.fetchUserData = mockPromise(this, null, 'VERSION');
+            storageConversion.upgrade0to1 = mockPromise(this, 1, null);
+            storageConversion.upgrade1to2 = mockPromise(this, 2, 1);
+            storageConversion.upgrade0to1 = mockPromise(this, 3, 2);
+            
+            verifyPromise(storageConversion.convertStorage(), eq(3), done);
+        },
+
 
     });
 });
