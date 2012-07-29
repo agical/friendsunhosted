@@ -24,7 +24,7 @@ define(['underscore', 'remoteAdapter', 'when'],
         return whenStorageVersionIsRetrieved.promise;
     };
 
-    var upgrade0to1 = function(actualVersion) {
+    val.upgrade0to1 = function(actualVersion) {
         var upgraded = when.defer();
         if(!actualVersion) {
             // 0 -> 1

@@ -41,10 +41,9 @@ function(storageConversion, remoteAdapter, when) {
         },
 
         "- upgrades from 0 to 1": function(done) {
-            remoteAdapter.fetchUserData = mockPromise(this, null, 'VERSION');
             remoteAdapter.putUserData = mockPromise(this, 1, 'VERSION', 1);
             
-            verifyPromise(remoteAdapter.fetchUserData('VERSION'), eq(null), done);
+            storageConversion.upgrade0to1(null);
             verifyPromise(remoteAdapter.putUserData('VERSION', 1), eq(1), done);
         },
 
