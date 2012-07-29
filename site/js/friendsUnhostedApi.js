@@ -2,7 +2,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         function( _, when, rem, storageConversion) {
 
     var val = {};
-    var STATUS_KEY = 'friendsunhosted_status';
+    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
     var FRIENDS_KEY = 'friendsunhosted_friends';
     var userToStorageVersion = {};
     var currentUser = null;
@@ -76,12 +76,15 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         
         rem.getPublicData(username, 'VERSION').then(function(version) {
             if(!version || version < 3) {
-                rem.getPublicData(username, 'friendsunhosted_statusupdate_testing')
-                    .then(afterUserStatus.resolve, afterUserStatus.reject);
-            } else {
                 rem.getPublicData(username, STATUS_KEY)
                     .then(afterUserStatus.resolve, afterUserStatus.reject);
+            } else {
+                rem.getPublicData(username, 'friendsunhosted_status')
+                    .then(afterUserStatus.resolve, afterUserStatus.reject);
             }
+        }, function() {
+            rem.getPublicData(username, STATUS_KEY)
+                .then(afterUserStatus.resolve, afterUserStatus.reject);
         });
         
         return afterUserStatus.promise;
