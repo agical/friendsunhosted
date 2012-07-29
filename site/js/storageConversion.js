@@ -16,7 +16,7 @@ define(['underscore', 'remoteAdapter', 'when'],
                     whenStorageVersionIsRetrieved.resolve(data);
                 },
                 function(err) {
-                    console.log(err);
+                    console.log("Error:", err);
                     whenStorageVersionIsRetrieved.resolve(null);
                 }
             );
@@ -79,14 +79,18 @@ define(['underscore', 'remoteAdapter', 'when'],
     };
 
     var convert = function(actualVersion) {
-        return upgrade0to1(actualVersion)
-            .then(upgrade1to2);
+        return val.upgrade0to1(actualVersion)
+            .then(val.upgrade1to2)
+            .then(val.upgrade2to3);
     };
             
     val.convertStorage = function() {
         var whenStorageConverted = when.defer();
         getVersion()
-            .then(convert)
+            .then(
+                convert,                
+                whenStorageConverted.reject
+            )
             .then(
                 whenStorageConverted.resolve, 
                 whenStorageConverted.reject
