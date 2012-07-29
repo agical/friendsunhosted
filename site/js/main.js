@@ -197,8 +197,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         value = value || [];
         value.push(friendData);
         rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-          self.allFriends.push(friendData);
-          self.addFriendsUsername("");
+            onFriendAdded(keyValCat.value);
         }, onError); 
         }, onError);
         
