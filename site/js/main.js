@@ -8,11 +8,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         return new Date(timestamp);
     }
 
-    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
-    var FRIENDS_KEY = 'friendsunhosted_friends';
-
     var fuAPI = function() {
         var val = {};
+        var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
+        var FRIENDS_KEY = 'friendsunhosted_friends';
+
         
         var currentUser = null;
         
@@ -125,6 +125,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         
         val.logout = function() {
             return rem.logout();
+        };
+        
+        val.removeAllStatuses = function() {
+            return rem.deleteUserData(STATUS_KEY);
+        };
+        
+        val.removeAllFriends = function() {
+            return rem.deleteUserData(FRIENDS_KEY);
         };
         
         return val;
@@ -341,14 +349,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     };
 
     self.clearAll = function() {
-      rem.deleteUserData(STATUS_KEY).then(function() {
-          self.allStatuses([]);
-      }, onError);
+        fuapi.removeAllFriends().then(function() {
+            self.allFriends([]);
+        }, onError);
 
-      rem.deleteUserData(FRIENDS_KEY).then(function() {
-          self.allFriends([]);
-      }, onError);
-
+        fuapi.removeAllStatuses().then(function() {
+            self.allStatuses([]);
+        }, onError);
     };
     
 
