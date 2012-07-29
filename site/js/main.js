@@ -205,6 +205,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         
     };
     
+    var onFriendAdded = function(friendData) {
+        self.allFriends.push(friendData);
+        self.addFriendsUsername("");
+    }
+    
     self.removeFriend = function(friendToRemove) {
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
             value = value || [];
