@@ -8,6 +8,42 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         return new Date(timestamp);
     }
     
+    var friendsUnhosted = function() {
+        var val = {};
+        
+        var statusListeners = [];
+        var friendListeners = [];
+        var brackgroundTaskListeners = [];
+        
+        val.friends = [];
+        
+        val.addStatusListener = function(cb) {
+            
+        };
+
+        val.addBackgroundTaskListener = function(cb) {
+            cb.started("Message");
+            cb.finished("Message");
+        };
+        
+        val.addFriendListener = function(cb) {
+            cb.friendAdded(friend);
+        };
+        
+        val.addFriend = function(friend) {
+            
+        };
+        
+        val.newStatus = function(status) {
+            
+        };
+          
+        val.reply = function(text, inReplyTo) {
+            
+        };
+        
+    };
+    
     
   function FriendsViewModel() {
     var self = this;
