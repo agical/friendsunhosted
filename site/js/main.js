@@ -62,6 +62,22 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
             return afterRemoving.promise;
         };
         
+        val.fetchFriends = function() {
+            var def = when.defer();
+            rem.fetchUserData(FRIENDS_KEY).then(
+                    function(data) {def.resolve(data||[]);},
+                    def.reject);
+            return def.promise;
+        };
+        
+        val.fetchStatus = function() {
+            var def = when.defer();
+            rem.fetchUserData(STATUS_KEY).then(
+                    function(data) {def.resolve(data||[]);},
+                    def.reject);
+            return def.promise;
+        };
+        
         return val;
         
     };
@@ -180,16 +196,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
 
                     setPageFromUrl();
                     
-                    storageConversion.convertStorage().then(function() {
-                        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-                            value = value || [];
-                            self.allFriends(value);
-                        }, onError);
-                        rem.fetchUserData(STATUS_KEY).then(function(value) {
-                            value = value || [];
-                            addStatusUpdates(value);
-                        }, onError);
-                    });
+                    fuapi.fetchFriends().then(function(value) {
+                        self.allFriends(value);
+                    }, onError);
+                    
+                    fuapi.fetchStatus().then(function(value) {
+                        addStatusUpdates(value);
+                    }, onError);
                     
                 }, function(notLoggedInMsg) {
                     console.log(notLoggedInMsg);
@@ -241,10 +254,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     var onFriendRemoved = function(friendData) {
         self.allFriends.remove(friendData); //don't use this instead of the function 
     };
-    
-    
-
- 
+  
     function addStatusUpdates(statusUpdatesArray) {
       function statusEquals(s1, s2) {
           return s1.username == s2.username && 
