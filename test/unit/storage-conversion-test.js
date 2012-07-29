@@ -1,8 +1,9 @@
-define(["storageConversion"], function(storageConversion) {
+define(['storageConversion', 'remoteAdapter'], function(storageConversion, remoteAdapter) {
     buster.testCase("storage conversion", {
         "- say hi" : function() {
-            console.log("Hi!");
-            refute(false);
+            console.log(storageConversion);
+            assert(storageConversion);
+            assert(remoteAdapter);
         }
     });
 });

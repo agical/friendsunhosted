@@ -1,10 +1,8 @@
 var require = {
     paths: {
         "storageConversion": "site/js/storageConversion",
-        "remoteAdapter": "test/fake/fake-remoteAdapter",
-        //"remoteAdapter": "site/js/remoteAdapter",
         "underscore": "site/js/underscore",
-
+        "remoteAdapter": "test/fake/fakeRemoteAdapter",
         
 //        "remoteStorage": "site/js/remoteStorage",
 //        "lib/platform": "site/js/lib/platform", 

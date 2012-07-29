@@ -10,7 +10,8 @@ config["unit"] = {
     environment: "browser",
     rootPath: "..",
     sources: [
-        "site/js/**/*.js"
+        "site/js/**/*.js",
+        "test/fake/fakeRemoteAdapter.js",
     ],
     tests: [
         "test/unit/**/*-test.js"
@@ -18,7 +19,6 @@ config["unit"] = {
     libs: [
         "test/require-config.js",
         "test/require-jquery.js",
-        "test/fake/*.js"
     ],
     extensions: [
         require("buster-amd")
