@@ -209,7 +209,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     
     self.removeFriend = function(friendToRemove) {
         removeFriendAPI(friendToRemove).then(function(friend) {
-            console.log("Resolved removing", friend);
             self.allFriends.remove(friend);
         }, showError);
     };
