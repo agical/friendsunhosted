@@ -38,7 +38,7 @@ function(storageConversion, remoteAdapter, when) {
             storageConversion.upgrade2to3(2).then(eq(3),eq(3)).then(done, done);
         },
 
-        "- convert calls upgrades 0 to 3": function(done) {
+        "//- convert calls upgrades 0 to 3": function(done) {
             remoteAdapter.fetchUserData = this.stub();
             remoteAdapter.putUserData = this.stub();
             

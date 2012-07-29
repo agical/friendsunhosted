@@ -11,7 +11,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     
   function FriendsViewModel() {
     var self = this;
-    var STATUS_KEY = 'friendsunhosted_status';
+    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
     var FRIENDS_KEY = 'friendsunhosted_friends';
     
     self.loggedIn = ko.observable(false);
@@ -160,54 +160,54 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         init();
     };
 
-    
-        
-    self.addFriend = function() {
-      var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
-      
-      if(!self.addFriendsUsername() || !emailRegex.test(self.addFriendsUsername())) {
-        alert("Invalid username: " + self.addFriendsUsername());
-        return;
-      }
-      if(_.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
-        $('#error-message').text('Cannot add the same user twice');
+    var showError = function(message) {
+        $('#error-message').text(message);
         $('#error-panel').slideDown();
         setTimeout(function() {
             $("#error-panel").slideUp();
         }, 4000);
-        return;
-      } 
-      var friendData = {"username": self.addFriendsUsername(),
-                        "timestamp": new Date().getTime()};
-      rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-        value = value || [];
-        value.push(friendData);
-        rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-          self.allFriends.push(friendData);
-          self.addFriendsUsername("");
-        }, onError); 
-      }, onError);
     };
-    
-    var addFriend = function(friendsUsername) {
-        var afterAdding = when.defer();
-        var friendData = {"username": friendsUsername,
-                "timestamp": new Date().getTime()};
-        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-        value = value || [];
-        value.push(friendData);
-        rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-            onFriendAdded(keyValCat.value);
-        }, onError); 
-        }, onError);
         
-        
+    self.addFriend = function() {
+      addFriendAPI(self.addFriendsUsername()).then(onFriendAdded, showError);
     };
-    
+
     var onFriendAdded = function(friendData) {
         self.allFriends.push(friendData);
         self.addFriendsUsername("");
-    }
+    };
+
+    var addFriendAPI = function(friendsUsername) {
+        var afterAdding = when.defer();
+
+        var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
+        
+        if(!friendsUsername || !emailRegex.test(friendsUsername)) {
+          afterAdding.reject("Invalid username: " + friendsUsername);
+          return afterAdding.promise;
+        }
+        
+        var friendData = {"username": friendsUsername,
+                        "timestamp": new Date().getTime()};
+        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
+            value = value || [];
+            if(_.any(value, function(f) {
+                    console.log("equal?", f.username, friendsUsername, f.username==friendsUsername);
+                    return f.username==friendsUsername;
+                })) {
+                console.log("Rejecting", value, friendsUsername);
+                afterAdding.reject('Cannot add the same user twice');
+            } else {
+                value.push(friendData);
+                rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+                    afterAdding.resolve(friendData);
+                }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
+            }
+        }, function(err) { afterAdding.reject("Could not fetch friend data from storage: "+ err);});        
+
+        return afterAdding.promise;
+    };
+    
     
     self.removeFriend = function(friendToRemove) {
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {

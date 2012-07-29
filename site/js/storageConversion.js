@@ -80,8 +80,8 @@ define(['underscore', 'remoteAdapter', 'when'],
 
     var convert = function(actualVersion) {
         return val.upgrade0to1(actualVersion)
-            .then(val.upgrade1to2)
-            .then(val.upgrade2to3);
+            .then(val.upgrade1to2);
+//            .then(val.upgrade2to3);
     };
             
     val.convertStorage = function() {
