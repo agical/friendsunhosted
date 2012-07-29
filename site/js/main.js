@@ -192,10 +192,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
             value = value || [];
             if(_.any(value, function(f) {
-                    console.log("equal?", f.username, friendsUsername, f.username==friendsUsername);
                     return f.username==friendsUsername;
                 })) {
-                console.log("Rejecting", value, friendsUsername);
                 afterAdding.reject('Cannot add the same user twice');
             } else {
                 value.push(friendData);
@@ -210,14 +208,29 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter', 'storageCo
     
     
     self.removeFriend = function(friendToRemove) {
+        removeFriendAPI(friendToRemove).then(function(friend) {
+            console.log("Resolved removing", friend);
+            self.allFriends.remove(friend);
+        }, showError);
+    };
+    
+    var removeFriendAPI = function(friendToRemove) {
+        var afterRemoving = when.defer();
+        
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
             value = value || [];
             if(value.pop(friendToRemove)) {
                 rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-                  self.allFriends.remove(friendToRemove);
-                }, onError); 
+                    afterRemoving.resolve(friendToRemove);
+                }, function(err) {
+                    afterRemoving.reject("Could not remove friend: " + err);
+                });
+            } else {
+                afterRemoving.reject("No such friend");
             }
-        }, onError);
+        }, function(err) { afterRemoving.reject("Could not fetch friend data from storage: "+ err);});
+
+        return afterRemoving.promise;
     };
     
     function addStatusUpdates(statusUpdatesArray) {
