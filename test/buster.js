@@ -12,6 +12,7 @@ config["unit"] = {
     sources: [
         "site/js/**/*.js",
         "test/fake/fakeRemoteAdapter.js",
+        "test/lib/testHelper.js",
     ],
     tests: [
         "test/unit/**/*-test.js"

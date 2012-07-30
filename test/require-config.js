@@ -4,6 +4,7 @@ var require = {
         "friendsUnhostedApi": "site/js/friendsUnhostedApi",
         "underscore": "site/js/underscore",
         "remoteAdapter": "test/fake/fakeRemoteAdapter",
+        "testHelper": "test/lib/testHelper",
         
 //        "remoteStorage": "site/js/remoteStorage",
 //        "lib/platform": "site/js/lib/platform", 

@@ -1,16 +1,8 @@
-define(['friendsUnhostedApi', 'remoteAdapter', 'when'], 
-function(fu, ra, when) {
+define(['friendsUnhostedApi', 'remoteAdapter', 'when', 'testHelper'], 
+function(fu, ra, when, help) {
+    var eq = help.eq;
+    var resolved = help.resolved;
     
-    function resolved(val) {
-        var deferred = when.defer();
-        deferred.resolve(val);
-        return deferred.promise;
-    }
-    
-    function eq(expected) {
-        return function(actual) {return assert.equals(expected, actual);};
-    }
-
     function testOldStore(o, version, done) {
         ra.getPublicData = o.stub();
         var data = {'user': 'data'};
@@ -24,7 +16,7 @@ function(fu, ra, when) {
         fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
     }
     
-    buster.testCase("F#U API", {
+    buster.testCase("F#U API read public data", {
 
         "- can read version 0 status updates": function(done) {
             testOldStore(this, null, done);
@@ -52,4 +44,6 @@ function(fu, ra, when) {
         },
 
     });
+
+
 });

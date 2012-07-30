@@ -2,7 +2,8 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         function( _, when, rem, storageConversion) {
 
     var val = {};
-    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
+    var STATUS_KEY_V0 = 'friendsunhosted_statusupdate_testing';
+    var STATUS_KEY_V3 = 'friendsunhosted_status';
     var FRIENDS_KEY = 'friendsunhosted_friends';
     var userToStorageVersion = {};
     var currentUser = null;
@@ -65,7 +66,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     
     val.fetchStatus = function() {
         var def = when.defer();
-        rem.fetchUserData(STATUS_KEY).then(
+        rem.fetchUserData(STATUS_KEY_V0).then(
                 function(data) {def.resolve(data||[]);},
                 def.reject);
         return def.promise;
@@ -76,14 +77,14 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         
         rem.getPublicData(username, 'VERSION').then(function(version) {
             if(!version || version < 3) {
-                rem.getPublicData(username, STATUS_KEY)
+                rem.getPublicData(username, STATUS_KEY_V0)
                     .then(afterUserStatus.resolve, afterUserStatus.reject);
             } else {
-                rem.getPublicData(username, 'friendsunhosted_status')
+                rem.getPublicData(username, STATUS_KEY_V3)
                     .then(afterUserStatus.resolve, afterUserStatus.reject);
             }
         }, function() {
-            rem.getPublicData(username, STATUS_KEY)
+            rem.getPublicData(username, STATUS_KEY_V0)
                 .then(afterUserStatus.resolve, afterUserStatus.reject);
         });
         
@@ -93,10 +94,10 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     var addStatusOrReply = function(statusData) {
         var afterStatusUpdate = when.defer();
         
-        rem.fetchUserData(STATUS_KEY).then(function(statusUpdates) {
+        rem.fetchUserData(STATUS_KEY_V0).then(function(statusUpdates) {
             statusUpdates = statusUpdates || [];
             statusUpdates.push(statusData);
-            rem.putUserData(STATUS_KEY, statusUpdates).then(function() {
+            rem.putUserData(STATUS_KEY_V0, statusUpdates).then(function() {
                 afterStatusUpdate.resolve(statusUpdates);
             }, function(err) { afterStatusUpdate.reject("Could not update status: " + err);});
         }, function(err) { afterStatusUpdate.reject("Could access status data: " + err);});
@@ -134,7 +135,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     };
     
     val.removeAllStatuses = function() {
-        return rem.deleteUserData(STATUS_KEY);
+        return rem.deleteUserData(STATUS_KEY_V0);
     };
     
     val.removeAllFriends = function() {
