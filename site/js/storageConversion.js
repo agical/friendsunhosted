@@ -68,9 +68,18 @@ define(['underscore', 'remoteAdapter', 'when'],
             console.log("Upgrading 2 to 3");
             remoteAdapter
                 .fetchUserData('friendsunhosted_statusupdate_testing')
-                .then(function(data) { return remoteAdapter.putUserData('friendsunhosted_status', data); }, upgraded.reject)
-                .then(function() { return remoteAdapter.putUserData('VERSION', 3); }, upgraded.reject)
-                .then(function() { upgraded.resolve(3); }, upgraded.reject);
+                .then(function(data) { 
+                    console.log("Nummer 1");
+                    return remoteAdapter.putUserData('friendsunhosted_status', data); 
+                }, upgraded.reject)
+                .then(function() { 
+                    console.log("Nummer 2");
+                    return remoteAdapter.putUserData('VERSION', 3); 
+                }, upgraded.reject)
+                .then(function() { 
+                    console.log("Nummer 3");
+                    upgraded.resolve(3); 
+                }, upgraded.reject);
         } else {
             upgraded.resolve(actualVersion);
         }
@@ -80,8 +89,8 @@ define(['underscore', 'remoteAdapter', 'when'],
 
     var convert = function(actualVersion) {
         return val.upgrade0to1(actualVersion)
-            .then(val.upgrade1to2);
-//            .then(val.upgrade2to3);
+            .then(val.upgrade1to2)
+            .then(val.upgrade2to3);
     };
             
     val.convertStorage = function() {

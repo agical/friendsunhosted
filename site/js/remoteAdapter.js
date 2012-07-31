@@ -44,7 +44,7 @@ define(['underscore', 'remoteStorage', 'when'],
             return deferred.promise;
         };
 
-        val.init = function() {
+        val.restoreLogin = function() {
             var deferred = when.defer();
 
             var token = remoteStorage.receiveToken();

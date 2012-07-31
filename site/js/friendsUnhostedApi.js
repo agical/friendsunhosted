@@ -1,14 +1,16 @@
 define(['underscore', 'when', 'remoteAdapter', 'storageConversion'], 
         function( _, when, rem, storageConversion) {
 
-    var val = {};
+    var fuapi = {};
     var STATUS_KEY_V0 = 'friendsunhosted_statusupdate_testing';
     var STATUS_KEY_V3 = 'friendsunhosted_status';
     var FRIENDS_KEY = 'friendsunhosted_friends';
-    var userToStorageVersion = {};
     var currentUser = null;
+
+    fuapi.beforeBackgroundTaskListeners = [];
+    fuapi.afterBackgroundTaskListeners = [];
     
-    val.addFriend = function(friendsUsername) {
+    fuapi.addFriend = function(friendsUsername) {
         var afterAdding = when.defer();
 
         var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
@@ -37,7 +39,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return afterAdding.promise;
     };
     
-    val.removeFriend = function(friendToRemove) {
+    fuapi.removeFriend = function(friendToRemove) {
         var afterRemoving = when.defer();
         
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
@@ -56,7 +58,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return afterRemoving.promise;
     };
     
-    val.fetchFriends = function() {
+    fuapi.fetchFriends = function() {
         var def = when.defer();
         rem.fetchUserData(FRIENDS_KEY).then(
                 function(data) {def.resolve(data||[]);},
@@ -64,7 +66,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return def.promise;
     };
     
-    val.fetchStatus = function() {
+    fuapi.fetchStatus = function() {
         var def = when.defer();
         rem.fetchUserData(STATUS_KEY_V0).then(
                 function(data) {def.resolve(data||[]);},
@@ -72,7 +74,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return def.promise;
     };
 
-    val.fetchStatusForUser = function(username) {
+    fuapi.fetchStatusForUser = function(username) {
         var afterUserStatus = when.defer();
         
         rem.getPublicData(username, 'VERSION').then(function(version) {
@@ -105,7 +107,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return afterStatusUpdate.promise;
     };
 
-    val.addStatus = function(status, username) {
+    fuapi.addStatus = function(status, username) {
         return addStatusOrReply({
                 "status": status,
                 "timestamp": new Date().getTime(),
@@ -113,7 +115,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
             });
     };
 
-    val.addReply = function(reply, inReplyTo, username) {
+    fuapi.addReply = function(reply, inReplyTo, username) {
         return addStatusOrReply({
             'username': username,
             'timestamp': new Date().getTime(),
@@ -122,26 +124,57 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
           });
     };
     
-    val.init = function() {
-        return rem.init();
+    fuapi.addBackgroundTaskListeners = function(before, after) {
+      fuapi.beforeBackgroundTaskListeners.push(before);  
+      fuapi.afterBackgroundTaskListeners.push(after);  
     };
     
-    val.login = function(username) {
+    fuapi.init = function() {
+        var deferred = when.defer();
+        
+//        _.each(fuapi.beforeBackgroundTaskListeners, function(fn) {fn();});
+        rem.restoreLogin().then(function(username) {
+                console.log("Login restored..." + username);
+
+                console.log("Befores", fuapi.beforeBackgroundTaskListeners);
+                
+                for(var i = 0; i<fuapi.beforeBackgroundTaskListeners.length; i++) {
+                    console.log("Calling before", i, fuapi.beforeBackgroundTaskListeners[i]);
+                    fuapi.beforeBackgroundTaskListeners[i]();
+                }
+                
+                storageConversion.convertStorage().then(function(version) {
+                    console.log("Storage converted to version", version);
+                    console.log("Afters", fuapi.afterBackgroundTaskListeners);
+                    for(var j = 0; j<fuapi.afterBackgroundTaskListeners.length; j++) {
+                        console.log("Calling after", j, fuapi.afterBackgroundTaskListeners[j]);
+                        fuapi.afterBackgroundTaskListeners[j]();
+                    }
+                    //_.each(fuapi.afterBackgroundTaskListeners, function(fn) {fn();});
+                    console.log("Listeners called");
+                    deferred.resolve(username);
+                }, deferred.reject);
+            }, deferred.reject );
+        
+        return deferred.promise;
+    };
+    
+    fuapi.login = function(username) {
         return rem.login(username);
     };
     
-    val.logout = function() {
+    fuapi.logout = function() {
         return rem.logout();
     };
     
-    val.removeAllStatuses = function() {
+    fuapi.removeAllStatuses = function() {
         return rem.deleteUserData(STATUS_KEY_V0);
     };
     
-    val.removeAllFriends = function() {
+    fuapi.removeAllFriends = function() {
         return rem.deleteUserData(FRIENDS_KEY);
     };
     
-    return val;
+    return fuapi;
 });
 

@@ -44,6 +44,58 @@ function(fu, ra, when, help) {
         },
 
     });
+    
 
+
+    buster.testCase("F#U API upgrade store", {
+
+         "- can upgrade to version 3 store": function(done) {
+
+            ra.fetchUserData = this.stub();
+            ra.putUserData = this.stub();
+            ra.restoreLogin = this.stub();
+            
+            var data = {'user': 'data'};
+            var username = 'some@user.com';
+            
+            ra.restoreLogin
+                .withArgs()
+                .returns(resolved(username));
+
+            ra.fetchUserData
+                .withArgs('VERSION')
+                .returns(resolved(2));
+
+            ra.fetchUserData
+                .withArgs('friendsunhosted_statusupdate_testing')
+                .returns(resolved(data));
+            
+            ra.putUserData
+                .withArgs('friendsunhosted_status')
+                .returns(resolved(data));
+            
+            ra.putUserData
+                .withArgs('VERSION', 3)
+                .returns(resolved(3));
+            /*
+            var beforeBackgroundTask = when.defer();
+            var afterBackgroundTask = when.defer();
+
+            fu.addBackgroundTaskListeners(
+                    beforeBackgroundTask.resolve, 
+                    afterBackgroundTask.resolve
+            );
+            
+            fu.addBackgroundTaskListeners(
+                    console.log, 
+                    console.log
+            );
+*/
+            var initPromise = fu.init();//.then(eq(username), eq(username)).then(done,done);
+            
+            when.all([/*beforeBackgroundTask.promise, afterBackgroundTask.promise, */initPromise], eq([username]), eq([username])).always(done);
+        },
+
+    });
 
 });
