@@ -94,9 +94,7 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
-                    .waitFor(css, 2000, function() {
-                        console.log("About to get ", css);
-                    }) 
+                    .waitFor(css, 2000) 
                     .getText(css, function(v) {
                         if(v.value) {
                             cb(v.value);

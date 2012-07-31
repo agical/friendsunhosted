@@ -4,17 +4,7 @@ define(['underscore', 'remoteStorage', 'when'],
         var val = {};
 
         var connect = function(userAddress, callback) {
-            remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
-              if(error) {
-                alert('Could not load storage info:' + error);
-                console.log(error);
-              } else {
-                console.log('Storage info received:');
-                console.log(storageInfo);
-              }
-
-              callback(error, storageInfo);
-            });
+            remoteStorage.getStorageInfo(userAddress, callback);
         };
 
         var getUserStorageClient = function(category) {

@@ -2,7 +2,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         function($, _, ui, ko, when, fuapi) {
 
     function onError(err) { 
-        console.log(err); 
+        console.log(err);
     };
     
     function presentTimestamp(timestamp) {

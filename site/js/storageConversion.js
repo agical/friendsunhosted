@@ -6,17 +6,14 @@ define(['underscore', 'remoteAdapter', 'when'],
     var val = {};
     
     var getVersion = function() {
-        console.log("Getting version...");
         var whenStorageVersionIsRetrieved = when.defer();
         remoteAdapter
             .fetchUserData('VERSION')
             .then(
                 function(data) {
-                    console.log(data);
                     whenStorageVersionIsRetrieved.resolve(data);
                 },
                 function(err) {
-                    console.log("Error:", err);
                     whenStorageVersionIsRetrieved.resolve(null);
                 }
             );
@@ -28,11 +25,11 @@ define(['underscore', 'remoteAdapter', 'when'],
         var upgraded = when.defer();
         if(!actualVersion) {
             // 0 -> 1
-            console.log("Upgrading 0 to 1");
             remoteAdapter
                 .putUserData('VERSION', 1)
                 .then(
                     function() { 
+                        console.log("Upgraded store version from 0 to 1.");
                         upgraded.resolve(1); 
                     },
                     upgraded.reject
@@ -47,9 +44,9 @@ define(['underscore', 'remoteAdapter', 'when'],
         var upgraded = when.defer();
         if(actualVersion == 1) {
             // 1 -> 2
-            console.log("Upgrading 1 to 2");
             remoteAdapter.putUserData('VERSION', 2).then(
                 function() {
+                    console.log("Upgraded store version from 1 to 2.");
                     upgraded.resolve(2);
                 },
                 upgraded.reject
@@ -65,19 +62,16 @@ define(['underscore', 'remoteAdapter', 'when'],
         var upgraded = when.defer();
         if(actualVersion == 2) {
             // 2 -> 3
-            console.log("Upgrading 2 to 3");
             remoteAdapter
                 .fetchUserData('friendsunhosted_statusupdate_testing')
                 .then(function(data) { 
-                    console.log("Nummer 1");
                     return remoteAdapter.putUserData('friendsunhosted_status', data); 
                 }, upgraded.reject)
                 .then(function() { 
-                    console.log("Nummer 2");
                     return remoteAdapter.putUserData('VERSION', 3); 
                 }, upgraded.reject)
                 .then(function() { 
-                    console.log("Nummer 3");
+                    console.log("Upgraded store version from 2 to 3.");
                     upgraded.resolve(3); 
                 }, upgraded.reject);
         } else {

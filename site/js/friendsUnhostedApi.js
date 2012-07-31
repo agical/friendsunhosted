@@ -132,26 +132,17 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.init = function() {
         var deferred = when.defer();
         
-//        _.each(fuapi.beforeBackgroundTaskListeners, function(fn) {fn();});
         rem.restoreLogin().then(function(username) {
-                console.log("Login restored..." + username);
-
-                console.log("Befores", fuapi.beforeBackgroundTaskListeners);
-                
                 for(var i = 0; i<fuapi.beforeBackgroundTaskListeners.length; i++) {
-                    console.log("Calling before", i, fuapi.beforeBackgroundTaskListeners[i]);
                     fuapi.beforeBackgroundTaskListeners[i]();
                 }
+//              _.each(fuapi.beforeBackgroundTaskListeners, function(fn) {fn();});
                 
                 storageConversion.convertStorage().then(function(version) {
-                    console.log("Storage converted to version", version);
-                    console.log("Afters", fuapi.afterBackgroundTaskListeners);
                     for(var j = 0; j<fuapi.afterBackgroundTaskListeners.length; j++) {
-                        console.log("Calling after", j, fuapi.afterBackgroundTaskListeners[j]);
                         fuapi.afterBackgroundTaskListeners[j]();
                     }
                     //_.each(fuapi.afterBackgroundTaskListeners, function(fn) {fn();});
-                    console.log("Listeners called");
                     deferred.resolve(username);
                 }, deferred.reject);
             }, deferred.reject );
