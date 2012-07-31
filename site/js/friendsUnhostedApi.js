@@ -74,10 +74,14 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         return def.promise;
     };
 
+    var getVersionForUser = function(username) {
+        return rem.getPublicData(username, 'VERSION');
+    };
+    
     fuapi.fetchStatusForUser = function(username) {
         var afterUserStatus = when.defer();
         
-        rem.getPublicData(username, 'VERSION').then(function(version) {
+        getVersionForUser(username).then(function(version) {
             if(!version || version < 3) {
                 rem.getPublicData(username, STATUS_KEY_V0)
                     .then(afterUserStatus.resolve, afterUserStatus.reject);
