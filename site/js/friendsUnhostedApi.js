@@ -83,6 +83,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         
         getVersionForUser(username).then(function(version) {
             if(!version || version < 3) {
+                console.log("User has no VERSION in storage and the fetch gives a 404. Nothing alarming.");
                 rem.getPublicData(username, STATUS_KEY_V0)
                     .then(afterUserStatus.resolve, afterUserStatus.reject);
             } else {
