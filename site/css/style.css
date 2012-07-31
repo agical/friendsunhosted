@@ -1,3 +1,7 @@
+#all {
+	display: none;
+}
+
 body { 
   text-align: center;
   margin: 0px;
@@ -12,6 +16,10 @@ button {
 h3 {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+#upgrading-storage-screen {
+	display: none;
 }
 
 #all {
@@ -35,6 +43,8 @@ h3 {
   border-color: #eee;
   border-top: none;
   border-bottom: none;
+
+  overflow: auto;
 }
 
 #header, #footer {

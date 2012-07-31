@@ -4,17 +4,7 @@ define(['underscore', 'remoteStorage', 'when'],
         var val = {};
 
         var connect = function(userAddress, callback) {
-            remoteStorage.getStorageInfo(userAddress, function(error, storageInfo) {
-              if(error) {
-                alert('Could not load storage info:' + error);
-                console.log(error);
-              } else {
-                console.log('Storage info received:');
-                console.log(storageInfo);
-              }
-
-              callback(error, storageInfo);
-            });
+            remoteStorage.getStorageInfo(userAddress, callback);
         };
 
         var getUserStorageClient = function(category) {
@@ -44,7 +34,7 @@ define(['underscore', 'remoteStorage', 'when'],
             return deferred.promise;
         };
 
-        val.init = function() {
+        val.restoreLogin = function() {
             var deferred = when.defer();
 
             var token = remoteStorage.receiveToken();
@@ -72,11 +62,7 @@ define(['underscore', 'remoteStorage', 'when'],
                 if(err) {
                     deferred123.reject(err);
                 } else {
-                    try {
-                        deferred123.resolve(dataStr?JSON.parse(dataStr):null);
-                    } catch(e) {
-                        deferred123.reject(e);
-                    }
+                    deferred123.resolve(dataStr?JSON.parse(dataStr):null);
                 }
             });
             return deferred123.promise;
@@ -109,7 +95,7 @@ define(['underscore', 'remoteStorage', 'when'],
                         if(err2) {
                             deferred666.reject("Error when reading status update for key:" + key + " Error:" + err2);
                         } else {
-                            deferred666.resolve(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
+                            deferred666.resolve(dataStr && dataStr!="null"? JSON.parse(dataStr):null);
                         }
                     });
                 }                

@@ -1,18 +1,16 @@
-require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function($, _, ui, ko, when, rem) {
+require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'], 
+        function($, _, ui, ko, when, fuapi) {
 
     function onError(err) { 
-        console.log(err); 
+        console.log(err);
     };
     
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
     }
     
-    
   function FriendsViewModel() {
     var self = this;
-    var STATUS_KEY = 'friendsunhosted_statusupdate_testing';
-    var FRIENDS_KEY = 'friendsunhosted_friends';
     
     self.loggedIn = ko.observable(false);
     self.username = ko.observable("");
@@ -29,7 +27,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
             return page;
         } catch(e) {
             return "welcome";
-        }
+        };
     };
     
     self.addFriendsUsername = ko.observable("");
@@ -46,9 +44,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
 
     var updateFriends = function(newFriendsList) {
         _.each(newFriendsList, function(friendData) {
-          rem.getPublicData(friendData.username, STATUS_KEY).then(function(parsedData) {
+            fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
               addStatusUpdates(parsedData);
-          }, onError);
+          }, showError);
         });
     };
       
@@ -94,54 +92,57 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       });
       
       su.doComment = function() {
-        self.addNewStatus({
-          'username': self.username(),
-          'timestamp': new Date().getTime(),
-          'status': su.comment(),
-          'inReplyTo': su.id(),
-        });
+          fuapi.addReply(su.comment(), su.id(), self.username()).
+           then(function(updates) {
+               addStatusUpdates(updates);
+               su.comment('');
+           }, showError);
       };
     }
 
-    function init() {
-        rem.init().then(function(localUsername) {
-            self.username(localUsername);
-            self.loggedIn(true);
-            if(window.location.href.indexOf('#access_token') > 0) {
-                window.location.replace(location.protocol + '//' + location.host + "#status");
-                self.selectedTab("status");
-            } else if(window.location.href.indexOf('#') > 0) {
-                self.selectedTab(self.getPageFromLocation());
-            } else {
-                window.location.replace(location.protocol + '//' + location.host + "#welcome");
-                self.selectedTab("welcome");
-            }
-            rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-                value = value || [];
-                self.allFriends(value);
-            }, onError);
-            rem.fetchUserData(STATUS_KEY).then(function(value) {
-                value = value || [];
-                addStatusUpdates(value);
-            }, onError);
-        }, function(notLoggedInMsg) {
-            console.log(notLoggedInMsg);
+    function setPageFromUrl() {
+        if(window.location.href.indexOf('#access_token') > 0) {
+            window.location.replace(location.protocol + '//' + location.host + "#status");
+            self.selectedTab("status");
+        } else if(window.location.href.indexOf('#') > 0) {
+            self.selectedTab(self.getPageFromLocation());
+        } else {
+            window.location.replace(location.protocol + '//' + location.host + "#welcome");
             self.selectedTab("welcome");
-            self.loggedIn(false);
-        });
+        }
+    }
+    
+    function init() {
+        fuapi.init()
+            .then(function(localUsername) {
+                    self.username(localUsername);
+                    self.loggedIn(true);
+
+                    setPageFromUrl();
+                    
+                    fuapi.fetchFriends().then(function(value) {
+                        self.allFriends(value);
+                    }, onError);
+                    
+                    fuapi.fetchStatus().then(function(value) {
+                        addStatusUpdates(value);
+                    }, onError);
+                    
+                }, function(notLoggedInMsg) {
+                    console.log(notLoggedInMsg);
+                    self.selectedTab("welcome");
+                    self.loggedIn(false);
+                });
     };
 
     
     self.login = function() {
-        rem
-            .login(self.username())
-            .then(function(loggedInUser) {
-                init();
-            }, onError);
+        fuapi.login(self.username())
+            .then(function() {;}, onError);
     };
 
     self.logout = function() {
-        rem.logout().then(function() {
+        fuapi.logout().then(function() {
             self.loggedIn(false);
             self.selectedTab("support");
         });
@@ -151,46 +152,31 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
         init();
     };
 
-    
-        
-    self.addFriend = function() {
-      var emailRegex = /^([a-zA-Z0-9_\.\-])+\@([a-zA-Z0-9\-\.])+$/;
-      
-      if(!self.addFriendsUsername() || !emailRegex.test(self.addFriendsUsername())) {
-        alert("Invalid username: " + self.addFriendsUsername());
-        return;
-      }
-      if(_.any(self.allFriends(), function(f) {return f.username==self.addFriendsUsername();})) {
-        $('#error-message').text('Cannot add the same user twice');
+    var showError = function(message) {
+        $('#error-message').text(message);
         $('#error-panel').slideDown();
         setTimeout(function() {
             $("#error-panel").slideUp();
         }, 4000);
-        return;
-      } 
-      var friendData = {"username": self.addFriendsUsername(),
-                        "timestamp": new Date().getTime()};
-      rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-        value = value || [];
-        value.push(friendData);
-        rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-          self.allFriends.push(friendData);
-          self.addFriendsUsername("");
-        }, onError); 
-      }, onError);
     };
-    
+        
+    self.addFriend = function() {
+        fuapi.addFriend(self.addFriendsUsername()).then(onFriendAdded, showError);
+    };
+
+    var onFriendAdded = function(friendData) {
+        self.allFriends.push(friendData);
+        self.addFriendsUsername("");
+    };
+
     self.removeFriend = function(friendToRemove) {
-        rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-            value = value || [];
-            if(value.pop(friendToRemove)) {
-                rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-                  self.allFriends.remove(friendToRemove);
-                }, onError); 
-            }
-        }, onError);
+        fuapi.removeFriend(friendToRemove).then(onFriendRemoved, showError);
     };
-    
+
+    var onFriendRemoved = function(friendData) {
+        self.allFriends.remove(friendData); //don't use this instead of the function 
+    };
+  
     function addStatusUpdates(statusUpdatesArray) {
       function statusEquals(s1, s2) {
           return s1.username == s2.username && 
@@ -212,7 +198,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
               return latestComment.timestamp;
           } else {
               return item.timestamp;
-          }
+          };
       });
       self.allStatuses(allSorted);
     }
@@ -220,35 +206,24 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
 
     
     self.updateStatus = function() {
-      if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {return;}
-      self.addNewStatus(
-          {"status": self.statusUpdate(),
-           "timestamp": new Date().getTime(),
-           "username": self.username()});
+        if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {
+            return; // short-circuit
+        }
+      
+        fuapi.addStatus(self.statusUpdate(), self.username()).then(function(updates) {
+            addStatusUpdates(updates);
+            self.statusUpdate('');
+        }, showError);    
     };
-    
-    self.addNewStatus = function(statusUpdate) {
-      rem.fetchUserData(STATUS_KEY).then(function(statusUpdates) {
-        statusUpdates = statusUpdates || [];
-        statusUpdates.push(statusUpdate);
-        rem.putUserData(STATUS_KEY, statusUpdates).then(function() {
-          addStatusUpdates(statusUpdates);
-          self.statusUpdate('');
-        });
-      });
-    };
-
-    
 
     self.clearAll = function() {
-      rem.deleteUserData(STATUS_KEY).then(function() {
-          self.allStatuses([]);
-      }, onError);
+        fuapi.removeAllFriends().then(function() {
+            self.allFriends([]);
+        }, onError);
 
-      rem.deleteUserData(FRIENDS_KEY).then(function() {
-          self.allFriends([]);
-      }, onError);
-
+        fuapi.removeAllStatuses().then(function() {
+            self.allStatuses([]);
+        }, onError);
     };
     
 
@@ -256,9 +231,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'remoteAdapter'], function(
       
     init();
   };
-
+  
     $(function(){
         ko.applyBindings(new FriendsViewModel());
+        $('#loading-screen').hide();
+        $('#all').slideDown('fast');
     });
   
 });
