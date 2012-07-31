@@ -105,7 +105,7 @@ define(['underscore', 'remoteStorage', 'when'],
                         if(err2) {
                             deferred666.reject("Error when reading status update for key:" + key + " Error:" + err2);
                         } else {
-                            deferred666.resolve(dataStr && dataStr!="null"? JSON.parse(dataStr):[]);
+                            deferred666.resolve(dataStr && dataStr!="null"? JSON.parse(dataStr):null);
                         }
                     });
                 }                
