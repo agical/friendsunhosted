@@ -68,7 +68,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     
     fuapi.fetchStatus = function() {
         var def = when.defer();
-        rem.fetchUserData(STATUS_KEY_V0).then(
+        rem.fetchUserData(STATUS_KEY_V3).then(
                 function(data) {def.resolve(data||[]);},
                 def.reject);
         return def.promise;
@@ -96,10 +96,10 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     var addStatusOrReply = function(statusData) {
         var afterStatusUpdate = when.defer();
         
-        rem.fetchUserData(STATUS_KEY_V0).then(function(statusUpdates) {
+        rem.fetchUserData(STATUS_KEY_V3).then(function(statusUpdates) {
             statusUpdates = statusUpdates || [];
             statusUpdates.push(statusData);
-            rem.putUserData(STATUS_KEY_V0, statusUpdates).then(function() {
+            rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
                 afterStatusUpdate.resolve(statusUpdates);
             }, function(err) { afterStatusUpdate.reject("Could not update status: " + err);});
         }, function(err) { afterStatusUpdate.reject("Could access status data: " + err);});
@@ -168,7 +168,10 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     };
     
     fuapi.removeAllStatuses = function() {
-        return rem.deleteUserData(STATUS_KEY_V0);
+        return rem.deleteUserData(STATUS_KEY_V3)
+            .then(function() {
+                return rem.deleteUserData(STATUS_KEY_V0);
+            });
     };
     
     fuapi.removeAllFriends = function() {
