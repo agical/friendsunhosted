@@ -20,6 +20,13 @@
 </head>
 
 <body>
+  <div id="loading-screen">
+    Loading...
+  </div>
+
+  <div id="upgrading-storage-screen">
+    Upgrading storage
+  </div>
 
 
 	<div id="all">
@@ -141,9 +148,9 @@
 
       <h3>Support us!</h3>
       <p>
-      We won't put any adds on the site, and there will never be a gigantic social network database hosted on our 
+      There will never be a gigantic social network database hosted on our 
       servers that make investors drool money over us. Well, maybe they will drool money all over us, but not 
-      because of adds or a social network database. Therefore, we need direct sponsorship from anyone that think
+      because of a social network database. Therefore, we need direct sponsorship from anyone that think
       this is a good idea. You can also check out the 
       <a target="_blank" href="https://github.com/agical/friendsunhosted">GitHub repository</a> if there is anything 
       you can help out with. Maybe you can even... 
@@ -171,7 +178,7 @@
 			<div id="status-stream"
 				data-bind="foreach: allRootStatuses().reverse()">
 				<div class="conversation"
-					data-bind="attr: {id: 'status-nr-'+$index()}">
+					data-bind="attr: {id: 'status-nr-'+($index()+1)}">
 					<div class="status-details">
 						<span class="status-update-username storage-id"
 							data-bind="text: username"></span> <span
@@ -182,7 +189,7 @@
 					<div class="comments">
 						<!-- ko foreach: comments -->
 						<div class="comment"
-							data-bind="attr: {id: 'comment-nr-'+$index()}">
+							data-bind="attr: {id: 'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
 							<span class="comment-update-username storage-id"
 								data-bind="text: username"></span> <span
 								class="comment-update-timestamp"
@@ -348,7 +355,7 @@
 			<div id="bottom-box" class="more-info-box">
 				<h3>Why should I care that it is #unhosted?</h3>
 				<p>The big social network sites, like Facebook, Twitter, Google
-					and many more, gives you free storage for your stuff. But, there is
+					and many more, give you free storage for your stuff. But, there is
 					no such thing as a "free lunch" (or storage). They monitor and
 					explore your social network and your personal life to launch
 					marketing campaigns and direct ads, and sometimes they even claim
