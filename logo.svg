@@ -25,7 +25,7 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="442.37213"
+     inkscape:cx="350.70079"
      inkscape:cy="703.20786"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -110,9 +110,11 @@
          id="tspan2987-0"
          x="292.41342"
          y="432.061"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium">F<tspan
-   style="font-size:65%;baseline-shift:super"
-   id="tspan3038">#</tspan>U</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium;letter-spacing:-4.18px"><tspan
+   style="letter-spacing:-9.5px"
+   id="tspan3798">F</tspan><tspan
+   style="fill:#ff6600;fill-opacity:1;letter-spacing:-4.1px"
+   id="tspan3792">#</tspan>U</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:20.25091362px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Sans"
@@ -128,7 +130,7 @@
          id="tspan2986-0"
          x="331.92239"
          y="395.58936"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium">beta</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium" /></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -137,6 +139,6 @@
        id="text3044"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3046"></tspan></text>
+         id="tspan3046" /></text>
   </g>
 </svg>
