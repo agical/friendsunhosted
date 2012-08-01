@@ -12,11 +12,14 @@
         'chrome.switches': ['--start-maximized','--disable-popup-blocking']}});
     }
     
+    
     function createFirefoxDriver() {
-      return webdriverjs.remote({desiredCapabilities:{
-        browserName:"firefox", 
-        seleniumProtocol: 'WebDriver',
-      }});
+        var driver = webdriverjs.remote({
+            host:"localhost",
+            port: 4444,
+            desiredCapabilities:{browserName:"firefox", version:"14"},
+        });
+        return driver;
     }
     
     function createTestBrowser(done) {
@@ -94,13 +97,15 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
+                    .pause(500)
                     .waitFor(css, 2000) 
+                    .isVisible(css)
                     .getText(css, function(v) {
                         if(v.value) {
                             cb(v.value);
                             d.resolve();
                         } else {
-                            console.log("Value is undefined for " + css);
+                            console.log("Value is undefined for ", css, "Was", v);
                             d.reject("Value is undefined for " + css);
                         }
                     });
@@ -115,6 +120,7 @@
             last.promise.then(function() {
                 fu.user.promise.then(function(user) {
                     fu.b
+                        .pause(200)
                         .waitFor(css, 2000) 
                         .getText(css, function(t) {
                             user_text_cb(user)(t.value);
@@ -130,8 +136,12 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
-                    .waitFor(setCss, 2000) 
+                    .pause(200)
+                   .waitFor(setCss, 2000) 
+                    .setValue(setCss, " ")
+                    .clearElement(setCss)
                     .setValue(setCss, val)
+                    .waitFor(clickCss, 2000) 
                     .click(clickCss, d.resolve);
             });   
             return fu;
@@ -142,6 +152,7 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
+                    .pause(200)
                     .waitFor(clickCss, 2000) 
                     .click(clickCss, d.resolve);
             });   
@@ -153,6 +164,7 @@
             var d = defPush();
             last.promise.then(function() {
                 fu.b
+                    .pause(200)
                     .waitFor(css, 2000) 
                     .isVisible(css, function(visible) {
                         element_cb(visible);
@@ -189,10 +201,12 @@
         fu.openStartPage = function() {
             var d = defPush();
             fu.b
-                .url("http://localhost:8000/")
-                .waitFor('body', 5000, function() {
-                    d.resolve();
-                });
+                .url("http://localhost:8000/");
+
+            fu.b.waitFor('#footer', 5000, function() {
+                d.resolve();
+            });
+
             return fu;
         };
         
@@ -209,12 +223,18 @@
             fu.user.promise.then(function(user)  {
                 fu.b
                     .url("http://localhost:8000/")
+                    .pause(200)
                     .waitFor("#username", 2000)
+                    .setValue("#username", " ")
+                    .clearElement("#username")
                     .setValue("#username", user.username)
+                    .waitFor("#username", 2000)
                     .click("#do-login")
+                    .pause(200)
                     .waitFor('input[name="password"]', 500) 
                     .setValue('input[name="password"]', user.password)
-                    .submitForm("form", function() {
+                    .pause(200)
+                    .click('input[value="Allow"]', function() {
                         d.resolve(
                                 {browser: fu.b,
                                 loggedInUser: user});
@@ -227,7 +247,8 @@
             var last = defPeek();
             var d = defPush();
             last.promise.then(function() {
-                fu.b.getTitle(function(t) { 
+                fu.b
+                    .getTitle(function(t) { 
                     title_cb(t);
                     d.resolve();
                 });
@@ -291,7 +312,7 @@
         
         fu.friend = function(nr, text_cb) {
             return text("#friends :first-child .friend", text_cb);
-        }
+        };
         
         fu.removeFriend = function(nr) {
             return click("#friends :first-child .remove-friend");
@@ -311,7 +332,12 @@
         };
         
         fu.refreshStatuses = function() {
-            return click("#refresh-link");
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                fu.b.click("#refresh-link").pause(200).waitFor(2000, "#footer", d.resolve);
+            });
+            return fu;
         };
         
         fu.logout = function() {

@@ -78,13 +78,14 @@ buster.testCase("Friends#Unhosted", {
         
         createTestUser().then(function(userToBeAdded) {
             var username = userToBeAdded.username;
-           createRobot(done)
+            createRobot(done)
                .loginNewUser()
                .selectFriendsInMenu()
                .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
                .addFriend(username)
                .friend(1, assEq(username))
                .addFriend(username)
+               .pause(500)
                .errorMessage(assEq("Cannot add the same user twice"))
                .removeFriend(1)
                .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))

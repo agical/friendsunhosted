@@ -59,10 +59,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         $('#menu-'+val).addClass('menu-selected');
         $('.page').hide();
         $('#page-'+val).show();
+        window.location.replace(location.protocol + '//' + location.host + "#" + val);
     });
     
-    self.selectTab = function(data, event) {
-        var tab = event.srcElement.href.split("#")[1];
+    self.selectTab = function(tab) {
         self.selectedTab(tab);
         
         return true;
@@ -138,7 +138,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     
     self.login = function() {
         fuapi.login(self.username())
-            .then(function() {;}, onError);
+            .then(function() {;}, showError);
     };
 
     self.logout = function() {

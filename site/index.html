@@ -74,13 +74,13 @@
 		</div>
 
     <div id="menubar">
-      <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: selectTab">Welcome!</a>
-      <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: selectTab, visible: loggedIn()">Whazzup?</a>
-      <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: selectTab, visible: loggedIn()">Friends</a>
-      <a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: selectTab, visible: loggedIn()">Profile</a>
-      <a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: selectTab, visible: loggedIn()">Settings</a>
-      <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: selectTab">Support</a>
-      <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: selectTab">About</a>
+      <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: function() { selectTab('welcome') }">Welcome!</a>
+      <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
+      <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
+      <a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>
+      <a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a>
+      <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: function() { selectTab('support') }">Support</a>
+      <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
       <br class="clearboth"/>
     </div>
 
