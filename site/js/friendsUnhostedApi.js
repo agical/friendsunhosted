@@ -85,7 +85,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
             function(oldData) {
                 rem.getPublicData(username, STATUS_KEY_V3).always(
                     function(newData) {
-                        afterUserStatus.resolve(oldData);
+                        afterUserStatus.resolve(_.extend(oldData, newData));
                     });
             });
                

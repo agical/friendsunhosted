@@ -70,6 +70,20 @@ function(fu, ra, when, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
             
+            fu.fetchStatusForUser('some@user.com').then(eq(allData),eq(allData)).then(done, done);
+        },
+
+        "//- reads only new updates": function(done) {
+            ra.getPublicData = this.stub();
+            var newData = {'status2': 'new data'};
+
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
+                .returns(reject(404));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(resolved(newData));
+            
             fu.fetchStatusForUser('some@user.com').then(eq(oldData),eq(oldData)).then(done, done);
         },
     });
