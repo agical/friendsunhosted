@@ -2,6 +2,7 @@ define(['storageConversion', 'remoteAdapter', 'when', 'testHelper'],
 function(storageConversion, remoteAdapter, when, testHelper) {
 
     var resolved = testHelper.resolved;
+    var rejected = testHelper.rejected;
     var eq = testHelper.eq;
 
     buster.testCase("storage conversion", {
@@ -53,7 +54,7 @@ function(storageConversion, remoteAdapter, when, testHelper) {
             remoteAdapter.putUserData.withArgs('VERSION', 1).returns(resolved(1));
             remoteAdapter.putUserData.withArgs('VERSION', 2).returns(resolved(2));
             
-            remoteAdapter.fetchUserData.withArgs( 'friendsunhosted_statusupdate_testing').returns(resolved(null));
+            remoteAdapter.fetchUserData.withArgs( 'friendsunhosted_statusupdate_testing').returns(rejected(null));
             remoteAdapter.putUserData.withArgs('friendsunhosted_status', {some: 'object'}).returns(resolved({some: 'object'}));
             remoteAdapter.putUserData.withArgs('VERSION', 3).returns(resolved(3));
             storageConversion.convertStorage().then(eq(3), eq(3)).then(done,done);
