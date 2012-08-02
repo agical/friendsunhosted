@@ -50,9 +50,9 @@ function(fu, ra, when, help) {
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
                 .returns(resolved(oldData));
-//            ra.getPublicData
-//                .withArgs('some@user.com', 'friendsunhosted_status')
-//                .returns(rejected(404));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(rejected(404));
             
             fu.fetchStatusForUser('some@user.com').then(eq(oldData),eq(oldData)).then(done, done);
         },
