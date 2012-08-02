@@ -48,11 +48,27 @@ function(fu, ra, when, help) {
             ra.getPublicData = this.stub();
             var oldData = {'user': 'old data'};
             ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
+                .returns(resolved(oldData));
+            ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
+            
+            fu.fetchStatusForUser('some@user.com').then(eq(oldData),eq(oldData)).then(done, done);
+        },
+
+        "- reads old and new updates": function(done) {
+            ra.getPublicData = this.stub();
+            var oldData = {'status1': 'old data'};
+            var newData = {'status2': 'new data'};
+            var allData = {'status1': 'old data', 'status2': 'new data'};
+
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
                 .returns(resolved(oldData));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(resolved(newData));
             
             fu.fetchStatusForUser('some@user.com').then(eq(oldData),eq(oldData)).then(done, done);
         },
