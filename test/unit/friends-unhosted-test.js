@@ -73,7 +73,7 @@ function(fu, ra, when, help) {
             fu.fetchStatusForUser('some@user.com').then(eq(allData),eq(allData)).then(done, done);
         },
 
-        "//- reads only new updates": function(done) {
+        "- reads only new updates": function(done) {
             ra.getPublicData = this.stub();
             var newData = {'status2': 'new data'};
 
