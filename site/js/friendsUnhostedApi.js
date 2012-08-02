@@ -81,19 +81,8 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.fetchStatusForUser = function(username) {
         var afterUserStatus = when.defer();
         
-        getVersionForUser(username).then(function(version) {
-            if(!version || version < 3) {
-                console.log("User has no VERSION in storage and the fetch gives a 404. Nothing alarming.");
-                rem.getPublicData(username, STATUS_KEY_V0)
-                    .then(afterUserStatus.resolve, afterUserStatus.reject);
-            } else {
-                rem.getPublicData(username, STATUS_KEY_V3)
-                    .then(afterUserStatus.resolve, afterUserStatus.reject);
-            }
-        }, function() {
-            rem.getPublicData(username, STATUS_KEY_V0)
-                .then(afterUserStatus.resolve, afterUserStatus.reject);
-        });
+        rem.getPublicData(username, STATUS_KEY_V0)
+               .then(afterUserStatus.resolve, afterUserStatus.reject);
         
         return afterUserStatus.promise;
     };

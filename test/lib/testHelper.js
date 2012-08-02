@@ -17,5 +17,5 @@ function(when) {
         return function(actual) {return assert.equals(expected, actual);};
     }
     
-    return {'resolved': resolved, 'eq': eq};
+    return {'resolved': resolved, 'rejected': rejected, 'eq': eq};
 });
