@@ -45,7 +45,7 @@ function(fu, ra, when, help) {
         },
 
         "- reads only old updates": function(done) {
-            ra.getPublicData = this.stub();
+            ra.getPublicData = this.mock();
             var oldData = {'user': 'old data'};
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
