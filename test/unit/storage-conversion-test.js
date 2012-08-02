@@ -1,15 +1,8 @@
-define(['storageConversion', 'remoteAdapter', 'when'], 
-function(storageConversion, remoteAdapter, when) {
+define(['storageConversion', 'remoteAdapter', 'when', 'testHelper'], 
+function(storageConversion, remoteAdapter, when, testHelper) {
 
-    function resolved(val) {
-        var deferred = when.defer();
-        deferred.resolve(val);
-        return deferred.promise;
-    }
-
-    function eq(expected) {
-        return function(actual) {return assert.equals(expected, actual);};
-    }
+    var resolved = testHelper.resolved;
+    var eq = testHelper.eq;
 
     buster.testCase("storage conversion", {
 
@@ -38,7 +31,7 @@ function(storageConversion, remoteAdapter, when) {
             storageConversion.upgrade2to3(2).then(eq(3),eq(3)).then(done, done);
         },
 
-        "//- convert calls upgrades 0 to 3": function(done) {
+        "- convert calls upgrades 0 to 3": function(done) {
             remoteAdapter.fetchUserData = this.stub();
             remoteAdapter.putUserData = this.stub();
             
@@ -47,6 +40,20 @@ function(storageConversion, remoteAdapter, when) {
             remoteAdapter.putUserData.withArgs('VERSION', 2).returns(resolved(2));
             
             remoteAdapter.fetchUserData.withArgs( 'friendsunhosted_statusupdate_testing').returns(resolved({some: 'object'}));
+            remoteAdapter.putUserData.withArgs('friendsunhosted_status', {some: 'object'}).returns(resolved({some: 'object'}));
+            remoteAdapter.putUserData.withArgs('VERSION', 3).returns(resolved(3));
+            storageConversion.convertStorage().then(eq(3), eq(3)).then(done,done);
+        },
+
+        "- convert calls upgrades 0 to 3 with no previous data": function(done) {
+            remoteAdapter.fetchUserData = this.stub();
+            remoteAdapter.putUserData = this.stub();
+            
+            remoteAdapter.fetchUserData.withArgs('VERSION').returns(resolved(null));
+            remoteAdapter.putUserData.withArgs('VERSION', 1).returns(resolved(1));
+            remoteAdapter.putUserData.withArgs('VERSION', 2).returns(resolved(2));
+            
+            remoteAdapter.fetchUserData.withArgs( 'friendsunhosted_statusupdate_testing').returns(resolved(null));
             remoteAdapter.putUserData.withArgs('friendsunhosted_status', {some: 'object'}).returns(resolved({some: 'object'}));
             remoteAdapter.putUserData.withArgs('VERSION', 3).returns(resolved(3));
             storageConversion.convertStorage().then(eq(3), eq(3)).then(done,done);
