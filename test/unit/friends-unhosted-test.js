@@ -54,7 +54,7 @@ function(fu, ra, when, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
-            fu.fetchStatusForUser('some@user.com').then(eq(oldData),eq(oldData)).then(done, done);
+            fu.fetchStatusForUser('some@user.com').always(eq(oldData)).always(done);
         },
 
         "- reads old and new updates": function(done) {
@@ -70,7 +70,7 @@ function(fu, ra, when, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
             
-            fu.fetchStatusForUser('some@user.com').then(eq(allData),eq(allData)).then(done, done);
+            fu.fetchStatusForUser('some@user.com').always(eq(allData)).always(done);
         },
 
         "- reads only new updates": function(done) {
@@ -79,12 +79,12 @@ function(fu, ra, when, help) {
 
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(reject(404));
+                .returns(rejected(404));
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
             
-            fu.fetchStatusForUser('some@user.com').then(eq(oldData),eq(oldData)).then(done, done);
+            fu.fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
     });
     

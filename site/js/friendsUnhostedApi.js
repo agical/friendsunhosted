@@ -81,13 +81,25 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.fetchStatusForUser = function(username) {
         var afterUserStatus = when.defer();
         
-        rem.getPublicData(username, STATUS_KEY_V0).always(
+        rem.getPublicData(username, STATUS_KEY_V0).then(
             function(oldData) {
-                rem.getPublicData(username, STATUS_KEY_V3).always(
-                    function(newData) {
-                        afterUserStatus.resolve(_.extend(oldData, newData));
-                    });
-            });
+                rem.getPublicData(username, STATUS_KEY_V3).then(
+                        function(newData) {
+                            afterUserStatus.resolve(_.extend(oldData, newData));
+                        },
+                        function(error) {
+                            afterUserStatus.resolve(oldData);
+                        }
+                    );
+            },
+            function(error) {
+                rem.getPublicData(username, STATUS_KEY_V3).then(
+                        function(newData) {
+                            afterUserStatus.resolve(newData);
+                        },
+                        afterUserStatus.reject
+                    );
+        });
                
         return afterUserStatus.promise;
     };
