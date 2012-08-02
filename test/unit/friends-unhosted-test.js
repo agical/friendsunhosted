@@ -86,6 +86,19 @@ function(fu, ra, when, help) {
             
             fu.fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
+        
+        "- rejects no updates": function(done) {
+            ra.getPublicData = this.stub();
+
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
+                .returns(rejected(404));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(rejected(404));
+            
+            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
+        },
     });
     
 
