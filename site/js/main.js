@@ -1,10 +1,6 @@
 require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'], 
         function($, _, ui, ko, when, fuapi) {
 
-    function onError(err) { 
-        console.log(err);
-    };
-    
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
     }
@@ -45,8 +41,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     var updateFriends = function(newFriendsList) {
         _.each(newFriendsList, function(friendData) {
             fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
-              addStatusUpdates(parsedData);
-          }, showError);
+                console.log(parsedData);
+                addStatusUpdates(parsedData);
+            }, showError);
         });
     };
       
@@ -119,14 +116,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.loggedIn(true);
 
                     setPageFromUrl();
-                    
-                    fuapi.fetchFriends().then(function(value) {
-                        self.allFriends(value);
-                    }, onError);
-                    
-                    fuapi.fetchStatus().then(function(value) {
-                        addStatusUpdates(value);
-                    }, onError);
+                    self.refresh();
                     
                 }, function(notLoggedInMsg) {
                     console.log(notLoggedInMsg);
@@ -149,10 +139,17 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
   
     self.refresh = function() {
-        init();
+        fuapi.fetchFriends().then(function(value) {
+            self.allFriends(value);
+        }, showError);
+        
+        fuapi.fetchStatus().then(function(value) {
+            addStatusUpdates(value);
+        }, showError);
     };
 
     var showError = function(message) {
+        console.log(message);
         $('#error-message').text(message);
         $('#error-panel').slideDown();
         setTimeout(function() {
@@ -219,11 +216,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.clearAll = function() {
         fuapi.removeAllFriends().then(function() {
             self.allFriends([]);
-        }, onError);
+        }, showError);
 
         fuapi.removeAllStatuses().then(function() {
             self.allStatuses([]);
-        }, onError);
+        }, showError);
     };
     
 

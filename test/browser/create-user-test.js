@@ -24,7 +24,7 @@ var assertVisible = function() {
 };
 
 buster.testCase("Friends#Unhosted", {
-    "- has a title and info on load": function (done) {
+    "//- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createRobot(done)   
@@ -34,7 +34,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can login a user": function (done) {
+    "//- can login a user": function (done) {
         this.timeout = 25000;
             
         createRobot(done)  
@@ -45,7 +45,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can let user add status updates": function (done) {
+    "//- can let user add status updates": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -61,7 +61,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can comment on status updates": function (done) {
+    "//- can comment on status updates": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -73,7 +73,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "- can let user add, list and remove friends": function (done) {
+    "//- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -105,6 +105,7 @@ buster.testCase("Friends#Unhosted", {
             .loginNewUser()
             .setStatus("The message of the added")
             .statusUpdate(1, assEq("The message of the added"))
+            .pause(5000)
             .logout()
         .end();
         
@@ -113,6 +114,7 @@ buster.testCase("Friends#Unhosted", {
                 createRobot(done).loginNewUser()
                     .selectFriendsInMenu()
                     .addFriend(user.username)
+                    .pause(5000)
                     .selectStatusesInMenu()
                     .statusUpdate(1, assEq("The message of the added"))
                     .statusGetUsername(1, assEq(user.username))
@@ -124,7 +126,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "- keeps login status on refresh": function (done) {
+    "//- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -134,7 +136,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can logout user": function (done) {
+    "//- can logout user": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -145,7 +147,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- shows latest activity on top": function (done) {
+    "//- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         createRobot(done).loginNewUser()

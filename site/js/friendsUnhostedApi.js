@@ -85,7 +85,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
             function(oldData) {
                 rem.getPublicData(username, STATUS_KEY_V3).then(
                         function(newData) {
-                            afterUserStatus.resolve(_.extend(oldData, newData));
+                            afterUserStatus.resolve(_.union(oldData, newData));
                         },
                         function(error) {
                             afterUserStatus.resolve(oldData);
@@ -154,24 +154,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     };
     
     fuapi.init = function() {
-        var deferred = when.defer();
-        
-        rem.restoreLogin().then(function(username) {
-                for(var i = 0; i<fuapi.beforeBackgroundTaskListeners.length; i++) {
-                    fuapi.beforeBackgroundTaskListeners[i]();
-                }
-//              _.each(fuapi.beforeBackgroundTaskListeners, function(fn) {fn();});
-                
-                storageConversion.convertStorage().then(function(version) {
-                    for(var j = 0; j<fuapi.afterBackgroundTaskListeners.length; j++) {
-                        fuapi.afterBackgroundTaskListeners[j]();
-                    }
-                    //_.each(fuapi.afterBackgroundTaskListeners, function(fn) {fn();});
-                    deferred.resolve(username);
-                }, deferred.reject);
-            }, deferred.reject );
-        
-        return deferred.promise;
+        return rem.restoreLogin();
     };
     
     fuapi.login = function(username) {
