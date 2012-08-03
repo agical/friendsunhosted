@@ -77,7 +77,7 @@ define(['underscore', 'remoteStorage', 'when'],
             if(err) {
               deferred.reject(err);
             } else {
-              deferred.resolve({"key": key, "value": value, "category": category});
+              deferred.resolve(value);
             }
           });
           return deferred.promise;

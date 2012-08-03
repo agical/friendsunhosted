@@ -65,53 +65,33 @@ function(fu, ra, when, help) {
     
 
 
-    buster.testCase("F#U API upgrade store", {
+    buster.testCase("F#U API puts data", {
 
-         "//- can upgrade to version 3 store": function(done) {
+         "- Puts new data for no data in repo": function(done) {
 
-            ra.fetchUserData = this.stub();
-            ra.putUserData = this.stub();
-            ra.restoreLogin = this.stub();
+            ra.fetchUserData = this.mock();
+            ra.putUserData = this.mock();
+            fu.getTimestamp = function() {return 123456789;};
             
-            var data = {'user': 'data'};
+            var status = 'status';
             var username = 'some@user.com';
+            var data = {
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                };
             
-            ra.restoreLogin
-                .withArgs()
-                .returns(resolved(username));
-
             ra.fetchUserData
-                .withArgs('VERSION')
-                .returns(resolved(2));
-
-            ra.fetchUserData
-                .withArgs('friendsunhosted_statusupdate_testing')
-                .returns(resolved(data));
+                .withExactArgs('friendsunhosted_status')
+                .once()
+                .returns(rejected(404));
             
             ra.putUserData
-                .withArgs('friendsunhosted_status')
-                .returns(resolved(data));
+                //.withArgs('friendsunhosted_status', data)
+                .returns(resolved([data]));
             
-            ra.putUserData
-                .withArgs('VERSION', 3)
-                .returns(resolved(3));
-            /*
-            var beforeBackgroundTask = when.defer();
-            var afterBackgroundTask = when.defer();
-
-            fu.addBackgroundTaskListeners(
-                    beforeBackgroundTask.resolve, 
-                    afterBackgroundTask.resolve
-            );
+            fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
             
-            fu.addBackgroundTaskListeners(
-                    console.log, 
-                    console.log
-            );
-*/
-            var initPromise = fu.init();//.then(eq(username), eq(username)).then(done,done);
-            
-            when.all([/*beforeBackgroundTask.promise, afterBackgroundTask.promise, */initPromise], eq([username]), eq([username])).always(done);
         },
 
     });

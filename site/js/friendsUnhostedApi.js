@@ -106,22 +106,45 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     
     var addStatusOrReply = function(statusData) {
         var afterStatusUpdate = when.defer();
-        
+        console.log("Before");
         rem.fetchUserData(STATUS_KEY_V3).then(function(statusUpdates) {
+            console.log("1");
             statusUpdates = statusUpdates || [];
             statusUpdates.push(statusData);
+            console.log(statusUpdates);
             rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
+                console.log("3");
                 afterStatusUpdate.resolve(statusUpdates);
-            }, function(err) { afterStatusUpdate.reject("Could not update status: " + err);});
-        }, function(err) { afterStatusUpdate.reject("Could access status data: " + err);});
+            }, function(err) { 
+                console.log("4");
+                afterStatusUpdate.reject("Could set status data: " + err);
+            });
+        }, function(err) { 
+            console.log("5");
+            if(err == 404) {
+                console.log("6");
+                console.log(statusData);
+                rem.putUserData(STATUS_KEY_V3, statusData).then(function(data) {
+                    console.log("7");
+                    afterStatusUpdate.resolve([statusData]);
+                }, afterStatusUpdate.reject);
+            } else {
+                console.log("8");
+                afterStatusUpdate.reject("Could not access status data: " + err);
+            }
+        });
 
         return afterStatusUpdate.promise;
     };
 
+    fuapi.getTimestamp = function() {
+        return new Date().getTime();
+    };
+    
     fuapi.addStatus = function(status, username) {
         return addStatusOrReply({
                 "status": status,
-                "timestamp": new Date().getTime(),
+                "timestamp": fuapi.getTimestamp(),
                 "username": username,
             });
     };
@@ -129,7 +152,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.addReply = function(reply, inReplyTo, username) {
         return addStatusOrReply({
             'username': username,
-            'timestamp': new Date().getTime(),
+            'timestamp': fuapi.getTimestamp(),
             'status': reply,
             'inReplyTo': inReplyTo,
           });

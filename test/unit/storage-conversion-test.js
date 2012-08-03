@@ -1,7 +1,6 @@
 define(['storageConversion', 'remoteAdapter', 'when', 'testHelper'], 
 function(storageConversion, remoteAdapter, when, testHelper) {
 
-    console.log(testHelper);
     var resolved = testHelper.resolved;
     var rejected = testHelper.rejected;
     var eq = testHelper.eq;
