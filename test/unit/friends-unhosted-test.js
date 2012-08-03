@@ -73,8 +73,6 @@ function(fu, ra, when, help) {
          },
          
          "- Puts new data for no data in repo": function(done) {
-
-            
             var status = 'status';
             var username = 'some@user.com';
             var data = {
@@ -93,6 +91,28 @@ function(fu, ra, when, help) {
                 .returns(resolved([data]));
             
             fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
+            
+        },
+
+        "- Appends data to existing data": function(done) {
+            var status = 'status';
+            var username = 'some@user.com';
+            var data = {
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                };
+            
+            ra.fetchUserData
+                .withExactArgs('friendsunhosted_status')
+                .once()
+                .returns(resolved([data]));
+            
+            ra.putUserData
+                .withArgs('friendsunhosted_status', [data, data])
+                .returns(resolved([data, data]));
+            
+            fu.addStatus(status, 'some@user.com').then(eq([data, data]), eq('fail')).always(done);
             
         },
 
