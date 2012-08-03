@@ -87,7 +87,7 @@ function(fu, ra, when, help) {
                 .returns(rejected(404));
             
             ra.putUserData
-                .withArgs('friendsunhosted_status', data)
+                .withArgs('friendsunhosted_status', [data])
                 .returns(resolved([data]));
             
             fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
