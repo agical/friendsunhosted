@@ -23,7 +23,7 @@
     }
     
     function createTestBrowser(done) {
-      var client = createChromeDriver();
+      var client = createFirefoxDriver();
     
       var endAndDone =  function(error) {
                           console.log("Exiting browsers");

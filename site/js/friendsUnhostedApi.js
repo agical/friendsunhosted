@@ -1,8 +1,7 @@
-define(['underscore', 'when', 'remoteAdapter', 'storageConversion'], 
-        function( _, when, rem, storageConversion) {
+define(['underscore', 'when', 'remoteAdapter'], 
+        function( _, when, rem) {
 
     var fuapi = {};
-    var STATUS_KEY_V0 = 'friendsunhosted_statusupdate_testing';
     var STATUS_KEY_V3 = 'friendsunhosted_status';
     var FRIENDS_KEY = 'friendsunhosted_friends';
     var currentUser = null;
@@ -81,41 +80,49 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.fetchStatusForUser = function(username) {
         var afterUserStatus = when.defer();
         
-        getVersionForUser(username).then(function(version) {
-            if(!version || version < 3) {
-                console.log("User has no VERSION in storage and the fetch gives a 404. Nothing alarming.");
-                rem.getPublicData(username, STATUS_KEY_V0)
-                    .then(afterUserStatus.resolve, afterUserStatus.reject);
-            } else {
-                rem.getPublicData(username, STATUS_KEY_V3)
-                    .then(afterUserStatus.resolve, afterUserStatus.reject);
+        rem.getPublicData(username, STATUS_KEY_V3).then(
+            function(data) {
+                afterUserStatus.resolve(data||[]);
+            },
+            function(error) {
+                afterUserStatus.reject(error);
             }
-        }, function() {
-            rem.getPublicData(username, STATUS_KEY_V0)
-                .then(afterUserStatus.resolve, afterUserStatus.reject);
-        });
-        
+        );
+               
         return afterUserStatus.promise;
     };
     
     var addStatusOrReply = function(statusData) {
         var afterStatusUpdate = when.defer();
-        
         rem.fetchUserData(STATUS_KEY_V3).then(function(statusUpdates) {
             statusUpdates = statusUpdates || [];
             statusUpdates.push(statusData);
             rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
                 afterStatusUpdate.resolve(statusUpdates);
-            }, function(err) { afterStatusUpdate.reject("Could not update status: " + err);});
-        }, function(err) { afterStatusUpdate.reject("Could access status data: " + err);});
+            }, function(err) { 
+                afterStatusUpdate.reject("Could set status data: " + err);
+            });
+        }, function(err) { 
+            if(err == 404) {
+                rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
+                    afterStatusUpdate.resolve([statusData]);
+                }, afterStatusUpdate.reject);
+            } else {
+                afterStatusUpdate.reject("Could not access status data: " + err);
+            }
+        });
 
         return afterStatusUpdate.promise;
     };
 
+    fuapi.getTimestamp = function() {
+        return new Date().getTime();
+    };
+    
     fuapi.addStatus = function(status, username) {
         return addStatusOrReply({
                 "status": status,
-                "timestamp": new Date().getTime(),
+                "timestamp": fuapi.getTimestamp(),
                 "username": username,
             });
     };
@@ -123,7 +130,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.addReply = function(reply, inReplyTo, username) {
         return addStatusOrReply({
             'username': username,
-            'timestamp': new Date().getTime(),
+            'timestamp': fuapi.getTimestamp(),
             'status': reply,
             'inReplyTo': inReplyTo,
           });
@@ -135,24 +142,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     };
     
     fuapi.init = function() {
-        var deferred = when.defer();
-        
-        rem.restoreLogin().then(function(username) {
-                for(var i = 0; i<fuapi.beforeBackgroundTaskListeners.length; i++) {
-                    fuapi.beforeBackgroundTaskListeners[i]();
-                }
-//              _.each(fuapi.beforeBackgroundTaskListeners, function(fn) {fn();});
-                
-                storageConversion.convertStorage().then(function(version) {
-                    for(var j = 0; j<fuapi.afterBackgroundTaskListeners.length; j++) {
-                        fuapi.afterBackgroundTaskListeners[j]();
-                    }
-                    //_.each(fuapi.afterBackgroundTaskListeners, function(fn) {fn();});
-                    deferred.resolve(username);
-                }, deferred.reject);
-            }, deferred.reject );
-        
-        return deferred.promise;
+        return rem.restoreLogin();
     };
     
     fuapi.login = function(username) {
@@ -164,10 +154,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     };
     
     fuapi.removeAllStatuses = function() {
-        return rem.deleteUserData(STATUS_KEY_V3)
-            .then(function() {
-                return rem.deleteUserData(STATUS_KEY_V0);
-            });
+        return rem.deleteUserData(STATUS_KEY_V3);
     };
     
     fuapi.removeAllFriends = function() {

@@ -6,11 +6,7 @@ define(
         url: url,
         method: method,
         error: function(err) {
-          if(err == 404) {
-            cb(null, undefined);
-          } else {
-            cb(err, null);
-          }
+          cb(err, null);
         },
         success: function(data) {
           cb(null, data);

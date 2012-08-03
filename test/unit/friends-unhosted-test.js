@@ -2,100 +2,130 @@ define(['friendsUnhostedApi', 'remoteAdapter', 'when', 'testHelper'],
 function(fu, ra, when, help) {
     var eq = help.eq;
     var resolved = help.resolved;
-    
-    function testOldStore(o, version, done) {
-        ra.getPublicData = o.stub();
-        var data = {'user': 'data'};
-        ra.getPublicData
-            .withArgs('some@user.com', 'VERSION')
-            .returns(resolved(version));
-        ra.getPublicData
-            .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-            .returns(resolved(data));
+    var rejected = help.rejected;
         
-        fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
-    }
-    
     buster.testCase("F#U API read public data", {
 
-        "- can read version 0 status updates": function(done) {
-            testOldStore(this, null, done);
-        },
-
-        "- can read version 1 status updates": function(done) {
-            testOldStore(this, 1, done);
-        },
-
-        "- can read version 2 status updates": function(done) {
-            testOldStore(this, 2, done);
-        },
-
-        "- can read version 3 status updates": function(done) {
+        "- reads updates": function(done) {
             ra.getPublicData = this.stub();
-            var data = {'user': 'data'};
-            ra.getPublicData
-                .withArgs('some@user.com', 'VERSION')
-                .returns(resolved(3));
+            var newData = [{'status2': 'new data'}];
+
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_status')
-                .returns(resolved(data));
+                .returns(resolved(newData));
             
-            fu.fetchStatusForUser('some@user.com').then(eq(data),eq(data)).then(done, done);
+            fu.fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
+        
+        "- rejects no updates": function(done) {
+            ra.getPublicData = this.stub();
 
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(rejected(404));
+            
+            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
+        },
     });
     
 
 
-    buster.testCase("F#U API upgrade store", {
-
-         "- can upgrade to version 3 store": function(done) {
-
-            ra.fetchUserData = this.stub();
-            ra.putUserData = this.stub();
-            ra.restoreLogin = this.stub();
-            
-            var data = {'user': 'data'};
+    buster.testCase("F#U API puts data", {
+         setUp: function() {
+             ra.fetchUserData = this.mock();
+             ra.putUserData = this.mock();
+             fu.getTimestamp = function() {return 123456789;};             
+         },
+         
+         "- Puts new data for no data in repo": function(done) {
+            var status = 'status';
             var username = 'some@user.com';
+            var data = [{
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                }];
             
-            ra.restoreLogin
-                .withArgs()
-                .returns(resolved(username));
-
             ra.fetchUserData
-                .withArgs('VERSION')
-                .returns(resolved(2));
-
-            ra.fetchUserData
-                .withArgs('friendsunhosted_statusupdate_testing')
-                .returns(resolved(data));
+                .withExactArgs('friendsunhosted_status')
+                .returns(rejected(404));
             
             ra.putUserData
-                .withArgs('friendsunhosted_status')
+                .withArgs('friendsunhosted_status', data)
                 .returns(resolved(data));
             
-            ra.putUserData
-                .withArgs('VERSION', 3)
-                .returns(resolved(3));
-            /*
-            var beforeBackgroundTask = when.defer();
-            var afterBackgroundTask = when.defer();
-
-            fu.addBackgroundTaskListeners(
-                    beforeBackgroundTask.resolve, 
-                    afterBackgroundTask.resolve
-            );
+            fu.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
             
-            fu.addBackgroundTaskListeners(
-                    console.log, 
-                    console.log
-            );
-*/
-            var initPromise = fu.init();//.then(eq(username), eq(username)).then(done,done);
-            
-            when.all([/*beforeBackgroundTask.promise, afterBackgroundTask.promise, */initPromise], eq([username]), eq([username])).always(done);
         },
 
+        "- Appends data to existing data": function(done) {
+            var status = 'status';
+            var username = 'some@user.com';
+            var data = {
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                };
+            
+            ra.fetchUserData
+                .withExactArgs('friendsunhosted_status')
+                .returns(resolved([data]));
+            
+            ra.putUserData
+                .withArgs('friendsunhosted_status', [data, data])
+                .returns(resolved([data, data]));
+            
+            fu.addStatus(status, 'some@user.com').then(eq([data, data]), eq('fail')).always(done);
+            
+        },
+
+        "- Rejects update for other than 404s": function(done) {
+            
+            var status = 'status';
+            var username = 'some@user.com';
+            var data = {
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                };
+            
+            ra.fetchUserData
+                .withExactArgs('friendsunhosted_status')
+                .returns(rejected(666));
+            ra.putUserData.never();            
+            fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666")).always(done);
+            
+        }
     });
 
+    buster.testCase("F#U API fetch data", {
+        setUp: function() {
+            ra.fetchUserData = this.mock();
+            ra.putUserData = this.mock();
+            fu.getTimestamp = function() {return 123456789;};             
+        },
+        
+        "- Puts new data for no data in repo": function(done) {
+           var status = 'status';
+           var username = 'some@user.com';
+           var data = {
+                   "status": status,
+                   "timestamp": fu.getTimestamp(),
+                   "username": username,
+               };
+           
+           ra.fetchUserData
+               .withExactArgs('friendsunhosted_status')
+               .returns(rejected(404));
+           
+           ra.putUserData
+               .withArgs('friendsunhosted_status', [data])
+               .returns(resolved([data]));
+           
+           fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
+           
+       },
+    });
+
+    
 });
