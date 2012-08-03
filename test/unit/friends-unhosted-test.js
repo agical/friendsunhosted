@@ -72,11 +72,6 @@ function(fu, ra, when, help) {
              fu.getTimestamp = function() {return 123456789;};             
          },
          
-         tearDown: function() {
-             ra.fetchUserData.reset();
-             ra.putUserData.reset();             
-         },
-         
          "//- Puts new data for no data in repo": function(done) {
             var status = 'status';
             var username = 'some@user.com';
@@ -88,12 +83,10 @@ function(fu, ra, when, help) {
             
             ra.fetchUserData
                 .withExactArgs('friendsunhosted_status')
-                .once()
                 .returns(rejected(404));
             
             ra.putUserData
                 .withArgs('friendsunhosted_status', [data])
-                .once()
                 .returns(resolved([data]));
             
             fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
@@ -111,12 +104,10 @@ function(fu, ra, when, help) {
             
             ra.fetchUserData
                 .withExactArgs('friendsunhosted_status')
-                .once()
                 .returns(resolved([data]));
             
             ra.putUserData
                 .withArgs('friendsunhosted_status', [data, data])
-                .once()
                 .returns(resolved([data, data]));
             
             fu.addStatus(status, 'some@user.com').then(eq([data, data]), eq('fail')).always(done);
@@ -124,6 +115,7 @@ function(fu, ra, when, help) {
         },
 
         "- Rejects update for other than 404s": function(done) {
+            
             var status = 'status';
             var username = 'some@user.com';
             var data = {
@@ -134,9 +126,8 @@ function(fu, ra, when, help) {
             
             ra.fetchUserData
                 .withExactArgs('friendsunhosted_status')
-                .once()
                 .returns(rejected(666));
-            
+            ra.putUserData.never();            
             fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666")).always(done);
             
         },
