@@ -75,21 +75,21 @@ function(fu, ra, when, help) {
          "- Puts new data for no data in repo": function(done) {
             var status = 'status';
             var username = 'some@user.com';
-            var data = {
+            var data = [{
                     "status": status,
                     "timestamp": fu.getTimestamp(),
                     "username": username,
-                };
+                }];
             
             ra.fetchUserData
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(404));
             
             ra.putUserData
-                .withArgs('friendsunhosted_status', [data])
-                .returns(resolved([data]));
+                .withArgs('friendsunhosted_status', data)
+                .returns(resolved(data));
             
-            fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
+            fu.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
             
         },
 
