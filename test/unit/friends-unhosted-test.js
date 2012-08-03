@@ -37,7 +37,7 @@ function(fu, ra, when, help) {
 
         "- reads only new updates": function(done) {
             ra.getPublicData = this.stub();
-            var newData = {'status2': 'new data'};
+            var newData = [{'status2': 'new data'}];
 
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
