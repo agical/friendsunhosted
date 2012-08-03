@@ -85,7 +85,6 @@ buster.testCase("Friends#Unhosted", {
                .addFriend(username)
                .friend(1, assEq(username))
                .addFriend(username)
-               .pause(500)
                .errorMessage(assEq("Cannot add the same user twice"))
                .removeFriend(1)
                .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
@@ -105,7 +104,6 @@ buster.testCase("Friends#Unhosted", {
             .loginNewUser()
             .setStatus("The message of the added")
             .statusUpdate(1, assEq("The message of the added"))
-            .pause(5000)
             .logout()
         .end();
         
@@ -114,7 +112,6 @@ buster.testCase("Friends#Unhosted", {
                 createRobot(done).loginNewUser()
                     .selectFriendsInMenu()
                     .addFriend(user.username)
-                    .pause(5000)
                     .selectStatusesInMenu()
                     .statusUpdate(1, assEq("The message of the added"))
                     .statusGetUsername(1, assEq(user.username))
