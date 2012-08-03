@@ -21,9 +21,27 @@ function(fu, ra, when, help) {
 
         "- reads old and new updates": function(done) {
             ra.getPublicData = this.stub();
-            var oldData = [{'status1': 'old data'}];
-            var newData = [{'status2': 'new data'}];
-            var allData = [{'status1': 'old data'}, {'status2': 'new data'}];
+            var oldData = [{'status': 'old data', timestamp: 1}];
+            var newData = [{'status': 'new data', timestamp: 2}];
+            var allData = [{'status': 'old data', timestamp: 1}, 
+                           {'status': 'new data', timestamp: 2}];
+
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
+                .returns(resolved(oldData));
+            ra.getPublicData
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(resolved(newData));
+            
+            fu.fetchStatusForUser('some@user.com').always(eq(allData)).always(done);
+        },
+
+        "- reads old and new updates and removes duplicates": function(done) {
+            ra.getPublicData = this.stub();
+            var oldData = [{'status': 'old data', timestamp: 1234, username:"some@user.com"}];
+            var newData = [{'status': 'old data', timestamp: 1234, username:"some@user.com"}, 
+                           {'status': 'new data', timestamp: 1235, username:"some@user.com"}];
+            var allData = newData;
 
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
