@@ -42,7 +42,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         _.each(newFriendsList, function(friendData) {
             fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
                 addStatusUpdates(parsedData);
-            }, showError);
+            }, logWarning);
         });
     };
       
@@ -144,7 +144,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         
         fuapi.fetchStatus().then(function(value) {
             addStatusUpdates(value);
-        }, showError);
+        }, logWarning);
+    };
+    
+    var logWarning = function(message) {
+        console.log(message);
     };
 
     var showError = function(message) {
