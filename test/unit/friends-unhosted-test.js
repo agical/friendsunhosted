@@ -6,60 +6,10 @@ function(fu, ra, when, help) {
         
     buster.testCase("F#U API read public data", {
 
-        "- reads only old updates": function(done) {
-            ra.getPublicData = this.stub();
-            var oldData = [{'user': 'old data'}];
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(resolved(oldData));
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_status')
-                .returns(rejected(404));
-            
-            fu.fetchStatusForUser('some@user.com').always(eq(oldData)).always(done);
-        },
-
-        "- reads old and new updates": function(done) {
-            ra.getPublicData = this.stub();
-            var oldData = [{'status': 'old data', timestamp: 1}];
-            var newData = [{'status': 'new data', timestamp: 2}];
-            var allData = [{'status': 'old data', timestamp: 1}, 
-                           {'status': 'new data', timestamp: 2}];
-
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(resolved(oldData));
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_status')
-                .returns(resolved(newData));
-            
-            fu.fetchStatusForUser('some@user.com').always(eq(allData)).always(done);
-        },
-
-        "- reads old and new updates and removes duplicates": function(done) {
-            ra.getPublicData = this.stub();
-            var oldData = [{'status': 'old data', timestamp: 1234, username:"some@user.com"}];
-            var newData = [{'status': 'old data', timestamp: 1234, username:"some@user.com"}, 
-                           {'status': 'new data', timestamp: 1235, username:"some@user.com"}];
-            var allData = newData;
-
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(resolved(oldData));
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_status')
-                .returns(resolved(newData));
-            
-            fu.fetchStatusForUser('some@user.com').always(eq(allData)).always(done);
-        },
-
-        "- reads only new updates": function(done) {
+        "- reads updates": function(done) {
             ra.getPublicData = this.stub();
             var newData = [{'status2': 'new data'}];
 
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(rejected(404));
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
@@ -70,9 +20,6 @@ function(fu, ra, when, help) {
         "- rejects no updates": function(done) {
             ra.getPublicData = this.stub();
 
-            ra.getPublicData
-                .withArgs('some@user.com', 'friendsunhosted_statusupdate_testing')
-                .returns(rejected(404));
             ra.getPublicData
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));

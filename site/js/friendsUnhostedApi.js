@@ -2,7 +2,6 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
         function( _, when, rem, storageConversion) {
 
     var fuapi = {};
-    var STATUS_KEY_V0 = 'friendsunhosted_statusupdate_testing';
     var STATUS_KEY_V3 = 'friendsunhosted_status';
     var FRIENDS_KEY = 'friendsunhosted_friends';
     var currentUser = null;
@@ -81,27 +80,14 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     fuapi.fetchStatusForUser = function(username) {
         var afterUserStatus = when.defer();
         
-        rem.getPublicData(username, STATUS_KEY_V0).then(
-            function(oldData) {
-                rem.getPublicData(username, STATUS_KEY_V3).then(
-                        function(newData) {
-                            afterUserStatus.resolve(_.uniq(_.flatten([oldData||[], newData||[]]), false, function(el) {
-                                return el.timestamp;
-                            }));
-                        },
-                        function(error) {
-                            afterUserStatus.resolve(oldData);
-                        }
-                    );
+        rem.getPublicData(username, STATUS_KEY_V3).then(
+            function(data) {
+                afterUserStatus.resolve(data||[]);
             },
             function(error) {
-                rem.getPublicData(username, STATUS_KEY_V3).then(
-                        function(newData) {
-                            afterUserStatus.resolve(newData);
-                        },
-                        afterUserStatus.reject
-                    );
-        });
+                afterUserStatus.reject(error);
+            }
+        );
                
         return afterUserStatus.promise;
     };
@@ -168,10 +154,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
     };
     
     fuapi.removeAllStatuses = function() {
-        return rem.deleteUserData(STATUS_KEY_V3)
-            .then(function() {
-                return rem.deleteUserData(STATUS_KEY_V0);
-            });
+        return rem.deleteUserData(STATUS_KEY_V3);
     };
     
     fuapi.removeAllFriends = function() {
