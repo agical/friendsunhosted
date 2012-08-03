@@ -68,13 +68,13 @@ function(fu, ra, when, help) {
     buster.testCase("F#U API puts data", {
          setUp: function() {
              ra.fetchUserData = this.mock();
-//             ra.putUserData = this.mock();
+             ra.putUserData = this.mock();
              fu.getTimestamp = function() {return 123456789;};             
          },
          
          tearDown: function() {
              ra.fetchUserData.reset();
-//             ra.putUserData.reset();             
+             ra.putUserData.reset();             
          },
          
          "//- Puts new data for no data in repo": function(done) {
