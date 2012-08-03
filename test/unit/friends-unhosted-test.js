@@ -116,6 +116,24 @@ function(fu, ra, when, help) {
             
         },
 
+        "- Rejects update for other than 404s": function(done) {
+            var status = 'status';
+            var username = 'some@user.com';
+            var data = {
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                };
+            
+            ra.fetchUserData
+                .withExactArgs('friendsunhosted_status')
+                .once()
+                .returns(rejected(666));
+            
+            fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq(666)).always(done);
+            
+        },
+
     });
 
 });
