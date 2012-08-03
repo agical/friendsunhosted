@@ -1,5 +1,5 @@
-define(['underscore', 'when', 'remoteAdapter', 'storageConversion'], 
-        function( _, when, rem, storageConversion) {
+define(['underscore', 'when', 'remoteAdapter'], 
+        function( _, when, rem) {
 
     var fuapi = {};
     var STATUS_KEY_V3 = 'friendsunhosted_status';
