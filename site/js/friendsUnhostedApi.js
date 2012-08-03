@@ -85,9 +85,7 @@ define(['underscore', 'when', 'remoteAdapter', 'storageConversion'],
             function(oldData) {
                 rem.getPublicData(username, STATUS_KEY_V3).then(
                         function(newData) {
-                            console.log(oldData, newData);
-                            afterUserStatus.resolve(_.uniq(_.flatten([oldData, newData]), false, function(el) {
-                                console.log(el);
+                            afterUserStatus.resolve(_.uniq(_.flatten([oldData||[], newData||[]]), false, function(el) {
                                 return el.timestamp;
                             }));
                         },
