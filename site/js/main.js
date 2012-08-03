@@ -41,7 +41,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     var updateFriends = function(newFriendsList) {
         _.each(newFriendsList, function(friendData) {
             fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
-                console.log(parsedData);
                 addStatusUpdates(parsedData);
             }, showError);
         });
