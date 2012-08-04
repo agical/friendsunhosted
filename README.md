@@ -15,6 +15,8 @@ The code is licenced under Creative Commons Attribution-ShareAlike 3.0 Unported 
 
 Clone or fork from git (this repo).
 
+# To run the tests
+
 ## Node
 
 Install node: http://nodejs.org/#download
@@ -24,8 +26,6 @@ Install node: http://nodejs.org/#download
 Install the javascript dependencies in install_ubuntu.sh. 
 (or verify that they work in other operating systems and add a script for that)
 (there is a trick about installing buster that I don't remember...)
-
-# To run the tests
 
 ## Install redis database
 sudo apt-get install redis-server
