@@ -1,6 +1,14 @@
 FRIENDS#UNHOSTED repository
 =======
 
+# Own your network! 
+
+FRIENDS#UNHOSTED is a new type of social network site where you own your network and uploads, not the site. 
+
+It is based on unhosted http://unhosted.org/ technology.
+
+The code is licenced under Creative Commons Attribution-ShareAlike 3.0 Unported License http://creativecommons.org/licenses/by-sa/3.0/
+
 # Install
 
 ## FRIENDS#UNHOSTED
