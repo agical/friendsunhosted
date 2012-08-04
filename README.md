@@ -59,17 +59,24 @@ index 74f38bd..916a290 100644
  });
 ```
 
-Then run express-storage with (in express-storage root): sudo node server.js
+Then run express-storage with (in express-storage root): 
+
+`sudo node server.js`
 
 ## Start selenium standalone server
 (in start_servers.sh)
 
-java -jar node_modules/selenium/lib/runner/selenium-server-standalone-2.20.0.jar -log logs/seleniumserver.log -Dwebdriver.chrome.bin="/opt/google/chrome/google-chrome" -Dwebdriver.chrome.driver="/home/daniel/bin/chromedriver" &
+Download chromedriver if you want to test in chrome:
+http://code.google.com/p/chromedriver/downloads/list
+
+`java -jar node_modules/selenium/lib/runner/selenium-server-standalone-2.20.0.jar -log logs/seleniumserver.log -Dwebdriver.chrome.bin="/opt/google/chrome/google-chrome" -Dwebdriver.chrome.driver="/path/to/chromedriver" &`
+
+You probably have to change the path to chrome and chromedriver. 
 
 ## Start buster unit test server
 (also in start_servers.sh)
 
-buster server & 
+`buster server &`
 
 Check the url shown in the logs, typically http://localhost:1111, and surf there with any and all the browsers 
 you want to run the unit tests on, and register your browser.
@@ -79,23 +86,25 @@ you want to run the unit tests on, and register your browser.
 
 If you have python 2.x
 
+```
 cd site/
 python -m SimpleHTTPServer > ../logs/httpserver.log &
 cd -
+```
 
 Otherwise, serve the site folder, the actual F#U site form this repo, from IIS, apache or whatever makes your skirt blow. 
 
 ## Actually run the tests
 
-buster test
+`buster test`
 
 If you only want to run the unit tests:
 
-buster test --browser
+`buster test --browser`
 
 If you only want to run the selenium tests:
 
-buster test --node
+`buster test --node`
 
 
 ## Acknowledgements
