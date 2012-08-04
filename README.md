@@ -107,14 +107,29 @@ If you only want to run the selenium tests:
 `buster test --node`
 
 
-## Acknowledgements
+# Develop
 
-----
+## Architecture-ish description
 
->> 
+`index.html` contains all html and the knockoutjs templates.
 
-----
+`main.js` contains all presentation related javascript, including kncockout and jquery.
 
->> 
+`friendsUnhostedApi.js` is the api that `main.js` uses to talk to the remote storage.
 
-----
+`remoteAdapter.js` is a wrapper for `remoteStorage.js` based on https://raw.github.com/cujojs/when
+
+`remoteStorage.js` is the "official" unhosted library to use
+
+`css`, `img` you can probably figure out. 
+
+`development-bundle` is jquery-ui. Maybe we should try to get rid of it, we're not using it extensively, if at all.
+
+## Tests
+
+In `browser` resides the functional test that are run in a browser using selenium and webdriverjs from busterjs
+
+In `unit` resides the unit tests that are run in all registered browsers in busterjs.
+
+If this sounds corny, read up on BusterJS (http://busterjs.org/). :-)
+
