@@ -20,7 +20,7 @@ define(['underscore', 'when', 'remoteAdapter'],
         }
         
         var friendData = {"username": friendsUsername,
-                        "timestamp": getTimestamp()};
+                        "timestamp": fuapi.getTimestamp()};
         rem.fetchUserData(FRIENDS_KEY).then(function(value) {
             value = value || [];
             if(_.any(value, function(f) {
