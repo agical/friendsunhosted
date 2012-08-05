@@ -81,6 +81,7 @@ buster.testCase("Friends#Unhosted", {
             createRobot(done)
                .loginNewUser()
                .selectFriendsInMenu()
+                .pause(500)
                .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
                .addFriend(username)
                .friend(1, assEq(username))
@@ -111,6 +112,7 @@ buster.testCase("Friends#Unhosted", {
             b1.user.promise.then(function(user) {
                 createRobot(done).loginNewUser()
                     .selectFriendsInMenu()
+                    .pause(500)
                     .addFriend(user.username)
                     .selectStatusesInMenu()
                     .statusUpdate(1, assEq("The message of the added"))
