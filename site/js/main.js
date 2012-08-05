@@ -70,7 +70,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.timestamp = suData.timestamp;
       su.relativeTimestamp = ko.computed(function() {
         var time = new Date(su.timestamp);
-        return time.getFullYear()+'-'+time.getMonth()+'-'+time.getDate()+' '+time.getHours()+':'+time.getMinutes();
+        return time.toLocaleDateString() == new Date().toLocaleDateString() ?
+                time.toLocaleTimeString() 
+                :
+                time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
       });
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
