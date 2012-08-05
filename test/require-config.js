@@ -3,6 +3,7 @@ var require = {
         "storageConversion": "site/js/storageConversion",
         "friendsUnhostedApi": "site/js/friendsUnhostedApi",
         "underscore": "site/js/underscore",
+        "date": "site/js/date",
         "remoteAdapter": "test/fake/fakeRemoteAdapter",
         "testHelper": "test/lib/testHelper",
         
