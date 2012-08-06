@@ -36,6 +36,11 @@ function(fu, ra, when, help) {
              ra.putUserData = this.mock();
              fu.getTimestamp = function() {return 123456789;};             
          },
+         tearDown: function() {
+             ra.fetchUserData.verify();
+             ra.putUserData.verify();
+         },
+
          
          "- Puts new data for no data in repo": function(done) {
             var status = 'status';
