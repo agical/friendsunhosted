@@ -77,24 +77,25 @@ function(fuc, _, when, remoteAdapter, help) {
             
         },
 
-        "//- Appends data to existing data": function(done) {
+        "- Appends data to existing data": function(done) {
             var status = 'status';
             var username = 'some@user.com';
+            var fuapi = fu(this);
             var data = {
                     "status": status,
-                    "timestamp": fu.getTimestamp(),
+                    "timestamp": fuapi.getTimestamp(),
                     "username": username,
                 };
             
-            ra.fetchUserData
+            raExp_fetchUserData
                 .withExactArgs('friendsunhosted_status')
                 .returns(resolved([data]));
             
-            ra.putUserData
+            raExp_putUserData
                 .withArgs('friendsunhosted_status', [data, data])
                 .returns(resolved([data, data]));
             
-            fu.addStatus(status, 'some@user.com').then(eq([data, data]), eq('fail')).always(done);
+            fuapi.addStatus(status, 'some@user.com').then(eq([data, data]), eq('fail')).always(done);
             
         },
 
