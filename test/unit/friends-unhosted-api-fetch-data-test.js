@@ -32,7 +32,7 @@ function(fuc, _, when, remoteAdapter, help) {
         "- reads updates": function(done) {
             var newData = [{'status2': 'new data'}];
 
-            raExp_getPublicData()
+            ra.expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
 
@@ -41,7 +41,7 @@ function(fuc, _, when, remoteAdapter, help) {
         
         "- rejects no updates": function(done) {
             
-            raExp_getPublicData()
+            ra.expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
@@ -53,9 +53,6 @@ function(fuc, _, when, remoteAdapter, help) {
 
     buster.testCase("F#U API puts data", {
         setUp: setUpRemoteAdapterAndFuApi,
-//        setUp: function() {
-//            fu.getTimestamp = function() {return 123456789;};             
-//        },
          
         "- Puts new data for no data in repo": function(done) {
             var status = 'status';
@@ -66,11 +63,11 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 }];
             
-            raExp_fetchUserData()
+            ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(404));
             
-            raExp_putUserData()
+            ra.expects('putUserData')
                 .withArgs('friendsunhosted_status', data)
                 .returns(resolved(data));
             
@@ -97,11 +94,11 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 };
 
-            raExp_fetchUserData()
+            ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_status')
                 .returns(resolved([data1]));
             
-            raExp_putUserData()
+            ra.expects('putUserData')
                 .withArgs('friendsunhosted_status', [data1, data2])
                 .returns(resolved([data1, data2]));
             
@@ -119,7 +116,7 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 };
             
-            raExp_fetchUserData()
+            ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(666));
                        
@@ -144,11 +141,11 @@ function(fuc, _, when, remoteAdapter, help) {
                    "username": username,
                };
            
-           ra.fetchUserData
+           ra.expects('fetchUserData')
                .withExactArgs('friendsunhosted_status')
                .returns(rejected(404));
            
-           ra.putUserData
+           ra.expects('putUserData')
                .withArgs('friendsunhosted_status', [data])
                .returns(resolved([data]));
            
