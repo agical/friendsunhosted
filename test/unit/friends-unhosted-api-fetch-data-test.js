@@ -3,19 +3,6 @@ function(fuc, _, when, remoteAdapter, help) {
     var eq = help.eq;
     var resolved = help.resolved;
     var rejected = help.rejected;
-        
-    
-    function raExp_getPublicData() {
-        return ra.expects('getPublicData');
-    }
-
-    function raExp_fetchUserData() {
-        return ra.expects('fetchUserData');
-    }
-
-    function raExp_putUserData() {
-        return ra.expects('putUserData');
-    }
 
     var fu = null;
     var ra = null;
@@ -48,8 +35,6 @@ function(fuc, _, when, remoteAdapter, help) {
             fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
         },
     });
-    
-
 
     buster.testCase("F#U API puts data", {
         setUp: setUpRemoteAdapterAndFuApi,
@@ -124,35 +109,4 @@ function(fuc, _, when, remoteAdapter, help) {
             
         }
     });
-
-    buster.testCase("F#U API fetch data", {
-        setUp: function() {
-            ra.fetchUserData = this.mock();
-            ra.putUserData = this.mock();
-            fu.getTimestamp = function() {return 123456789;};             
-        },
-        
-        "//- Puts new data for no data in repo": function(done) {
-           var status = 'status';
-           var username = 'some@user.com';
-           var data = {
-                   "status": status,
-                   "timestamp": fu.getTimestamp(),
-                   "username": username,
-               };
-           
-           ra.expects('fetchUserData')
-               .withExactArgs('friendsunhosted_status')
-               .returns(rejected(404));
-           
-           ra.expects('putUserData')
-               .withArgs('friendsunhosted_status', [data])
-               .returns(resolved([data]));
-           
-           fu.addStatus(status, 'some@user.com').then(eq([data]), eq('fail')).always(done);
-           
-       },
-    });
-
-    
 });
