@@ -38,10 +38,13 @@ function(fuc, _, when, remoteAdapter, help) {
 
     buster.testCase("F#U API puts data", {
         setUp: setUpRemoteAdapterAndFuApi,
-         
+        tearDown: function() {fu.getTimestamp = this.originalGetTimestamp||fu.getTimestamp;},
+        
         "- Puts new data for no data in repo": function(done) {
             var status = 'status';
             var username = 'some@user.com';
+            this.originalGetTimestamp = fu.getTimestamp;
+            fu.getTimestamp = function() {return 123456789;};
             var data = [{
                     "status": status,
                     "timestamp": fu.getTimestamp(),
