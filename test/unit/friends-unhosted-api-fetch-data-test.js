@@ -4,6 +4,10 @@ function(fuc, _, when, remoteAdapter, help) {
     var resolved = help.resolved;
     var rejected = help.rejected;
         
+    function fu(tis) {
+        return fuc(_, when, tis.ra.object);
+    };
+    
     buster.testCase("F#U API read public data", {
         setUp: function() {
             this.ra = this.mock(remoteAdapter);
@@ -17,7 +21,7 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
             
-            fuc(_, when, this.ra.object).fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
+            fu(this).fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
         
         "- rejects no updates": function(done) {
@@ -27,7 +31,7 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
-            fuc(_,when,this.ra.object).fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
+            fu(this).fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
         },
     });
     
