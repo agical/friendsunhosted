@@ -8,6 +8,10 @@ function(fuc, _, when, remoteAdapter, help) {
         return fuc(_, when, tis.ra.object);
     };
     
+    function raExp_getPublicData(tis) {
+        return tis.ra.expects('getPublicData');
+    }
+    
     buster.testCase("F#U API read public data", {
         setUp: function() {
             this.ra = this.mock(remoteAdapter);
@@ -16,8 +20,7 @@ function(fuc, _, when, remoteAdapter, help) {
         "- reads updates": function(done) {
             var newData = [{'status2': 'new data'}];
 
-            this.ra
-                .expects('getPublicData')
+            raExp_getPublicData(this)
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
             
@@ -26,8 +29,7 @@ function(fuc, _, when, remoteAdapter, help) {
         
         "- rejects no updates": function(done) {
             
-            this.ra
-                .expects('getPublicData')
+            raExp_getPublicData(this)
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
