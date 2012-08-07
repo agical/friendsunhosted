@@ -5,15 +5,15 @@ function(fuc, _, when, remoteAdapter, help) {
     var rejected = help.rejected;
         
     
-    function raExp_getPublicData(tis) {
+    function raExp_getPublicData() {
         return ra.expects('getPublicData');
     }
 
-    function raExp_fetchUserData(tis) {
+    function raExp_fetchUserData() {
         return ra.expects('fetchUserData');
     }
 
-    function raExp_putUserData(tis) {
+    function raExp_putUserData() {
         return ra.expects('putUserData');
     }
 
@@ -32,7 +32,7 @@ function(fuc, _, when, remoteAdapter, help) {
         "- reads updates": function(done) {
             var newData = [{'status2': 'new data'}];
 
-            raExp_getPublicData(this)
+            raExp_getPublicData()
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
 
@@ -41,7 +41,7 @@ function(fuc, _, when, remoteAdapter, help) {
         
         "- rejects no updates": function(done) {
             
-            raExp_getPublicData(this)
+            raExp_getPublicData()
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
@@ -66,11 +66,11 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 }];
             
-            raExp_fetchUserData(this)
+            raExp_fetchUserData()
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(404));
             
-            raExp_putUserData(this)
+            raExp_putUserData()
                 .withArgs('friendsunhosted_status', data)
                 .returns(resolved(data));
             
@@ -97,11 +97,11 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 };
 
-            raExp_fetchUserData(this)
+            raExp_fetchUserData()
                 .withExactArgs('friendsunhosted_status')
                 .returns(resolved([data1]));
             
-            raExp_putUserData(this)
+            raExp_putUserData()
                 .withArgs('friendsunhosted_status', [data1, data2])
                 .returns(resolved([data1, data2]));
             
@@ -109,7 +109,7 @@ function(fuc, _, when, remoteAdapter, help) {
             
         },
 
-        "//- Rejects update for other than 404s": function(done) {
+        "- Rejects update for other than 404s": function(done) {
             
             var status = 'status';
             var username = 'some@user.com';
@@ -119,10 +119,10 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 };
             
-            ra.fetchUserData
+            raExp_fetchUserData()
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(666));
-            ra.putUserData.never();            
+                       
             fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666")).always(done);
             
         }
