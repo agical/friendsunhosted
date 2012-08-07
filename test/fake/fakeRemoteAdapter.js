@@ -1,4 +1,8 @@
 define([], function () {
-    return {fakeRemoteAdapter:'this is a fake'};
+    return {
+        getPublicData:function() {},
+        fetchUserData:function() {},
+        putUserData:function() {},
+    };
 });
 

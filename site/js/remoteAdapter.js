@@ -73,12 +73,19 @@ define(['underscore', 'remoteStorage', 'when'],
           var deferred = when.defer();
           
           var client = getUserStorageClient(category);
-          client.put(key, JSON.stringify(value), function(err) {
-            if(err) {
-              deferred.reject(err);
-            } else {
-              deferred.resolve(value);
-            }
+          var stringData = JSON.stringify(value);
+          client.put(key, stringData, function(err) {
+              if(err) {
+                  deferred.reject(err);
+              } else {
+                  client.get(key, function(err, checkedData) {
+                      if(!err && checkedData == stringData) {
+                          deferred.resolve(value);
+                      } else {
+                          deferred.reject("Could not verify written data, possibly because of " + err);
+                      }
+                  });
+              }
           });
           return deferred.promise;
         };
