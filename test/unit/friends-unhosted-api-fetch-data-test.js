@@ -20,14 +20,14 @@ function(fuc, _, when, remoteAdapter, help) {
             fuc(_, when, this.ra.object).fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
         
-        "//- rejects no updates": function(done) {
-            ra.getPublicData = this.stub();
-
-            ra.getPublicData
+        "- rejects no updates": function(done) {
+            
+            this.ra
+                .expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
-            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
+            fuc(_,when,this.ra.object).fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
         },
     });
     
