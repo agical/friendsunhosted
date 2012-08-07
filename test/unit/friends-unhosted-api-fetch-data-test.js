@@ -1,23 +1,26 @@
-define(['friendsUnhostedApi', 'remoteAdapter', 'when', 'testHelper'], 
-function(fu, ra, when, help) {
+define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelper'], 
+function(fuc, _, when, remoteAdapter, help) {
     var eq = help.eq;
     var resolved = help.resolved;
     var rejected = help.rejected;
         
     buster.testCase("F#U API read public data", {
+        setUp: function() {
+            this.ra = this.mock(remoteAdapter);
+        },
 
         "- reads updates": function(done) {
-            ra.getPublicData = this.stub();
             var newData = [{'status2': 'new data'}];
 
-            ra.getPublicData
+            this.ra
+                .expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
             
-            fu.fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
+            fuc(_, when, this.ra.object).fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
         
-        "- rejects no updates": function(done) {
+        "//- rejects no updates": function(done) {
             ra.getPublicData = this.stub();
 
             ra.getPublicData
@@ -42,7 +45,7 @@ function(fu, ra, when, help) {
          },
 
          
-         "- Puts new data for no data in repo": function(done) {
+         "//- Puts new data for no data in repo": function(done) {
             var status = 'status';
             var username = 'some@user.com';
             var data = [{
@@ -63,7 +66,7 @@ function(fu, ra, when, help) {
             
         },
 
-        "- Appends data to existing data": function(done) {
+        "//- Appends data to existing data": function(done) {
             var status = 'status';
             var username = 'some@user.com';
             var data = {
@@ -84,7 +87,7 @@ function(fu, ra, when, help) {
             
         },
 
-        "- Rejects update for other than 404s": function(done) {
+        "//- Rejects update for other than 404s": function(done) {
             
             var status = 'status';
             var username = 'some@user.com';
@@ -110,7 +113,7 @@ function(fu, ra, when, help) {
             fu.getTimestamp = function() {return 123456789;};             
         },
         
-        "- Puts new data for no data in repo": function(done) {
+        "//- Puts new data for no data in repo": function(done) {
            var status = 'status';
            var username = 'some@user.com';
            var data = {
