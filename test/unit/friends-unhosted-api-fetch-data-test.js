@@ -87,11 +87,11 @@ function(fuc, _, when, remoteAdapter, help) {
                     "username": username,
                 };
             
-            raExp_fetchUserData
+            raExp_fetchUserData(this)
                 .withExactArgs('friendsunhosted_status')
                 .returns(resolved([data]));
             
-            raExp_putUserData
+            raExp_putUserData(this)
                 .withArgs('friendsunhosted_status', [data, data])
                 .returns(resolved([data, data]));
             
