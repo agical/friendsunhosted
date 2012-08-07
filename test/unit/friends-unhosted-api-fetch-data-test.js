@@ -4,9 +4,6 @@ function(fuc, _, when, remoteAdapter, help) {
     var resolved = help.resolved;
     var rejected = help.rejected;
         
-    function fu(tis) {
-        return fuc(_, when, tis.ra.object);
-    };
     
     function raExp_getPublicData(tis) {
         return tis.ra.expects('getPublicData');
@@ -20,12 +17,17 @@ function(fuc, _, when, remoteAdapter, help) {
         return tis.ra.expects('putUserData');
     }
 
-    function mockRa() {
-        this.ra = this.mock(remoteAdapter);
+    var fu = null;
+    var ra = null;
+    
+    function setUpRemoteAdapterAndFuApi() {
+        ra = this.mock(remoteAdapter);
+        fu = fuc(_, when, ra.object);
     }
     
+
     buster.testCase("F#U API read public data", {
-        setUp: mockRa,
+        setUp: setUpRemoteAdapterAndFuApi,
         
         "- reads updates": function(done) {
             var newData = [{'status2': 'new data'}];
@@ -34,7 +36,7 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
 
-            fu(this).fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
+            fu.fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
         
         "- rejects no updates": function(done) {
@@ -43,14 +45,14 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
-            fu(this).fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
+            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
         },
     });
     
 
 
     buster.testCase("F#U API puts data", {
-        setUp: mockRa,
+        setUp: setUpRemoteAdapterAndFuApi,
 //        setUp: function() {
 //            fu.getTimestamp = function() {return 123456789;};             
 //        },
@@ -58,10 +60,9 @@ function(fuc, _, when, remoteAdapter, help) {
         "- Puts new data for no data in repo": function(done) {
             var status = 'status';
             var username = 'some@user.com';
-            var fuapi = fu(this);
             var data = [{
                     "status": status,
-                    "timestamp": fuapi.getTimestamp(),
+                    "timestamp": fu.getTimestamp(),
                     "username": username,
                 }];
             
@@ -73,7 +74,7 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('friendsunhosted_status', data)
                 .returns(resolved(data));
             
-            fuapi.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
+            fu.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
             
         },
 
