@@ -141,13 +141,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
   
     self.refresh = function() {
-        fuapi.fetchFriends().then(function(value) {
-            self.allFriends(value);
-        }, showError);
-        
-        fuapi.fetchStatus().then(function(value) {
-            addStatusUpdates(value);
-        }, logWarning);
+        if(self.loggedIn()) {
+            fuapi.fetchFriends().then(function(value) {
+                self.allFriends(value);
+            }, showError);
+            
+            fuapi.fetchStatus().then(function(value) {
+                addStatusUpdates(value);
+            }, logWarning);
+        }
     };
     
     var logWarning = function(message) {
