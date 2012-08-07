@@ -11,19 +11,29 @@ function(fuc, _, when, remoteAdapter, help) {
     function raExp_getPublicData(tis) {
         return tis.ra.expects('getPublicData');
     }
+
+    function raExp_fetchUserData(tis) {
+        return tis.ra.expects('fetchUserData');
+    }
+
+    function raExp_putUserData(tis) {
+        return tis.ra.expects('putUserData');
+    }
+
+    function mockRa() {
+        this.ra = this.mock(remoteAdapter);
+    }
     
     buster.testCase("F#U API read public data", {
-        setUp: function() {
-            this.ra = this.mock(remoteAdapter);
-        },
-
+        setUp: mockRa,
+        
         "- reads updates": function(done) {
             var newData = [{'status2': 'new data'}];
 
             raExp_getPublicData(this)
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
-            
+
             fu(this).fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
         },
         
@@ -40,35 +50,30 @@ function(fuc, _, when, remoteAdapter, help) {
 
 
     buster.testCase("F#U API puts data", {
-         setUp: function() {
-             ra.fetchUserData = this.mock();
-             ra.putUserData = this.mock();
-             fu.getTimestamp = function() {return 123456789;};             
-         },
-         tearDown: function() {
-             ra.fetchUserData.verify();
-             ra.putUserData.verify();
-         },
-
+        setUp: mockRa,
+//        setUp: function() {
+//            fu.getTimestamp = function() {return 123456789;};             
+//        },
          
-         "//- Puts new data for no data in repo": function(done) {
+        "- Puts new data for no data in repo": function(done) {
             var status = 'status';
             var username = 'some@user.com';
+            var fuapi = fu(this);
             var data = [{
                     "status": status,
-                    "timestamp": fu.getTimestamp(),
+                    "timestamp": fuapi.getTimestamp(),
                     "username": username,
                 }];
             
-            ra.fetchUserData
+            raExp_fetchUserData(this)
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(404));
             
-            ra.putUserData
+            raExp_putUserData(this)
                 .withArgs('friendsunhosted_status', data)
                 .returns(resolved(data));
             
-            fu.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
+            fuapi.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
             
         },
 
