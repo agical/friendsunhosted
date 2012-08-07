@@ -6,15 +6,15 @@ function(fuc, _, when, remoteAdapter, help) {
         
     
     function raExp_getPublicData(tis) {
-        return tis.ra.expects('getPublicData');
+        return ra.expects('getPublicData');
     }
 
     function raExp_fetchUserData(tis) {
-        return tis.ra.expects('fetchUserData');
+        return ra.expects('fetchUserData');
     }
 
     function raExp_putUserData(tis) {
-        return tis.ra.expects('putUserData');
+        return ra.expects('putUserData');
     }
 
     var fu = null;
@@ -81,22 +81,31 @@ function(fuc, _, when, remoteAdapter, help) {
         "- Appends data to existing data": function(done) {
             var status = 'status';
             var username = 'some@user.com';
-            var fuapi = fu(this);
-            var data = {
-                    "status": status,
-                    "timestamp": fuapi.getTimestamp(),
+            fu.getTimestamp = function() {
+                return 987654321;
+            };
+            
+            var data1 = {
+                    "status": 's1',
+                    "timestamp": 123456789,
                     "username": username,
                 };
-            
+
+            var data2 = {
+                    "status": status,
+                    "timestamp": fu.getTimestamp(),
+                    "username": username,
+                };
+
             raExp_fetchUserData(this)
                 .withExactArgs('friendsunhosted_status')
-                .returns(resolved([data]));
+                .returns(resolved([data1]));
             
             raExp_putUserData(this)
-                .withArgs('friendsunhosted_status', [data, data])
-                .returns(resolved([data, data]));
+                .withArgs('friendsunhosted_status', [data1, data2])
+                .returns(resolved([data1, data2]));
             
-            fuapi.addStatus(status, 'some@user.com').then(eq([data, data]), eq('fail')).always(done);
+            fu.addStatus(status, 'some@user.com').then(eq([data1, data2]), eq('fail')).always(done);
             
         },
 
