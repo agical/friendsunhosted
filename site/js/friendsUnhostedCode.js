@@ -33,8 +33,16 @@ define([], function() {
                         afterAdding.resolve(friendData);
                     }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
                 }
-            }, function(err) { afterAdding.reject("Could not fetch friend data from storage: "+ err);});        
-
+            }, function(err) { 
+                if(err == 404) {
+                    rem.putUserData(FRIENDS_KEY, [friendData]).then(function(keyValCat) {
+                        afterAdding.resolve(friendData);
+                    }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
+                } else {
+                    afterAdding.reject("Could not fetch friend data from storage: "+ err);
+                }
+            });        
+                
             return afterAdding.promise;
         };
         
