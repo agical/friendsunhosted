@@ -144,7 +144,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         if(self.loggedIn()) {
             fuapi.fetchFriends().then(function(value) {
                 self.allFriends(value);
-            }, showError);
+            }, logWarning);
             
             fuapi.fetchStatus().then(function(value) {
                 addStatusUpdates(value);
