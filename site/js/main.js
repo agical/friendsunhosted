@@ -68,6 +68,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       var su = this;
       su.status = suData.status;
       su.timestamp = suData.timestamp;
+      su.collapsed = ko.observable(false);
+      su.collapse = function() {
+          su.collapsed(true);
+      };
+      su.expand = function() {
+          su.collapsed(false);
+      };
       su.relativeTimestamp = ko.computed(function() {
         var time = new Date(su.timestamp);
         return time.toLocaleDateString() == new Date().toLocaleDateString() ?

@@ -181,9 +181,13 @@
 					data-bind="attr: {id: 'status-nr-'+($index()+1)}">
 					<div class="status-details">
 						<span class="status-update-username storage-id"
-							data-bind="text: username"></span> <span
+							data-bind="text: username"></span> 
+						<span
 							class="status-update-timestamp"
-							data-bind="text: relativeTimestamp"></span> <span
+							data-bind="text: relativeTimestamp"></span> 
+            <span class="do-collapse-status" data-bind="visible: !collapsed(), click:collapse">-</span>
+            <span class="do-expand-status" data-bind="visible: collapsed(), click:expand">+</span>
+						<span
 							class="status-update" data-bind="text: status"></span>
 					</div>
 					<div class="comments">
@@ -194,7 +198,7 @@
 								data-bind="text: username"></span> <span
 								class="comment-update-timestamp"
 								data-bind="text: relativeTimestamp"></span> <span
-								class="comment-update" data-bind="text: status"></span>
+								class="comment-update" data-bind="text: status, visible: !$parent.collapsed()"></span>
 						</div>
 						<!-- /ko -->
 						<div class="comment-form">
