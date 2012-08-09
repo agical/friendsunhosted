@@ -20,7 +20,8 @@ h3 {
 
 a {
 	text-decoration: none;
-	font-style: oblique;
+	font-style: normal;
+	font-weight: 
 }
 
 #upgrading-storage-screen {
@@ -327,6 +328,11 @@ textarea {
 .comment-form {
   float: right;
   padding: 10px;
+  width:700px;
+}
+
+.comment-form textarea {
+	height: 50px;	
 }
 
 .status-update {
@@ -367,4 +373,10 @@ textarea {
   font: 60% "Arial", sans-serif; 
   float: right;
   padding: 5px;
+}
+
+.do-collapse-status, .do-expand-status {
+  font: 60% "Arial", sans-serif; 
+  float: right;
+  padding: 0px;
 }
