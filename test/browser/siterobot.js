@@ -230,10 +230,11 @@
                     .setValue("#username", user.username)
                     .waitFor("#username", 2000)
                     .click("#do-login")
+//                    .pause(200)
+//                    .waitFor('input[name="password"]', 500) 
+//                    .setValue('input[name="password"]', user.password)
                     .pause(200)
-                    .waitFor('input[name="password"]', 500) 
-                    .setValue('input[name="password"]', user.password)
-                    .pause(200)
+                    .waitFor('input[value="Allow"]', 500) 
                     .click('input[value="Allow"]', function() {
                         d.resolve(
                                 {browser: fu.b,
