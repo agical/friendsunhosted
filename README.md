@@ -34,42 +34,19 @@ sudo apt-get install redis-server
 
 This storage uses redis.
 
-Clone or fork https://github.com/michielbdejong/express-storage
-I have changed two things (I know, I should fork it instead :-P):
+Clone or fork https://github.com/agical/express-storage:
 
-```
-diff --git a/config.js b/config.js
-index ede5f8c..0df9e33 100644
---- a/config.js
-+++ b/config.js
-@@ -3,5 +3,5 @@ exports.config = {
-   redisPort: (process.env.ES_REDIS_PORT === undefined ? 6379 : process.env.ES_REDIS_PORT),
-   redisPwd:  (process.env.ES_REDIS_PWD  === undefined ? '' : process.env.ES_REDIS_PWD),
-   host:      (process.env.ES_HOST       === undefined ? 'localhost' : process.env.ES_HOST),
--  port:      (process.env.ES_PORT       === undefined ? 4000 : process.env.ES_PORT)
-+  port:      (process.env.ES_PORT       === undefined ? 80 : process.env.ES_PORT)
- };
-diff --git a/server.js b/server.js
-index 74f38bd..916a290 100644
---- a/server.js
-+++ b/server.js
-@@ -77,9 +77,10 @@ app.post(/^\/_oauth\/(?:(.+))/, function(req, res){
-     });
- });
- 
--app.get("/create_test_user", function(req, res){
--  storage.addUser('jimmy@'+config.host, '12345678', function(){});
--  res.send("User created");
-+app.get("/create_user/:host/:user/:password", function(req, res){
-+  storage.addUser(req.params.user + '@' + req.params.host, req.params.password, function(result){
-+    res.send(result);  
-+  });
- });
-```
+`git clone https://github.com/agical/express-storage.git`
+
+Copy config file to parent dir:
+
+`cp copy_to_parent_dir_as_config.js ../config.js`
 
 Then run express-storage with (in express-storage root): 
 
 `sudo node server.js`
+
+This should start a remote storage on port 80.
 
 ## Start selenium standalone server
 (in start_servers.sh)
