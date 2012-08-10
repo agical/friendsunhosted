@@ -18,6 +18,12 @@ h3 {
   margin-bottom: 0px;
 }
 
+a {
+	text-decoration: none;
+	font-style: normal;
+	font-weight: 
+}
+
 #upgrading-storage-screen {
 	display: none;
 }
@@ -322,6 +328,11 @@ textarea {
 .comment-form {
   float: right;
   padding: 10px;
+  width:700px;
+}
+
+.comment-form textarea {
+	height: 50px;	
 }
 
 .status-update {
@@ -353,13 +364,23 @@ textarea {
 }
 
 .status-update-timestamp {
-  font: 60% "Arial", sans-serif; 
+  font: 70% "Arial", sans-serif; 
   float: right;
   padding: 5px;
+  padding-left: 10px;
+  font-style: italic;
 }
 
 .comment-update-timestamp {
-  font: 60% "Arial", sans-serif; 
+  font: 70% "Arial", sans-serif; 
   float: right;
   padding: 5px;
+  padding-left: 10px;
+  font-style: italic;
+}
+
+.do-collapse-status, .do-expand-status {
+  font: 100% "Arial", sans-serif; 
+  float: right;
+  padding: 0px;
 }

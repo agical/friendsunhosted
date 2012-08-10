@@ -9,10 +9,10 @@ var assert = buster.assertions.assert;
 
 var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
 
-var assEq = function(expected) {
+var eq = function(expected) {
     return (function(e) { 
                 return function(actual) {
-                    assert.equals(e, actual);
+                    assert.equals(actual, e);
                 };
     })(expected);
 };
@@ -29,8 +29,8 @@ buster.testCase("Friends#Unhosted", {
         
         createRobot(done)   
             .openStartPage()
-            .title(assEq('FRIENDS#UNHOSTED - the #unhosted friends network'))
-            .welcomeHeadline(assEq('What is FRIENDS#UNHOSTED?'))
+            .title(eq('FRIENDS#UNHOSTED - the #unhosted friends network'))
+            .welcomeHeadline(eq('What is FRIENDS#UNHOSTED?'))
         .end();
     },
     
@@ -40,7 +40,7 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .welcomeMessage(function(user) {
-                return assEq("Welcome, " + user.username + "!");
+                return eq("Welcome, " + user.username + "!");
             })
         .end();
     },
@@ -51,12 +51,12 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .setStatus("Hello, #unhosted world!")
-            .statusUpdate(1, assEq("Hello, #unhosted world!"))
-            .statusUsername(1, function(user) {return assEq(user.username);})
+            .statusUpdate(1, eq("Hello, #unhosted world!"))
+            .statusUsername(1, function(user) {return eq(user.username);})
             .statusTimeStamp(1, assert)
             .setStatus("Second message")
-            .statusUpdate(1, assEq("Second message"))
-            .statusUsername(1, function(user) {return assEq(user.username);})
+            .statusUpdate(1, eq("Second message"))
+            .statusUsername(1, function(user) {return eq(user.username);})
             .statusTimeStamp(1, assert)
         .end();
     },
@@ -66,9 +66,31 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .setStatus("Hello, #unhosted world!")
-            .statusUpdate(1, assEq("Hello, #unhosted world!"))
+            .statusUpdate(1, eq("Hello, #unhosted world!"))
             .addComment(1, "Hello to you!")
-            .comment(1, 1, assEq("Hello to you!"))
+            .comment(1, 1, eq("Hello to you!"))
+        .end();
+    },
+
+    "- can collapse and expand conversations": function (done) {
+        this.timeout = 25000;
+        createRobot(done)  
+            .loginNewUser()
+            .setStatus("Status update 1")
+            .addComment(1, "Comment 1.1")
+            .addComment(1, "Comment 1.2")
+            .addComment(1, "Comment 1.3")
+            .commentVisible(1, 1, eq(false))
+            .commentVisible(1, 2, eq(true))
+            .commentVisible(1, 3, eq(true))
+            .expandStatus(1)
+            .commentVisible(1, 1, eq(true))
+            .commentVisible(1, 2, eq(true))
+            .commentVisible(1, 3, eq(true))
+            .collapseStatus(1)
+            .commentVisible(1, 1, eq(false))
+            .commentVisible(1, 2, eq(true))
+            .commentVisible(1, 3, eq(true))
         .end();
     },
 
@@ -82,15 +104,15 @@ buster.testCase("Friends#Unhosted", {
                .loginNewUser()
                .selectFriendsInMenu()
                 .pause(500)
-               .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
+               .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
                .addFriend(username)
-               .friend(1, assEq(username))
+               .friend(1, eq(username))
                .addFriend(username)
-               .errorMessage(assEq("Cannot add the same user twice"))
+               .errorMessage(eq("Cannot add the same user twice"))
                .removeFriend(1)
-               .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
+               .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
                .refresh()
-               .noFriendsMessage(assEq(NO_FRIENDS_MESSAGE))
+               .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
            .end();
         });
         
@@ -104,7 +126,7 @@ buster.testCase("Friends#Unhosted", {
         var b1 = createRobot(waitForUserAddingStatus.resolve)
             .loginNewUser()
             .setStatus("The message of the added")
-            .statusUpdate(1, assEq("The message of the added"))
+            .statusUpdate(1, eq("The message of the added"))
             .logout()
         .end();
         
@@ -115,11 +137,11 @@ buster.testCase("Friends#Unhosted", {
                     .pause(500)
                     .addFriend(user.username)
                     .selectStatusesInMenu()
-                    .statusUpdate(1, assEq("The message of the added"))
-                    .statusGetUsername(1, assEq(user.username))
+                    .statusUpdate(1, eq("The message of the added"))
+                    .statusGetUsername(1, eq(user.username))
                     .setStatus("The message of the adder")
-                    .statusUpdate(1, assEq("The message of the adder"))
-                    .statusUpdate(2, assEq("The message of the added"))
+                    .statusUpdate(1, eq("The message of the adder"))
+                    .statusUpdate(2, eq("The message of the added"))
                 .end();
             });
         });
@@ -131,7 +153,7 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done).loginNewUser()
             .setStatus("Hello, #unhosted world!")
             .refresh()
-            .statusUpdate(1, assEq("Hello, #unhosted world!"))
+            .statusUpdate(1, eq("Hello, #unhosted world!"))
         .end();
     },
 
@@ -152,11 +174,11 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done).loginNewUser()
             .setStatus("First status")
             .setStatus("Second status")
-            .statusUpdate(1, assEq("Second status"))
-            .statusUpdate(2, assEq("First status"))
+            .statusUpdate(1, eq("Second status"))
+            .statusUpdate(2, eq("First status"))
             .addComment(2, "Comment that puts status on top!")
             .refreshStatuses()
-            .statusUpdate(1, assEq("First status"))
+            .statusUpdate(1, eq("First status"))
         .end();               
     },
 

@@ -284,15 +284,35 @@
         fu.statusTimeStamp = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
+
+        fu.collapseStatus = function(nr) {
+            return click('#status-nr-' + nr + ' .do-collapse-status');
+        };
+    
+        fu.expandStatus = function(nr) {
+            return click('#status-nr-' + nr + ' .do-expand-status');
+        };
     
         fu.addComment = function(statusNr, comment) {
-            return setAndClick('#status-nr-' + statusNr + ' .comment', comment, '#status-nr-' + statusNr + ' .do-comment');
+            return setAndClick('#status-nr-' + statusNr + ' textarea', comment, '#status-nr-' + statusNr + ' .do-comment');
         };
     
         fu.comment = function(statusNr, commentNr, text_cb) {
             return text('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', text_cb);
         };
     
+        fu.collapseComment = function(statusNr, commentNr) {
+            return click('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .do-collapse-comment');
+        };
+
+        fu.expandComment = function(statusNr, commentNr) {
+            return click('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .do-expand-comment');
+        };
+        
+        fu.commentVisible = function(statusNr, commentNr, visible_cb) {
+            return isVisible('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', visible_cb);
+        };
+        
         fu.selectFriendsInMenu = function() {
             var r = click("#menu-myfriends");
             return r;
