@@ -65,25 +65,25 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
 
     function StatusUpdate(suData) {
+      var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
       var su = this;
       su.status = suData.status;
       su.timestamp = suData.timestamp;
+      su.username = suData.username;
+      su.inReplyTo = suData.inReplyTo;
+
       su.collapsed = ko.observable(false);
-      var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
+      su.comment = ko.observable("");
+
+      su.id = ko.computed(function() {
+          return su.timestamp + ":" + su.username;
+        });
+        
+      
       su.collapse = function() {
-          if(!su.inReplyTo) {
-              _.each(
-                      _.initial(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), 
-                      function(item) {item.collapse();});
-              _.each(
-                      _.last(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), 
-                      function(item) {item.expand();});
-          }
           su.collapsed(true);
       };
       su.expand = function() {
-          _.each(su.comments(), 
-              function(item) {item.expand();});
           su.collapsed(false);
       };
       
@@ -94,20 +94,30 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 :
                 time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
       });
-      su.username = suData.username;
-      su.inReplyTo = suData.inReplyTo;
-      su.comment = ko.observable("");
           
-      su.id = ko.computed(function() {
-        return su.timestamp + ":" + su.username;
-      });
-      
       su.comments = ko.computed(function() {
         var res = _.filter(self.allStatuses(), function(item) {
           return item.inReplyTo == su.id();
         });
         return res;
       });
+      
+      var handleCollapse = function() {
+          if(su.collapsed()) {
+              _.each(
+                      _.initial(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), 
+                      function(item) {item.collapse();});
+              _.each(
+                      _.last(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), 
+                      function(item) {item.expand();});
+          } else {
+              _.each(su.comments(), 
+                      function(item) {item.expand();});
+          }
+      };
+      
+      su.comments.subscribe(handleCollapse);
+      su.collapsed.subscribe(handleCollapse);
       
       su.doComment = function() {
           fuapi.addReply(su.comment(), su.id(), self.username()).
@@ -142,8 +152,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     console.log(notLoggedInMsg);
                     self.selectedTab("welcome");
                     self.loggedIn(false);
+                }).then(function() {
+                    setTimeout(function() {
+                        _.each(self.allRootStatuses(), function(item) {
+                            item.collapse();});
+                    },1000);
                 });
-            
+      
     };
 
     
@@ -167,12 +182,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             
             fuapi.fetchStatus().then(function(value) {
                 addStatusUpdates(value);
-                setTimeout(function() {;
-                console.log("Timeout: ", self.allRootStatuses());
-                _.each(self.allRootStatuses(), function(item) {
-                    console.log("Collapsing", item);
-                    item.collapse();});
-            },1000);
             }, logWarning);
         }
     };

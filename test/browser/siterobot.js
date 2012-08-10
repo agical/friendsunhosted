@@ -294,7 +294,7 @@
         };
     
         fu.addComment = function(statusNr, comment) {
-            return setAndClick('#status-nr-' + statusNr + ' .comment', comment, '#status-nr-' + statusNr + ' .do-comment');
+            return setAndClick('#status-nr-' + statusNr + ' textarea', comment, '#status-nr-' + statusNr + ' .do-comment');
         };
     
         fu.comment = function(statusNr, commentNr, text_cb) {

@@ -364,7 +364,7 @@ textarea {
 }
 
 .status-update-timestamp {
-  font: 100% "Arial", sans-serif; 
+  font: 70% "Arial", sans-serif; 
   float: right;
   padding: 5px;
   padding-left: 10px;
@@ -372,7 +372,7 @@ textarea {
 }
 
 .comment-update-timestamp {
-  font: 100% "Arial", sans-serif; 
+  font: 70% "Arial", sans-serif; 
   float: right;
   padding: 5px;
   padding-left: 10px;

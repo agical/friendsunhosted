@@ -189,8 +189,8 @@
 							class="status-update" data-bind="text: status"></span>
 					</div>
 					<div class="comments">
-            <span class="do-collapse-status" data-bind="visible: !collapsed(), click:collapse">Hide old comments</span>
-            <span class="do-expand-status" data-bind="visible: collapsed(), click:expand">View all <span data-bind="text: comments().length"></span> comments</span>
+            <span class="do-collapse-status" data-bind="visible: !collapsed()&&comments().length>2, click:collapse">Hide old comments</span>
+            <span class="do-expand-status" data-bind="visible: collapsed()&&comments().length>2, click:expand">View all <span data-bind="text: comments().length"></span> comments</span>
 						<!-- ko foreach: comments -->
 						<div class="comment"
 							data-bind="visible: !collapsed(), attr: {id: 'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
