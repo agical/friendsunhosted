@@ -364,19 +364,23 @@ textarea {
 }
 
 .status-update-timestamp {
-  font: 60% "Arial", sans-serif; 
+  font: 100% "Arial", sans-serif; 
   float: right;
   padding: 5px;
+  padding-left: 10px;
+  font-style: italic;
 }
 
 .comment-update-timestamp {
-  font: 60% "Arial", sans-serif; 
+  font: 100% "Arial", sans-serif; 
   float: right;
   padding: 5px;
+  padding-left: 10px;
+  font-style: italic;
 }
 
 .do-collapse-status, .do-expand-status {
-  font: 60% "Arial", sans-serif; 
+  font: 100% "Arial", sans-serif; 
   float: right;
   padding: 0px;
 }

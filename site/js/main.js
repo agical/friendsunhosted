@@ -69,12 +69,24 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.status = suData.status;
       su.timestamp = suData.timestamp;
       su.collapsed = ko.observable(false);
+      var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
       su.collapse = function() {
+          if(!su.inReplyTo) {
+              _.each(
+                      _.initial(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), 
+                      function(item) {item.collapse();});
+              _.each(
+                      _.last(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), 
+                      function(item) {item.expand();});
+          }
           su.collapsed(true);
       };
       su.expand = function() {
+          _.each(su.comments(), 
+              function(item) {item.expand();});
           su.collapsed(false);
       };
+      
       su.relativeTimestamp = ko.computed(function() {
         var time = new Date(su.timestamp);
         return time.toLocaleDateString() == new Date().toLocaleDateString() ?
@@ -119,19 +131,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     }
     
     function init() {
-        fuapi.init()
+        return fuapi.init()
             .then(function(localUsername) {
                     self.username(localUsername);
                     self.loggedIn(true);
 
                     setPageFromUrl();
                     self.refresh();
-                    
                 }, function(notLoggedInMsg) {
                     console.log(notLoggedInMsg);
                     self.selectedTab("welcome");
                     self.loggedIn(false);
                 });
+            
     };
 
     
@@ -151,10 +163,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         if(self.loggedIn()) {
             fuapi.fetchFriends().then(function(value) {
                 self.allFriends(value);
-            }, logWarning);
+            }, logWarning),
             
             fuapi.fetchStatus().then(function(value) {
                 addStatusUpdates(value);
+                setTimeout(function() {;
+                console.log("Timeout: ", self.allRootStatuses());
+                _.each(self.allRootStatuses(), function(item) {
+                    console.log("Collapsing", item);
+                    item.collapse();});
+            },1000);
             }, logWarning);
         }
     };
@@ -242,6 +260,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     setInterval( self.refresh, 15000);
       
     init();
+    
   };
   
     $(function(){

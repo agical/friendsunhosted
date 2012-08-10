@@ -81,6 +81,8 @@ buster.testCase("Friends#Unhosted", {
             .commentVisible(1, 1, eq(true))
             .collapseStatus(1)
             .commentVisible(1, 1, eq(false))
+            .expandStatus(1)
+            .commentVisible(1, 1, eq(true))
         .end();
     },
 
