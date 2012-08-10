@@ -24,7 +24,7 @@ var assertVisible = function() {
 };
 
 buster.testCase("Friends#Unhosted", {
-    "//- has a title and info on load": function (done) {
+    "- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createRobot(done)   
@@ -34,7 +34,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- can login a user": function (done) {
+    "- can login a user": function (done) {
         this.timeout = 25000;
             
         createRobot(done)  
@@ -45,7 +45,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- can let user add status updates": function (done) {
+    "- can let user add status updates": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -61,7 +61,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can comment on status updates": function (done) {
+    "- can comment on status updates": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -78,11 +78,8 @@ buster.testCase("Friends#Unhosted", {
             .loginNewUser()
             .setStatus("Status update 1")
             .addComment(1, "Comment 1.1")
-            .pause(2000)
             .addComment(1, "Comment 1.2")
-            .pause(2000)
             .addComment(1, "Comment 1.3")
-            .pause(2000)
             .commentVisible(1, 1, eq(false))
             .commentVisible(1, 2, eq(true))
             .commentVisible(1, 3, eq(true))
@@ -98,7 +95,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "//- can let user add, list and remove friends": function (done) {
+    "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -121,7 +118,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "//- can let user see friends messages": function (done) {
+    "- can let user see friends messages": function (done) {
         this.timeout = 25000;
 
         var waitForUserAddingStatus = when.defer();
@@ -150,7 +147,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "//- keeps login status on refresh": function (done) {
+    "- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -160,7 +157,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can logout user": function (done) {
+    "- can logout user": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -171,7 +168,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- shows latest activity on top": function (done) {
+    "- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         createRobot(done).loginNewUser()
