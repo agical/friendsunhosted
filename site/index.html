@@ -181,15 +181,19 @@
 					data-bind="attr: {id: 'status-nr-'+($index()+1)}">
 					<div class="status-details">
 						<span class="status-update-username storage-id"
-							data-bind="text: username"></span> <span
+							data-bind="text: username"></span> 
+						<span
 							class="status-update-timestamp"
-							data-bind="text: relativeTimestamp"></span> <span
+							data-bind="text: relativeTimestamp"></span> 
+						<span
 							class="status-update" data-bind="text: status"></span>
 					</div>
 					<div class="comments">
+            <span class="do-collapse-status" data-bind="visible: !collapsed()&&comments().length>2, click:collapse">Hide old comments</span>
+            <span class="do-expand-status" data-bind="visible: collapsed()&&comments().length>2, click:expand">View all <span data-bind="text: comments().length"></span> comments</span>
 						<!-- ko foreach: comments -->
 						<div class="comment"
-							data-bind="attr: {id: 'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+							data-bind="visible: !collapsed(), attr: {id: 'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
 							<span class="comment-update-username storage-id"
 								data-bind="text: username"></span> <span
 								class="comment-update-timestamp"
