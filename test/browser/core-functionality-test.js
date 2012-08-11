@@ -122,6 +122,11 @@ buster.testCase("Friends#Unhosted", {
             .setStatus("http://dn.se")
             .pause(500)
             .pageSource(match('<a href="http://dn.se" target="_blank">http://dn.se</a>'))
+
+            .setStatus("\nHandles newlines\n\nin a\n\n\ngood way")
+            .pause(500)
+            .pageSource(match(/<br\/?>Handles newlines<br\/?><br\/?>in a<br\/?><br\/?><br\/?>good way/gm))
+    
         .end();
     },
     
