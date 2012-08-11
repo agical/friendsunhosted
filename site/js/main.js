@@ -66,8 +66,23 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     function StatusUpdate(suData) {
       var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
+      var EMAIL_REGEX =/((([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))/gm; 
+      var URL_REGEX = /(\(?\b(http|https|ftp|ssh|sftp):\/\/[-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])/gm;
+      var NEWLINE_REGEX = /\n/gm;
+      var GT_REGEX = />/gm;
+      var LT_REGEX = /</gm;
       var su = this;
-      su.status = suData.status;
+      function replaceEmailsWithLinks(text) {
+          return text
+                  .replace(LT_REGEX, '&lt;')
+                  .replace(GT_REGEX, '&gt;')
+                  .replace(NEWLINE_REGEX, '<br/>')
+                  .replace(EMAIL_REGEX, '<a href="mailto:$1" target="_blank">$1</a>')
+                  .replace(URL_REGEX,'<a href="$1" target="_blank">$1</a>');
+      }
+//      su.status = replaceEmailsWithLinks(_.escape(suData.status).replace(/\n/gm, '<br/>'));
+      su.status = replaceEmailsWithLinks(suData.status);
+      
       su.timestamp = suData.timestamp;
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
