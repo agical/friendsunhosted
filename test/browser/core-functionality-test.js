@@ -111,6 +111,9 @@ buster.testCase("Friends#Unhosted", {
             .pageSource(match('<a href="mailto:daniel@agical.com" target="_blank">daniel@agical.com</a>'))
             .setStatus("<dangerous_script/>")
             .pageSource(match('&lt;dangerous_script/&gt;'))
+            .addComment(1, "<dangerous/>")
+            .pause(1000)
+            .pageSource(match('&lt;dangerous/&gt;'))
         .end();
     },
     
