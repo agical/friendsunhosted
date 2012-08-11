@@ -186,7 +186,7 @@
 							class="status-update-timestamp"
 							data-bind="text: relativeTimestamp"></span> 
 						<span
-							class="status-update" data-bind="text: status"></span>
+							class="status-update" data-bind="html: status"></span>
 					</div>
 					<div class="comments">
             <span class="do-collapse-status" data-bind="visible: !collapsed()&&comments().length>2, click:collapse">Hide old comments</span>
@@ -198,7 +198,7 @@
 								data-bind="text: username"></span> <span
 								class="comment-update-timestamp"
 								data-bind="text: relativeTimestamp"></span> <span
-								class="comment-update" data-bind="text: status"></span>
+								class="comment-update" data-bind="html: status"></span>
 						</div>
 						<!-- /ko -->
 						<div class="comment-form">
