@@ -113,7 +113,20 @@
     
             return fu;
         };
-        
+
+        var source = function(cb) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                fu.b.getSource(function(v) {
+                            cb(v);
+                            d.resolve();
+                    });
+            }, onError);
+    
+            return fu;
+        };
+
         var userAndText = function(css, user_text_cb) {
             var last = defPeek();
             var d = defPush();
@@ -271,6 +284,10 @@
         
         fu.statusUpdate = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update', text_cb);
+        };
+        
+        fu.pageSource = function(text_cb) {
+            return source(text_cb);
         };
     
         fu.statusUsername = function(nr, userFn_text_cb) {

@@ -66,8 +66,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     function StatusUpdate(suData) {
       var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
+      var EMAIL_REGEX =/((([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))/gm; 
       var su = this;
-      su.status = suData.status;
+      function replaceEmailsWithLinks(text) {
+          return text.replace(
+                  EMAIL_REGEX,
+                  '<a href="mailto:$1" target="_blank">$1</a>');
+      }
+//      su.status = replaceEmailsWithLinks(_.escape(suData.status).replace(/\n/gm, '<br/>'));
+      su.status = replaceEmailsWithLinks(suData.status);
+      
       su.timestamp = suData.timestamp;
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
