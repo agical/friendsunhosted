@@ -74,7 +74,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                   '<a href="mailto:$1" target="_blank">$1</a>');
       }
 //      su.status = replaceEmailsWithLinks(_.escape(suData.status).replace(/\n/gm, '<br/>'));
-      su.status = replaceEmailsWithLinks(suData.status);
+      su.status = replaceEmailsWithLinks(_.escape(suData.status));
       
       su.timestamp = suData.timestamp;
       su.username = suData.username;
