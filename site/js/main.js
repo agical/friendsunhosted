@@ -216,7 +216,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         
     function Friend(friendData) {
         var friend = friendData;
-        friend.allFriends = ko.observableArray([{username:'conny@localhost'}, {username:'tobbe@5apps.com'}]);
+        friend.allFriends = ko.observableArray([]);
+        friend.updateFriends = function() {
+            fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
+                friend.allFriends(_.map(data,Friend));
+            });
+        }
         return friend;
     };
     
@@ -225,7 +230,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
 
     var onFriendAdded = function(friendData) {
-        self.allFriends.push(Friend(friendData));
+        var friend = Friend(friendData);
+        friend.updateFriends();
+        self.allFriends.push(friend);
         self.addFriendsUsername("");
     };
 
