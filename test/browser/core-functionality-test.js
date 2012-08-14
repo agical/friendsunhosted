@@ -25,6 +25,12 @@ var match = function(expected) {
     })(expected);
 };
 
+var isTrue = function(fn) {
+    return function(actual) {
+        assert.isTrue(fn(actual));
+    };
+};
+
 var assertVisible = function() {
     return function(b) {
                 assert(b.isVisible(css));
@@ -109,12 +115,12 @@ buster.testCase("Friends#Unhosted", {
             .loginNewUser()
             .setStatus("daniel@agical.com http://dn.se https://github.com ftp://sunet.se ssh://server.dom sftp://server.dom")
             .pause(500)
-            .pageSource(match('<a href="mailto:daniel@agical.com" target="_blank">daniel@agical.com</a>'))
-            .pageSource(match('<a href="http://dn.se" target="_blank">http://dn.se</a>'))
-            .pageSource(match('<a href="https://github.com" target="_blank">https://github.com</a>'))
-            .pageSource(match('<a href="ftp://sunet.se" target="_blank">ftp://sunet.se</a>'))
-            .pageSource(match('<a href="ssh://server.dom" target="_blank">ssh://server.dom</a>'))
-            .pageSource(match('<a href="sftp://server.dom" target="_blank">sftp://server.dom</a>'))
+            .pageSource(match(/<a(| target="_blank") href="mailto:daniel@agical.com"(| target="_blank")>daniel@agical.com<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="http:\/\/dn.se"(| target="_blank")>http:\/\/dn.se<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="https:\/\/github.com"(| target="_blank")>https:\/\/github.com<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="ftp:\/\/sunet.se"(| target="_blank")>ftp:\/\/sunet.se<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="ssh:\/\/server.dom"(| target="_blank")>ssh:\/\/server.dom<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="sftp:\/\/server.dom"(| target="_blank")>sftp:\/\/server.dom<\/a>/))
 
             .setStatus("<dangerous_script/>")
             .pause(500)
@@ -126,7 +132,7 @@ buster.testCase("Friends#Unhosted", {
             
             .setStatus("\nHandles newlines\n\nin a\n\n\ngood way")
             .pause(500)
-            .pageSource(match(/<br\/?>Handles newlines<br\/?><br\/?>in a<br\/?><br\/?><br\/?>good way/gm))
+            .pageSource(match(/<br(| )\/?>Handles newlines<br(| )\/?><br(| )\/?>in a<br(| )\/?><br(| )\/?><br(| )\/?>good way/gm))
     
         .end();
     },
@@ -151,6 +157,53 @@ buster.testCase("Friends#Unhosted", {
                .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
            .end();
         });
+        
+    },
+
+    "- user can see friends of friends and add them": function (done) {
+        this.timeout = 25000;
+
+        function createFriendWithFriend() {
+            var friend = when.defer();
+            var friendsFriend = when.defer();
+            var allDone = when.defer();
+            createTestUser().then(function(friendObject) {
+                console.log(friendObject);
+
+                friendsFriend.resolve(friendObject.username);
+                createRobot(allDone.resolve)
+                    .loginNewUser()
+                    .loggedInUser(function(userWithFriendUsername) {
+                        console.log(userWithFriendUsername);
+                        friend.resolve(userWithFriendUsername.username);
+                        return match(/.*/);
+                    })
+                   .selectFriendsInMenu()
+                   .addFriend(friendObject.username)
+                .end();
+            },function(err){friend.reject(err);friendsFriend.reject(err);});
+            
+            return [friend.promise, friendsFriend.promise, allDone.promise];
+        }
+        
+        when.all(createFriendWithFriend(),
+            function(users) {
+                console.log(users);
+                var friend = users[0];
+                var friendsFriend = users[1];
+                createRobot(done)
+                   .loginNewUser()
+                   .selectFriendsInMenu()
+                   .addFriend(friend)
+                   .friend(1, eq(friend))
+                   .friendsFriend(1, 1, eq(friendsFriend))
+                   .refresh()
+                   .friend(1, eq(friend))
+                   .friendsFriend(1, 1, eq(friendsFriend))
+                   .addFriendsFriendDirectly(1,1)
+                   .friend(2, eq(friendsFriend))
+               .end();
+            },eq(""));
         
     },
 
