@@ -230,6 +230,9 @@
 					<span class="friend storage-id" data-bind="text: username"></span>
 					<a href="#" class="remove-friend"
 						data-bind="click: $parent.removeFriend">Remove</a>
+          <!-- ko foreach: allFriends -->
+		  		  <span  data-bind="text: username, attr: {id:'friend-of-'+($parentContext.$index()+1) + '-nr-' + ($index()+1)}"></span>
+          <!-- /ko -->
 				</div>
 				<!-- /ko -->
 				<!-- ko if: allFriends().length==0 -->

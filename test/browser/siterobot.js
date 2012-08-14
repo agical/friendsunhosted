@@ -23,7 +23,7 @@
     }
     
     function createTestBrowser(done) {
-      var client = createChromeDriver();
+      var client = createFirefoxDriver();
     
       var endAndDone =  function(error) {
                           console.log("Exiting browsers");
@@ -278,6 +278,10 @@
             return userAndText('#welcome-message', userFn_message_cb);
         };
         
+        fu.loggedInUser = function(user_cb) {
+            return userAndText('#username', user_cb);
+        }
+        
         fu.setStatus = function(status) {
             return setAndClick("#status-update", status, "#do-update-status");
         };
@@ -350,6 +354,10 @@
         
         fu.friend = function(nr, text_cb) {
             return text("#friends :first-child .friend", text_cb);
+        };
+        
+        fu.friendsFriend = function(friend, friendsFriendNr, text_cb) {
+            return text("#friends #friend-of-" + friend + "-nr-" + friendsFriendNr, text_cb);            
         };
         
         fu.removeFriend = function(nr) {

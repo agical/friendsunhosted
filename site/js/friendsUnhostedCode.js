@@ -73,6 +73,14 @@ define([], function() {
             return def.promise;
         };
         
+        fuapi.fetchFriendsOfFriend = function(friend) {
+            var def = when.defer();
+            rem.getPublicData(friend, FRIENDS_KEY).then(
+                    function(data) {def.resolve(data||[]);},
+                    def.reject);
+            return def.promise;
+        };
+        
         fuapi.fetchStatus = function() {
             var def = when.defer();
             rem.fetchUserData(STATUS_KEY_V3).then(

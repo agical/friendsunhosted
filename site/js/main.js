@@ -188,10 +188,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         });
     };
   
+    
     self.refresh = function() {
         if(self.loggedIn()) {
             fuapi.fetchFriends().then(function(value) {
-                self.allFriends(value);
+                self.allFriends(_.map(value, Friend));
             }, logWarning),
             
             fuapi.fetchStatus().then(function(value) {
@@ -213,12 +214,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         }, 4000);
     };
         
+    function Friend(friendData) {
+        var friend = friendData;
+        friend.allFriends = ko.observableArray([{username:'conny@localhost'}, {username:'tobbe@5apps.com'}]);
+        return friend;
+    };
+    
     self.addFriend = function() {
         fuapi.addFriend(self.addFriendsUsername()).then(onFriendAdded, showError);
     };
 
     var onFriendAdded = function(friendData) {
-        self.allFriends.push(friendData);
+        self.allFriends.push(Friend(friendData));
         self.addFriendsUsername("");
     };
 
