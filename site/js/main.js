@@ -192,7 +192,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.refresh = function() {
         if(self.loggedIn()) {
             fuapi.fetchFriends().then(function(value) {
-                self.allFriends(_.map(value, Friend));
+                self.allFriends(_.map(value, function(friend){
+                    var f = Friend(friend);
+                    f.updateFriends();
+                    return f;
+                }));
             }, logWarning),
             
             fuapi.fetchStatus().then(function(value) {
