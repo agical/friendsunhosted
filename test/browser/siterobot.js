@@ -353,15 +353,19 @@
         };
         
         fu.friend = function(nr, text_cb) {
-            return text("#friends :first-child .friend", text_cb);
+            return text("#friend-" + nr + " .friend", text_cb);
         };
         
-        fu.friendsFriend = function(friend, friendsFriendNr, text_cb) {
-            return text("#friends #friend-of-" + friend + "-nr-" + friendsFriendNr, text_cb);            
+        fu.friendsFriend = function(friendNr, friendsFriendNr, text_cb) {
+            return text("#friend-of-" + friendNr + "-nr-" + friendsFriendNr + " .storage-id", text_cb);            
+        };
+        
+        fu.addFriendsFriendDirectly = function(friendNr, friendsFriendNr) {
+            return click("#friend-of-" + friendNr + "-nr-" + friendsFriendNr + " .add-friends-friend");
         };
         
         fu.removeFriend = function(nr) {
-            return click("#friends :first-child .remove-friend");
+            return click("#friend-" + nr + " .remove-friend");
         };
         
         fu.errorMessage = function(text_cb) {

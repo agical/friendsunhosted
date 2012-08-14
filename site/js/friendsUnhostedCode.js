@@ -50,9 +50,9 @@ define([], function() {
             var afterRemoving = when.defer();
             
             rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-                value = value || [];
-                if(value.pop(friendToRemove)) {
-                    rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+                var updatedArray = _.reject(value, function(item){return item.username===friendToRemove.username;}) || [];
+                if(value.length !== updatedArray.length) {
+                    rem.putUserData(FRIENDS_KEY, updatedArray).then(function(keyValCat) {
                         afterRemoving.resolve(friendToRemove);
                     }, function(err) {
                         afterRemoving.reject("Could not remove friend: " + err);

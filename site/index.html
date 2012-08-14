@@ -221,18 +221,21 @@
 				<input id="add-friends-username"
 					placeholder="friendsusername@storagelocation.com"
 					data-bind="value: addFriendsUsername" />
-				<button id="do-add-friend" data-bind="click: addFriend">Add!</button>
+				<button id="do-add-friend" data-bind="click: function(){$root.addFriend($root.addFriendsUsername());}">Add!</button>
 			</div>
 
 			<div id="friends" class="logged-in">
 				<!-- ko foreach: allFriends -->
-				<div class="friend-details">
+				<div class="friend-details" data-bind="attr: {id:'friend-' + ($index()+1)}">
 					<span class="friend storage-id" data-bind="text: username"></span>
 					<a href="#" class="remove-friend"
 						data-bind="click: $parent.removeFriend">Remove</a>
-          <!-- ko foreach: allFriends -->
             <br/>
-		  		  <span  data-bind="text: username, attr: {id:'friend-of-'+($parentContext.$index()+1) + '-nr-' + ($index()+1)}"></span>
+          <!-- ko foreach: allFriends -->
+            <div class="friends-friend" data-bind="attr: {id:'friend-of-'+($parentContext.$index()+1) + '-nr-' + ($index()+1)}">
+			  		  ---<span class="storage-id" data-bind="text: username"></span> 
+			  		  <a href="#" class="add-friends-friend" data-bind="click:function() {$root.addFriend(username);}">Add</a>
+		  		  </div>
           <!-- /ko -->
 				</div>
 				<!-- /ko -->

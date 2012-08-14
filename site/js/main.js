@@ -161,6 +161,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.loggedIn(true);
 
                     setPageFromUrl();
+                    self.refreshFriends();
                     self.refresh();
                 }, function(notLoggedInMsg) {
                     console.log(notLoggedInMsg);
@@ -188,8 +189,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         });
     };
   
-    
-    self.refresh = function() {
+    self.refreshFriends = function() {
         if(self.loggedIn()) {
             fuapi.fetchFriends().then(function(fetchedFriends) {
                 var newFriends = _.reject(fetchedFriends, 
@@ -202,8 +202,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 _.each(newFriends, function(friend){
                     self.allFriends.push(Friend(friend).updateFriends());
                 });
-            }, logWarning),
-            
+            }, logWarning);
+        }        
+    };
+    
+    self.refresh = function() {
+        if(self.loggedIn()) {
             fuapi.fetchStatus().then(function(value) {
                 addStatusUpdates(value);
             }, logWarning);
@@ -235,8 +239,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         return friend;
     };
     
-    self.addFriend = function() {
-        fuapi.addFriend(self.addFriendsUsername()).then(onFriendAdded, showError);
+    self.addFriend = function(username) {
+        fuapi.addFriend(username).then(onFriendAdded, showError);
     };
 
     var onFriendAdded = function(friendData) {
@@ -247,7 +251,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
 
     self.removeFriend = function(friendToRemove) {
-        fuapi.removeFriend(friendToRemove).then(onFriendRemoved, showError);
+        fuapi.removeFriend({username:friendToRemove.username, timestamp:friendToRemove.timestamp})
+            .then(function(){onFriendRemoved(friendToRemove);}, showError);
     };
 
     var onFriendRemoved = function(friendData) {
@@ -305,6 +310,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     
 
     setInterval( self.refresh, 15000);
+    setInterval( self.refreshFriends, 600000);
       
     init();
     

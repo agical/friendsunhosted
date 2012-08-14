@@ -160,7 +160,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "- user can see friends of friends": function (done) {
+    "- user can see friends of friends and add them": function (done) {
         this.timeout = 25000;
 
         function createFriendWithFriend() {
@@ -200,6 +200,8 @@ buster.testCase("Friends#Unhosted", {
                    .refresh()
                    .friend(1, eq(friend))
                    .friendsFriend(1, 1, eq(friendsFriend))
+                   .addFriendsFriendDirectly(1,1)
+                   .friend(2, eq(friendsFriend))
                .end();
             },eq(""));
         
