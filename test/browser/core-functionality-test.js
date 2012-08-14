@@ -38,7 +38,7 @@ var assertVisible = function() {
 };
 
 buster.testCase("Friends#Unhosted", {
-    "//- has a title and info on load": function (done) {
+    "- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createRobot(done)   
@@ -48,7 +48,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- can login a user": function (done) {
+    "- can login a user": function (done) {
         this.timeout = 25000;
             
         createRobot(done)  
@@ -59,7 +59,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- can let user add status updates": function (done) {
+    "- can let user add status updates": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -75,7 +75,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can comment on status updates": function (done) {
+    "- can comment on status updates": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -86,7 +86,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can collapse and expand conversations": function (done) {
+    "- can collapse and expand conversations": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -108,19 +108,19 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- emails and links are clickables": function (done) {
+    "- emails and links are clickables": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
             .loginNewUser()
             .setStatus("daniel@agical.com http://dn.se https://github.com ftp://sunet.se ssh://server.dom sftp://server.dom")
             .pause(500)
-            .pageSource(match('<a href="mailto:daniel@agical.com" target="_blank">daniel@agical.com</a>'))
-            .pageSource(match('<a href="http://dn.se" target="_blank">http://dn.se</a>'))
-            .pageSource(match('<a href="https://github.com" target="_blank">https://github.com</a>'))
-            .pageSource(match('<a href="ftp://sunet.se" target="_blank">ftp://sunet.se</a>'))
-            .pageSource(match('<a href="ssh://server.dom" target="_blank">ssh://server.dom</a>'))
-            .pageSource(match('<a href="sftp://server.dom" target="_blank">sftp://server.dom</a>'))
+            .pageSource(match(/<a(| target="_blank") href="mailto:daniel@agical.com"(| target="_blank")>daniel@agical.com<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="http:\/\/dn.se"(| target="_blank")>http:\/\/dn.se<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="https:\/\/github.com"(| target="_blank")>https:\/\/github.com<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="ftp:\/\/sunet.se"(| target="_blank")>ftp:\/\/sunet.se<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="ssh:\/\/server.dom"(| target="_blank")>ssh:\/\/server.dom<\/a>/))
+            .pageSource(match(/<a(| target="_blank") href="sftp:\/\/server.dom"(| target="_blank")>sftp:\/\/server.dom<\/a>/))
 
             .setStatus("<dangerous_script/>")
             .pause(500)
@@ -132,12 +132,12 @@ buster.testCase("Friends#Unhosted", {
             
             .setStatus("\nHandles newlines\n\nin a\n\n\ngood way")
             .pause(500)
-            .pageSource(match(/<br\/?>Handles newlines<br\/?><br\/?>in a<br\/?><br\/?><br\/?>good way/gm))
+            .pageSource(match(/<br(| )\/?>Handles newlines<br(| )\/?><br(| )\/?>in a<br(| )\/?><br(| )\/?><br(| )\/?>good way/gm))
     
         .end();
     },
     
-    "//- can let user add, list and remove friends": function (done) {
+    "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -205,7 +205,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "//- can let user see friends messages": function (done) {
+    "- can let user see friends messages": function (done) {
         this.timeout = 25000;
 
         var waitForUserAddingStatus = when.defer();
@@ -234,7 +234,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "//- keeps login status on refresh": function (done) {
+    "- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -244,7 +244,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can logout user": function (done) {
+    "- can logout user": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -255,7 +255,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- shows latest activity on top": function (done) {
+    "- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         createRobot(done).loginNewUser()

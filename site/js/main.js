@@ -191,12 +191,17 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     
     self.refresh = function() {
         if(self.loggedIn()) {
-            fuapi.fetchFriends().then(function(value) {
-                self.allFriends(_.map(value, function(friend){
-                    var f = Friend(friend);
-                    f.updateFriends();
-                    return f;
-                }));
+            fuapi.fetchFriends().then(function(fetchedFriends) {
+                var newFriends = _.reject(fetchedFriends, 
+                        function(potential) {
+                            return _.any(self.allFriends(), 
+                                    function(existing) {
+                                        return existing.username==potential.username;
+                                    });
+                        });
+                _.each(newFriends, function(friend){
+                    self.allFriends.push(Friend(friend).updateFriends());
+                });
             }, logWarning),
             
             fuapi.fetchStatus().then(function(value) {
@@ -225,7 +230,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
                 friend.allFriends(_.map(data,Friend));
             });
-        }
+            return friend;
+        };
         return friend;
     };
     
