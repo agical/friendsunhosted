@@ -72,7 +72,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       var GT_REGEX = />/gm;
       var LT_REGEX = /</gm;
       var su = this;
-      function replaceEmailsWithLinks(text) {
+      function escapeAndFormatStatusText(text) {
           return text
                   .replace(LT_REGEX, '&lt;')
                   .replace(GT_REGEX, '&gt;')
@@ -80,8 +80,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                   .replace(EMAIL_REGEX, '<a href="mailto:$1" target="_blank">$1</a>')
                   .replace(URL_REGEX,'<a href="$1" target="_blank">$1</a>');
       }
-//      su.status = replaceEmailsWithLinks(_.escape(suData.status).replace(/\n/gm, '<br/>'));
-      su.status = replaceEmailsWithLinks(suData.status);
+      su.status = escapeAndFormatStatusText(suData.status);
       
       su.timestamp = suData.timestamp;
       su.username = suData.username;
@@ -162,6 +161,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.loggedIn(true);
 
                     setPageFromUrl();
+                    self.refreshFriends();
                     self.refresh();
                 }, function(notLoggedInMsg) {
                     console.log(notLoggedInMsg);
@@ -189,12 +189,25 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         });
     };
   
+    self.refreshFriends = function() {
+        if(self.loggedIn()) {
+            fuapi.fetchFriends().then(function(fetchedFriends) {
+                var newFriends = _.reject(fetchedFriends, 
+                        function(potential) {
+                            return _.any(self.allFriends(), 
+                                    function(existing) {
+                                        return existing.username==potential.username;
+                                    });
+                        });
+                _.each(newFriends, function(friend){
+                    self.allFriends.push(Friend(friend).updateFriends());
+                });
+            }, logWarning);
+        }        
+    };
+    
     self.refresh = function() {
         if(self.loggedIn()) {
-            fuapi.fetchFriends().then(function(value) {
-                self.allFriends(value);
-            }, logWarning),
-            
             fuapi.fetchStatus().then(function(value) {
                 addStatusUpdates(value);
             }, logWarning);
@@ -214,17 +227,32 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         }, 4000);
     };
         
-    self.addFriend = function() {
-        fuapi.addFriend(self.addFriendsUsername()).then(onFriendAdded, showError);
+    function Friend(friendData) {
+        var friend = friendData;
+        friend.allFriends = ko.observableArray([]);
+        friend.updateFriends = function() {
+            fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
+                friend.allFriends(_.map(data,Friend));
+            });
+            return friend;
+        };
+        return friend;
+    };
+    
+    self.addFriend = function(username) {
+        fuapi.addFriend(username).then(onFriendAdded, showError);
     };
 
     var onFriendAdded = function(friendData) {
-        self.allFriends.push(friendData);
+        var friend = Friend(friendData);
+        friend.updateFriends();
+        self.allFriends.push(friend);
         self.addFriendsUsername("");
     };
 
     self.removeFriend = function(friendToRemove) {
-        fuapi.removeFriend(friendToRemove).then(onFriendRemoved, showError);
+        fuapi.removeFriend({username:friendToRemove.username, timestamp:friendToRemove.timestamp})
+            .then(function(){onFriendRemoved(friendToRemove);}, showError);
     };
 
     var onFriendRemoved = function(friendData) {
@@ -282,6 +310,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     
 
     setInterval( self.refresh, 15000);
+    setInterval( self.refreshFriends, 600000);
       
     init();
     
