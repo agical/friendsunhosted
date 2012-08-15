@@ -27,15 +27,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     var updateFriends = function(newFriendsList) {
         _.each(newFriendsList, function(friendData) {
-            fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
-                addStatusUpdates(parsedData);
-            }, logWarning);
+            self.getUpdatesForFriend(friendData.username);
         });
     };
-      
-    self.allFriends.subscribe(updateFriends);
 
+    self.getUpdatesForFriend = function(username) {
+        return fuapi.fetchStatusForUser(username).then(function(parsedData) {
+            addStatusUpdates(parsedData);
+        }, logWarning);
+    };
+    
     self.refreshFriends = function() {
+        var deferred = when.defer();
         if(self.loggedIn()) {
             fuapi.fetchFriends().then(function(fetchedFriends) {
                 var newFriends = _.reject(fetchedFriends, 
@@ -48,8 +51,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 _.each(newFriends, function(friend){
                     self.allFriends.push(Friend(friend).updateFriends());
                 });
-            }, logWarning);
+                deferred.resolve("Friends refreshed");
+            }, deferred.reject);
+        } else {
+            deferred.reject("Not logged in");
         }        
+        return deferred.promise;
     };
     
     function Friend(friendData) {
@@ -69,9 +76,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
 
     var onFriendAdded = function(friendData) {
-        var friend = Friend(friendData);
-        friend.updateFriends();
-        self.allFriends.push(friend);
+        var newFriend = Friend(friendData);
+        newFriend.updateFriends();
+        self.allFriends.push(newFriend);
+        self.getUpdatesForFriend(newFriend.username);
         self.addFriendsUsername("");
     };
 
@@ -214,8 +222,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.loggedIn(true);
 
                     setPageFromUrl();
-                    self.refreshFriends();
-                    self.refresh();
+                    self.refreshFriends().then(
+                            self.refresh, logWarning);
                 }, function(notLoggedInMsg) {
                     console.log(notLoggedInMsg);
                     self.selectedTab("welcome");
@@ -244,6 +252,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
   
     self.refresh = function() {
         if(self.loggedIn()) {
+            updateFriends(self.allFriends());
             fuapi.fetchStatus().then(function(value) {
                 addStatusUpdates(value);
             }, logWarning);
