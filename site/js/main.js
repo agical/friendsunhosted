@@ -8,8 +8,82 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
   function FriendsViewModel() {
     var self = this;
     
-    self.loggedIn = ko.observable(false);
     self.username = ko.observable("");
+    self.loggedIn = ko.observable(false);
+
+    self.loggedIn.subscribe(function(val) {
+        $('.logged-in')
+            .addClass(val?'visible':'hidden')
+            .removeClass(val?'hidden':'visible');
+        $('.not-logged-in')
+            .addClass(val?'hidden':'visible')
+            .removeClass(val?'visible':'hidden');
+    });
+
+
+    self.addFriendsUsername = ko.observable("");
+    self.allFriends = ko.observableArray([]);
+    
+
+    var updateFriends = function(newFriendsList) {
+        _.each(newFriendsList, function(friendData) {
+            fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
+                addStatusUpdates(parsedData);
+            }, logWarning);
+        });
+    };
+      
+    self.allFriends.subscribe(updateFriends);
+
+    self.refreshFriends = function() {
+        if(self.loggedIn()) {
+            fuapi.fetchFriends().then(function(fetchedFriends) {
+                var newFriends = _.reject(fetchedFriends, 
+                        function(potential) {
+                            return _.any(self.allFriends(), 
+                                    function(existing) {
+                                        return existing.username==potential.username;
+                                    });
+                        });
+                _.each(newFriends, function(friend){
+                    self.allFriends.push(Friend(friend).updateFriends());
+                });
+            }, logWarning);
+        }        
+    };
+    
+    function Friend(friendData) {
+        var friend = friendData;
+        friend.allFriends = ko.observableArray([]);
+        friend.updateFriends = function() {
+            fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
+                friend.allFriends(_.map(data,Friend));
+            });
+            return friend;
+        };
+        return friend;
+    };
+    
+    self.addFriend = function(username) {
+        fuapi.addFriend(username).then(onFriendAdded, showError);
+    };
+
+    var onFriendAdded = function(friendData) {
+        var friend = Friend(friendData);
+        friend.updateFriends();
+        self.allFriends.push(friend);
+        self.addFriendsUsername("");
+    };
+
+    self.removeFriend = function(friendToRemove) {
+        fuapi.removeFriend({username:friendToRemove.username, timestamp:friendToRemove.timestamp})
+            .then(function(){onFriendRemoved(friendToRemove);}, showError);
+    };
+
+    var onFriendRemoved = function(friendData) {
+        self.allFriends.remove(friendData); //don't use this instead of the function 
+    };
+
     
     self.statusUpdate = ko.observable("");    
     self.allStatuses = ko.observableArray([]);
@@ -26,27 +100,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         };
     };
     
-    self.addFriendsUsername = ko.observable("");
-    self.allFriends = ko.observableArray([]);
-    
-    self.loggedIn.subscribe(function(val) {
-        $('.logged-in')
-            .addClass(val?'visible':'hidden')
-            .removeClass(val?'hidden':'visible');
-        $('.not-logged-in')
-            .addClass(val?'hidden':'visible')
-            .removeClass(val?'visible':'hidden');
-    });
-
-    var updateFriends = function(newFriendsList) {
-        _.each(newFriendsList, function(friendData) {
-            fuapi.fetchStatusForUser(friendData.username).then(function(parsedData) {
-                addStatusUpdates(parsedData);
-            }, logWarning);
-        });
-    };
-      
-    self.allFriends.subscribe(updateFriends);
       
     self.selectedTab = ko.observable('');
 
@@ -189,23 +242,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         });
     };
   
-    self.refreshFriends = function() {
-        if(self.loggedIn()) {
-            fuapi.fetchFriends().then(function(fetchedFriends) {
-                var newFriends = _.reject(fetchedFriends, 
-                        function(potential) {
-                            return _.any(self.allFriends(), 
-                                    function(existing) {
-                                        return existing.username==potential.username;
-                                    });
-                        });
-                _.each(newFriends, function(friend){
-                    self.allFriends.push(Friend(friend).updateFriends());
-                });
-            }, logWarning);
-        }        
-    };
-    
     self.refresh = function() {
         if(self.loggedIn()) {
             fuapi.fetchStatus().then(function(value) {
@@ -227,37 +263,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         }, 4000);
     };
         
-    function Friend(friendData) {
-        var friend = friendData;
-        friend.allFriends = ko.observableArray([]);
-        friend.updateFriends = function() {
-            fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
-                friend.allFriends(_.map(data,Friend));
-            });
-            return friend;
-        };
-        return friend;
-    };
-    
-    self.addFriend = function(username) {
-        fuapi.addFriend(username).then(onFriendAdded, showError);
-    };
-
-    var onFriendAdded = function(friendData) {
-        var friend = Friend(friendData);
-        friend.updateFriends();
-        self.allFriends.push(friend);
-        self.addFriendsUsername("");
-    };
-
-    self.removeFriend = function(friendToRemove) {
-        fuapi.removeFriend({username:friendToRemove.username, timestamp:friendToRemove.timestamp})
-            .then(function(){onFriendRemoved(friendToRemove);}, showError);
-    };
-
-    var onFriendRemoved = function(friendData) {
-        self.allFriends.remove(friendData); //don't use this instead of the function 
-    };
   
     function addStatusUpdates(statusUpdatesArray) {
       function statusEquals(s1, s2) {
