@@ -286,22 +286,23 @@ buster.testCase("Friends#Unhosted", {
         var redisClient=require('redis').createClient(6379, 'localhost');
         redisClient.on("error", console.log);
         redisClient.auth('');
-        redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
+        var username = 'genuser1345183165429@localhost';
+        var category = 'public';
+        var key = 'friendsunhosted_status';
+        var value = [{"status":"Hej\nhopp 6","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}];
+        redisClient.set('value:' + username + ':' + category + ':' + key, 
+                JSON.stringify(value),
+                function(err, data) {
             console.log('err:', err);
             console.log('data:', data);
-            var username = 'genuser1345183165429@localhost';
-            var category = 'public';
-            var key = 'friendsunhosted_status';
-            redisClient.set('value:' + username + ':' + category + ':' + key, 
-                    JSON.stringify([{"status":"Hej\nhopp 4","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}]),
-                    function(err, data) {
-                console.log('err:', err);
-                console.log('data:', data);
-                assert(true);
-                done();
-            });
-            
+            assert(true);
+            done();
         });
+
+//        redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
+//            console.log('err:', err);
+//            console.log('data:', data);
+//        });
         
     },
 
