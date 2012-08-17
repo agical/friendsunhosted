@@ -281,7 +281,16 @@ buster.testCase("Friends#Unhosted", {
         var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
-            .always(eq('OK'))
+            .then(function() {
+                createRobot(done)
+                    .loginNewUser()
+                    .selectFriendsInMenu()
+                    .pause(500)
+                    .addFriend(_username)
+                    .selectStatusesInMenu()
+                    .statusUpdate(1, eq("Nr 2"))
+                .end();
+            })
             .always(done);
     },
 
