@@ -48,21 +48,22 @@
     }
     
     function createTestUser() {
-      return createNewUser("genUser" + new Date().getTime(), "1234568");
+      return createNewUser("genUser" + new Date().getTime() + '@localhost', "1234568");
     }
     
     
     function createNewUser(username, password, cb) {
+        var userSplit = username.split('@');
       var options = {
         host: 'localhost',
         port: 80,
-        path: '/create_user/localhost/' +  username + "/" + password
+        path: '/create_user/' + userSplit[1] + '/' +  userSplit[0] + '/' + password
       };
       var deferred = when.defer();
       
       http.get(options, function(res) {
         deferred.resolve(
-          {username: username + "@" + options.host,
+          {username: username,
            password: password });
       })
       .on('error', deferred.reject);
