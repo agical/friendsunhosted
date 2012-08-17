@@ -289,8 +289,11 @@ buster.testCase("Friends#Unhosted", {
         redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
             console.log('err:', err);
             console.log('data:', data);
-            redisClient.set('value:genuser1345183165429@localhost:public:friendsunhosted_status', 
-                    JSON.stringify([{"status":"Hej\nhopp","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}]),
+            var username = 'genuser1345183165429@localhost';
+            var category = 'public';
+            var key = 'friendsunhosted_status';
+            redisClient.set('value:' + username + ':' + category + ':' + key, 
+                    JSON.stringify([{"status":"Hej\nhopp 4","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}]),
                     function(err, data) {
                 console.log('err:', err);
                 console.log('data:', data);
