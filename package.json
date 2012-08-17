@@ -1,0 +1,17 @@
+{
+  "name": "friendsunhosted",
+  "version": "0.0.1",
+  "homepage": "http://friendsunhosted.com",
+  "devDependencies": {
+    "buster-amd": "~0.2.0",
+    "selenium": "~2.20.0",
+    "buster": "~0.6.2",
+    "webdriverjs": "~0.6.9",
+    "soda": "~0.2.5",
+    "when": "~1.4.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/agical/friendsunhosted.git"
+  }
+}
