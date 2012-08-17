@@ -288,18 +288,20 @@ buster.testCase("Friends#Unhosted", {
         var _username = 'genuser1345183165429@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-        var _value = [{"status":"Hej\nhopp 7","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}];
+        var _value = [{"status":"Hej\nhopp 8","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}];
         var set = function(username, category, key, value) {
+            var result = when.defer();
             redisClient.set('value:' + username + ':' + category + ':' + key, 
                     JSON.stringify(value),
                     function(err, data) {
-                console.log('err:', err);
-                console.log('data:', data);
-                assert(true);
-                done();
-            });
+                        console.log('err:', err);
+                        console.log('data:', data);
+                        if(err) {result.reject(err);}
+                        else {result.resolve(data);}
+                    });
+            return result.promise;
         };
-        set(_username, _category, _key, _value);
+        set(_username, _category, _key, _value).always(eq('OK')).always(done);
 
 //        redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
 //            console.log('err:', err);
