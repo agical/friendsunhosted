@@ -295,11 +295,14 @@ buster.testCase("Friends#Unhosted", {
     "- can write to directly to store": function (done) {
         this.timeout = 25000;
 
-        var _username = 'genuser1345183165429@localhost';
+        var _username = 'mongo@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-        var _value = [{"status":"Hej\nhopp 10","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}];
-        store().set(_username, _category, _key, _value).always(eq('OK')).always(done);
+        var _value = [{"status":"Hej\nhopp 10","timestamp":1345183170572,"username":"mongo@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        store()
+            .set(_username, _category, _key, _value)
+            .always(eq('OK'))
+            .always(done);
 
 //        redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
 //            console.log('err:', err);
