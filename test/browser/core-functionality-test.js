@@ -290,8 +290,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq("Nr 2"))
                 .end();
-            })
-            .always(done);
+            });
     },
 
 });
