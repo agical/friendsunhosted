@@ -37,26 +37,6 @@ var assertVisible = function() {
             };
 };
 
-var store = function() {
-    var ret = {};
-    var redisClient=require('redis').createClient(6379, 'localhost');
-    redisClient.on("error", console.log);
-    redisClient.auth('');
-    ret.set = function(username, category, key, value) {
-        var result = when.defer();
-        redisClient.set('value:' + username + ':' + category + ':' + key, 
-                JSON.stringify(value),
-                function(err, data) {
-                    console.log('err:', err);
-                    console.log('data:', data);
-                    if(err) {result.reject(err);}
-                    else {result.resolve(data);}
-                });
-        return result.promise;
-    };
-    
-    return ret;
-};
 
 buster.testCase("Friends#Unhosted", {
     "//- has a title and info on load": function (done) {
@@ -298,17 +278,12 @@ buster.testCase("Friends#Unhosted", {
         var _username = 'mongo@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-        var _value = [{"status":"Hej\nhopp 10","timestamp":1345183170572,"username":"mongo@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
-        store()
-            .set(_username, _category, _key, _value)
+        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        siterobot.store()
+            .setValue(_username, _category, _key, _value)
             .always(eq('OK'))
             .always(done);
 
-//        redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
-//            console.log('err:', err);
-//            console.log('data:', data);
-//        });
-        
     },
 
 })

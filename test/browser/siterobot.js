@@ -71,6 +71,33 @@
       return deferred.promise;
     }
     
+    var store = function() {
+        var ret = {};
+        var redisClient=require('redis').createClient(6379, 'localhost');
+        redisClient.on("error", console.log);
+        redisClient.auth('');
+        
+        ret.setRaw = function(key, value) {
+            var result = when.defer();
+            redisClient.set(key,
+                    JSON.stringify(value),
+                    function(err, data) {
+                        console.log('err:', err);
+                        console.log('data:', data);
+                        if(err) {result.reject(err);}
+                        else {result.resolve(data);}
+                    });
+            return result.promise;
+        };
+
+        ret.setValue = function(username, category, key, value) {
+            return ret.setRaw('value:' + username + ':' + category + ':' + key, value);
+        };
+
+        return ret;
+    };
+
+    
     var createRobot = function(done) {
         var fu = {};
 
@@ -411,5 +438,6 @@
     
     exports.createRobot = createRobot;
     exports.createTestUser = createTestUser;
+    exports.store = store;
 
 })();
