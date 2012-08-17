@@ -283,8 +283,7 @@ buster.testCase("Friends#Unhosted", {
             .setValue(_username, _category, _key, _value)
             .always(eq('OK'))
             .always(done);
-
     },
 
-})
+});
 
