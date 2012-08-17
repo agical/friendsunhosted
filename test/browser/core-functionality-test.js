@@ -273,31 +273,33 @@ buster.testCase("Friends#Unhosted", {
 
     "- can write to directly to store": function (done) {
         this.timeout = 25000;
-//        var store = function() {
-//            var ret = {};
-//            redisClient=require('redis').createClient(6379, 'localhost');
-//            redisClient.on("error", console.log);
-//            redisClient.auth('');
-//            ret.set = function(username)
-//            
-//            return ret;
-//        };
+        var store = function() {
+            var ret = {};
+            var redisClient=require('redis').createClient(6379, 'localhost');
+            redisClient.on("error", console.log);
+            redisClient.auth('');
+            
+            return ret;
+        };
 
         var redisClient=require('redis').createClient(6379, 'localhost');
         redisClient.on("error", console.log);
         redisClient.auth('');
-        var username = 'genuser1345183165429@localhost';
-        var category = 'public';
-        var key = 'friendsunhosted_status';
-        var value = [{"status":"Hej\nhopp 6","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}];
-        redisClient.set('value:' + username + ':' + category + ':' + key, 
-                JSON.stringify(value),
-                function(err, data) {
-            console.log('err:', err);
-            console.log('data:', data);
-            assert(true);
-            done();
-        });
+        var _username = 'genuser1345183165429@localhost';
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+        var _value = [{"status":"Hej\nhopp 7","timestamp":1345183170572,"username":"genUser1345183165429@localhost"}, {"status":"Nr 2","timestamp":1345183170573,"username":"genUser1345183165429@localhost"}];
+        var set = function(username, category, key, value) {
+            redisClient.set('value:' + username + ':' + category + ':' + key, 
+                    JSON.stringify(value),
+                    function(err, data) {
+                console.log('err:', err);
+                console.log('data:', data);
+                assert(true);
+                done();
+            });
+        };
+        set(_username, _category, _key, _value);
 
 //        redisClient.get('tokens:genuser1345183165429@localhost', function(err, data) {
 //            console.log('err:', err);
