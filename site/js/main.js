@@ -311,16 +311,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             self.statusUpdate('');
         }, showError);    
     };
-
-    self.clearAll = function() {
-        fuapi.removeAllFriends().then(function() {
-            self.allFriends([]);
-        }, showError);
-
-        fuapi.removeAllStatuses().then(function() {
-            self.allStatuses([]);
-        }, showError);
-    };
     
 
     setInterval( self.refresh, 15000);
