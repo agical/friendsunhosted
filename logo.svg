@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="logo.svg">
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/img/logo_square.png"
+   inkscape:export-xdpi="120"
+   inkscape:export-ydpi="120">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -26,13 +29,13 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
      inkscape:cx="350.70079"
-     inkscape:cy="703.20786"
+     inkscape:cy="784.02006"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1855"
+     inkscape:window-width="1871"
      inkscape:window-height="1056"
-     inkscape:window-x="65"
+     inkscape:window-x="49"
      inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
@@ -51,6 +54,16 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:#ffffff"
+       id="rect3039"
+       width="180"
+       height="180"
+       x="423.759"
+       y="77.965988"
+       inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/img/logo_square.png"
+       inkscape:export-xdpi="201.73659"
+       inkscape:export-ydpi="201.73659" />
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -140,5 +153,55 @@
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3046" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;text-anchor:start;text-align:start"
+       x="436.08868"
+       y="143.507"
+       id="text2985-4"
+       sodipodi:linespacing="100%"
+       inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/img/logo_square.png"
+       inkscape:export-xdpi="201.73659"
+       inkscape:export-ydpi="201.73659"><tspan
+         sodipodi:role="line"
+         id="tspan2987-9"
+         x="436.08868"
+         y="143.507"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:start;line-height:100%;text-anchor:start;font-family:Downcome;-inkscape-font-specification:Downcome Medium">Friends</tspan><tspan
+         sodipodi:role="line"
+         x="436.08868"
+         y="183.507"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;text-align:start;line-height:100%;text-anchor:start;font-family:Downcome;-inkscape-font-specification:Downcome Medium"
+         id="tspan3037">#Unhosted</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20.25091362px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Sans"
+       x="550.87836"
+       y="-243.46695"
+       id="text2984-8"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.68237007,0.59594602,-0.72607227,0.83136723,0,0)"
+       inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/img/logo_square.png"
+       inkscape:export-xdpi="201.73659"
+       inkscape:export-ydpi="201.73659"><tspan
+         sodipodi:role="line"
+         id="tspan2986-5"
+         x="550.87836"
+         y="-243.46695"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium">beta</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa"
+       x="448.05743"
+       y="208.40826"
+       id="text3057-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/img/logo_square.png"
+       inkscape:export-xdpi="201.73659"
+       inkscape:export-ydpi="201.73659"><tspan
+         sodipodi:role="line"
+         id="tspan3059-9"
+         x="448.05743"
+         y="208.40826">Own your network!</tspan></text>
   </g>
 </svg>

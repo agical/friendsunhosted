@@ -116,7 +116,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         $('#menu-'+val).addClass('menu-selected');
         $('.page').hide();
         $('#page-'+val).show();
-        window.location.replace(location.protocol + '//' + location.host + "#" + val);
+        window.location.replace(location.protocol + '//' + location.host + location.pathname + '#' + val);
     });
     
     self.selectTab = function(tab) {
@@ -205,12 +205,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     function setPageFromUrl() {
         if(window.location.href.indexOf('#access_token') > 0) {
-            window.location.replace(location.protocol + '//' + location.host + "#status");
+            window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
             self.selectedTab("status");
         } else if(window.location.href.indexOf('#') > 0) {
             self.selectedTab(self.getPageFromLocation());
         } else {
-            window.location.replace(location.protocol + '//' + location.host + "#welcome");
+            window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
             self.selectedTab("welcome");
         }
     }
@@ -310,16 +310,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             addStatusUpdates(updates);
             self.statusUpdate('');
         }, showError);    
-    };
-
-    self.clearAll = function() {
-        fuapi.removeAllFriends().then(function() {
-            self.allFriends([]);
-        }, showError);
-
-        fuapi.removeAllStatuses().then(function() {
-            self.allStatuses([]);
-        }, showError);
     };
     
 

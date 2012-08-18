@@ -25,7 +25,7 @@ define(['underscore', 'remoteStorage', 'when'],
                 } else {
                     localStorage.setItem('username', JSON.stringify(username));
                     localStorage.setItem('userStorageInfo', JSON.stringify(storageInfo));
-                    var redirectUri = location.protocol + '//' + location.host;
+                    var redirectUri = location.protocol + '//' + location.host + location.pathname;
                     
                     var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
                     window.location.replace(oauthPage);

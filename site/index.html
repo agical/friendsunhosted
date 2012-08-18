@@ -49,7 +49,7 @@
       
         <div class="support" id="flattr">
           <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
-            target="_blank"> <img src="/img/flattr-badge-large.png"
+            target="_blank"> <img src="img/flattr-badge-large.png"
             alt="Flattr this" title="Flattr this" border="0" />
           </a>
         </div>
@@ -58,14 +58,14 @@
             target="_blank">
             <input type="hidden" name="cmd" value="_s-xclick" /> <input
               type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> <input
-              type="image" src="/img/btn_donate_SM.gif" border="0" name="submit"
+              type="image" src="img/btn_donate_SM.gif" border="0" name="submit"
               alt="PayPal - The safer, easier way to pay online!" />
           </form>
         </div>
         <div class="support" id="bitcoin">
           <a
             href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
-            target="_blank"> <img src="/img/bitcoin.png"
+            target="_blank"> <img src="img/bitcoin.png"
             alt="BitCoin donation" /> BitCoin
           </a>
         </div>
@@ -77,8 +77,8 @@
       <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: function() { selectTab('welcome') }">Welcome!</a>
       <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
       <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
-      <a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>
-      <a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a>
+      <!--<a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>-->
+      <!--<a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a>-->
       <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: function() { selectTab('support') }">Support</a>
       <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
       <br class="clearboth"/>
@@ -99,15 +99,16 @@
       <p>
 	      FRIENDS#UNHOSTED is developed by the staff at <a href="http://agical.com" target="_blank">Agical</a>, 
 	      a Swedish IT consultancy firm with a passion for building the software community and for open source. 
-	      F#U is open source and released with some rights reserved, under the Creative Commons Attribution-ShareAlike 3.0 license. 
+	      F#Un is open source and released with some rights reserved, under the Creative Commons Attribution-ShareAlike 3.0 license. 
 	      The source is available at our <a target="_blank" href="https://github.com/agical/friendsunhosted">GitHub repository</a>   
 	      Feel free to fork it and help us out.
       </p>
       <p>
-	      F#U (just a little pun intended) came out of the desire to have a social network where the network is owned by the 
-	      users, not by some Mega Corp. The #unhosted technology together with some neat cryptographic solutions (coming
-	      soon) makes this possible.
-      </p>
+	      F#Un came out of the desire to have a social network where the network is owned by the 
+	      users, not by some Mega Corp. The #unhosted technology makes this possible. At the moment, all 
+	      data is public, meaning anyone can read anything you write. We intend to add privacy enhancing 
+	      features using common cryptographic solutions.
+      </p>      
     </div>
 
     <div id="page-support" class="page support full-page-text hidden"  data-bind="visible: selectedTab() == 'support'">
@@ -117,7 +118,7 @@
       </p>
       <p>        
       Flattr: <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
-        target="_blank"> <img src="/img/flattr-badge-large.png"
+        target="_blank"> <img src="img/flattr-badge-large.png"
         alt="Flattr this" title="Flattr this" border="0" />
       </a>
       <br/>
@@ -126,13 +127,13 @@
         <input type="hidden" name="cmd" value="_s-xclick" /> <input
           type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> 
         PayPal: <input
-          type="image" src="/img/btn_donate_SM.gif" border="0" name="submit"
+          type="image" src="img/btn_donate_SM.gif" border="0" name="submit"
           alt="PayPal - The safer, easier way to pay online!" />
       </form>
       <br/>
       BitCoin: <a
         href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
-        target="_blank"> <img src="/img/bitcoin.png"
+        target="_blank"> <img src="img/bitcoin.png"
         alt="BitCoin donation" /> BitCoin
       </a>
       </p>
@@ -254,8 +255,6 @@
 		<div id="page-settings" class="page logged-in hidden"
 			data-bind="visible: loggedIn() && selectedTab()=='settings'">
 			<div>
-				<button id="do-clear-all-updates" data-bind="click: clearAll">Clear
-					all friends and updates!!</button>
 			</div>
       <br class="clearboth"/>
 		</div>
@@ -267,7 +266,7 @@
 
 				<p>
 					FRIENDS#UNHOSTED is an alternative social network for those of us
-					who want to own our social network data. With F#U, your data is not
+					who want to own our social network data. With F#Un, your data is not
 					stored at a central server, but at a place of your choosing using
 					an <a href="http://unhosted.org/" target="top">#unhosted
 						remoteStorage</a>. You can even host the data server on your home
@@ -317,7 +316,7 @@
 				<p>
 					<span class="storage-id">username@storageserver.com</span>
 				</p>
-				<p>You add that address to your F#U friends, and then you can
+				<p>You add that address to your F#Un friends, and then you can
 					see the updates of your friend.</p>
 				<h3>How do I find my friends?</h3>
 				<p>At the moment, there is no central server where you can find
@@ -355,7 +354,7 @@
 				</p>
 
 				<p>
-					F#U uses (as of now in early beta) the <em>public</em> category
+					F#Un uses (as of now in early beta) the <em>public</em> category
 					storage of your unhosted account. This means that anyone can see
 					your updates and your list of friends, in a twitterish style. The
 					plan for the future is to share keys to lock the stuff you only
@@ -384,7 +383,7 @@
 			<div id="license">
 				<a rel="license"
 					href="http://creativecommons.org/licenses/by-sa/3.0/"><img
-					alt="Creative Commons License" src="/img/creativecommons.png" /></a>
+					alt="Creative Commons License" src="img/creativecommons.png" /></a>
 				This work is licensed under a <a rel="license"
 					href="http://creativecommons.org/licenses/by-sa/3.0/">Creative
 					Commons Attribution-ShareAlike 3.0 Unported License</a>.
