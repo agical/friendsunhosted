@@ -23,9 +23,9 @@ Install node: http://nodejs.org/#download
 
 ## Javascript dependencies
 
-Install the javascript dependencies in install_ubuntu.sh. 
-(or verify that they work in other operating systems and add a script for that)
-(there is a trick about installing buster that I don't remember...)
+Install the javascript dependencies via `npm install`
+
+Maybe you still need to `sudo npm install --global buster`
 
 ## Install redis database
 sudo apt-get install redis-server
