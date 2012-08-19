@@ -107,6 +107,9 @@ a {
   float: left;
 }
 
+#paypal input[type=image], #page-support input[type=image] { width:74px; }
+#page-support form { margin:0; }
+
 #menubar {
   float: top;
   clear: both;
@@ -384,3 +387,5 @@ textarea {
   float: right;
   padding: 0px;
 }
+
+.hidden { visibility:visible !important; }
