@@ -27,21 +27,14 @@
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</a>
-			<div class="nav-collapse">
-				<ul id="menubar" class="nav">
-					<li><a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" /></a></li>
-					<li><a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a></li>
-					<li><a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a></li>
-					<!--<li><a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a></li>-->
-					<!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
-					<li><a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a></li>
-				</ul>
-			</div><!--/.nav-collapse -->
+			<a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" /></a>
+			<ul id="menubar" class="nav">
+				<li><a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a></li>
+				<li><a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a></li>
+				<!--<li><a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a></li>-->
+				<!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
+				<li><a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a></li>
+			</ul>
 
 			<div class="login-area">
 				<div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
