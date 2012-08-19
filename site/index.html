@@ -1,7 +1,10 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html;" />
 <title>FRIENDS#UNHOSTED - the #unhosted friends network</title>
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
@@ -20,69 +23,48 @@
 </head>
 
 <body>
-  <div id="loading-screen">
+
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			<div class="nav-collapse">
+				<ul id="menubar" class="nav">
+					<li><a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" /></a></li>
+					<li><a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a></li>
+					<li><a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a></li>
+					<!--<li><a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a></li>-->
+					<!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
+					<li><a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+
+			<div class="login-area">
+				<div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
+					<input type="text" class="span2" placeholder="username@storage.com" id="username" data-bind="value: username"/><button id="do-login" class="btn" data-bind="click: login">Login</button>
+				</div>
+				<div class="logged-in" data-bind="visible: loggedIn()">
+					<span id="welcome-message" >Welcome, <span class="storage-id" data-bind="text: username()"></span>!</span><button id="do-logout" class="btn" data-bind="click: logout">Logout</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="container">
+
+
+<div id="loading-screen">
     Loading...
   </div>
 
   <div id="upgrading-storage-screen">
     Upgrading storage
   </div>
-
-
-	<div id="all">
-		<div id="header" >
-			<div class="logo">
-				<img id="logo-top" src="img/logo.png" />
-			</div>
-      <div class="login-area">
-        <div class="not-logged-in" data-bind="visible: !loggedIn()">
-          <input placeholder="username@storageserver.com" id="username"
-            data-bind="value: username" size="26"/>
-          <button id="do-login" data-bind="click: login">Login</button>
-        </div>
-        <div class="logged-in" data-bind="visible: loggedIn()">
-          <span id="welcome-message" >Welcome, <span class="storage-id" data-bind="text: username()"></span>!</span>
-          <button id="do-logout" data-bind="click: logout">Logout</button>
-        </div>
-      </div>
-      <div id="support-area">
-      
-        <div class="support" id="flattr">
-          <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
-            target="_blank"> <img src="img/flattr-badge-large.png"
-            alt="Flattr this" title="Flattr this" border="0" />
-          </a>
-        </div>
-        <div class="support" id="paypal">
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
-            target="_blank">
-            <input type="hidden" name="cmd" value="_s-xclick" /> <input
-              type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> <input
-              type="image" src="img/btn_donate_SM.gif" border="0" name="submit"
-              alt="PayPal - The safer, easier way to pay online!" />
-          </form>
-        </div>
-        <div class="support" id="bitcoin">
-          <a
-            href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
-            target="_blank"> <img src="img/bitcoin.png"
-            alt="BitCoin donation" /> BitCoin
-          </a>
-        </div>
-        <br class="clearboth"/>
-      </div>
-		</div>
-
-    <div id="menubar">
-      <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: function() { selectTab('welcome') }">Welcome!</a>
-      <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
-      <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
-      <!--<a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>-->
-      <!--<a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a>-->
-      <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: function() { selectTab('support') }">Support</a>
-      <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
-      <br class="clearboth"/>
-    </div>
 
 		<div class="ui-widget" id="error-panel">
 			<div class="ui-state-error ui-corner-all">
@@ -94,7 +76,8 @@
       <br class="clearboth"/>
 		</div>
 
-    <div id="page-about" class="page about full-page-text hidden" data-bind="visible: selectedTab() == 'about'">
+    <div id="page-about" class="page about full-page-text hidden row" data-bind="visible: selectedTab() == 'about'">
+		<div class="span6">
       <h3>About FRIENDS#UNHOSTED</h3>
       <p>
 	      FRIENDS#UNHOSTED is developed by the staff at <a href="http://agical.com" target="_blank">Agical</a>, 
@@ -120,7 +103,7 @@
 		</p>	 
     </div>
 
-    <div id="page-support" class="page support full-page-text hidden"  data-bind="visible: selectedTab() == 'support'">
+	<div class="span6">
       <h3>Support us!</h3>
 
 	<p>This app has so far been developed on spare time. Hopefully, with a little help from our friends (that means You), we can start developing during normal business hours, part or full time. Please, Flattr the application, send some BitCoins our way, or donate using PayPal.</p>
@@ -173,6 +156,7 @@
       </p>
       
     </div>
+	</div>
 
 		<div id="page-status" class="page status logged-in hidden"
 			data-bind="visible: (loggedIn() && selectedTab() == 'status')">
@@ -182,7 +166,7 @@
 			<div class="status-update">
 				<textarea id="status-update" placeholder="What'cha doin?"
 					data-bind="value: statusUpdate"></textarea>
-				<button id="do-update-status" data-bind="click: updateStatus">Update
+				<button id="do-update-status" class="btn" data-bind="click: updateStatus">Update
 					status</button>
 			</div>
 
@@ -215,7 +199,7 @@
 						<div class="comment-form">
 							<textarea placeholder="Your reply" class="comment"
 								data-bind="value: comment, attr: {'id':id}"></textarea>
-							<button class="do-comment" data-bind="click: doComment">Comment</button>
+							<button class="do-comment btn" data-bind="click: doComment">Comment</button>
 						</div>
 					</div>
 				</div>
@@ -229,10 +213,10 @@
 			<div id="add-a-friend" class="logged-in"
 				data-bind="visible: loggedIn()">
 				<label for="add-friends-username storage-id ">Add a friend</label>
-				<input id="add-friends-username"
+				<input type=text" id="add-friends-username"
 					placeholder="friendsusername@storagelocation.com"
 					data-bind="value: addFriendsUsername" />
-				<button id="do-add-friend" data-bind="click: function(){$root.addFriend($root.addFriendsUsername());}">Add!</button>
+				<button id="do-add-friend" class="btn" data-bind="click: function(){$root.addFriend($root.addFriendsUsername());}">Add!</button>
 			</div>
 
 			<div id="friends" class="logged-in">

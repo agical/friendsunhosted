@@ -112,7 +112,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.selectedTab = ko.observable('');
 
     self.selectedTab.subscribe(function(val) {
-        $('.menu-bar-item').removeClass('menu-selected');
+        $('.menu-selected').removeClass('menu-selected');
         $('#menu-'+val).addClass('menu-selected');
         $('.page').hide();
         $('#page-'+val).show();
@@ -246,7 +246,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.logout = function() {
         fuapi.logout().then(function() {
             self.loggedIn(false);
-            self.selectedTab("support");
+            self.selectedTab("about");
         });
     };
   

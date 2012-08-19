@@ -1,13 +1,29 @@
-#all {
-	display: none;
-}
+html, body { font:100% 'OpenSans', Frutiger, sans-serif; background:#fcfcfc url(../img/dust.png); }
+body { padding-top:120px; }
 
-body { 
-  text-align: center;
-  margin: 0px;
-  padding: 0px;
-  background: #1A0041;
+.brand { margin:0 !important; padding:0 !important; }
+.brand a {  }
+.brand img { width:370px; padding:0 10px 20px !important; }
+.navbar-inner { height:80px;
+	background-color:#db5801;
+	background-image:-moz-linear-gradient(top,#fd7a23,#db5801);
+	background-image:-ms-linear-gradient(top,#fd7a23,#db5801);
+	background-image:-webkit-gradient(linear,0 0,0 100%,from(#fd7a23),to(#db5801));
+	background-image:-webkit-linear-gradient(top,#fd7a23,#db5801);
+	background-image:-o-linear-gradient(top,#fd7a23,#db5801);
+	background-image:linear-gradient(top,#fd7a23,#db5801);
+	background-repeat:repeat-x;
 }
+.navbar .nav > li > a {
+	padding-top:3.5em; padding-bottom:.3em;
+	color:black; text-shadow:0 1px 0 #fd7a23;
+}
+.navbar .nav > li > a:hover {
+	color:black; text-shadow:0 1px 0 #fd7a23; background-color:rgba(255,255,255,.1);
+}
+.menu-selected { background-color:rgba(255,255,255,.2); color:black !important; }
+.navbar .btn { margin:0; }
+
 
 button {
   float:right;
@@ -66,33 +82,10 @@ a {
   margin: 10px;
 }
 
-#header {
-  background: #fff;
-  padding: 5px;
-}
-
-.logo {
-  margin: 0px;
-  padding: 10px;
-  padding-top: 0px;
-  float: left;
-  clear: left;
-}
 
 .login-area {
    float: right;
-   padding: 5px;
    padding-top: 20px;
-   clear:right;
-}
-
-.login-area button {
-   float: right;
-}
-
-.login-area input, #welcome-message {
-   float: left;
-   padding-right: 10px;
 }
 
 
@@ -107,35 +100,9 @@ a {
   float: left;
 }
 
-#paypal input[type=image], #page-support input[type=image] { width:74px; }
+#paypal input[type=image], #page-about input[type=image] { width:74px; }
 #page-support form { margin:0; }
 
-#menubar {
-  float: top;
-  clear: both;
-  width: auto;
-	color: #444;
-  padding: 15px;
-  font: 150% "Courier", sans-serif;  
-  font-weight: bold;
-}
-
-#menu-about, #menu-support {
-  float: right;
-  margin-top: -3px;
-}
-
-.menu-bar-item {
-  color: #444;
-  background: #eee; 
-  padding: 5px;
-	margin-left: 10px;
-	text-decoration: none;
-}
-
-.menu-selected {
-  background: #FD7A23; 
-}
 
 .across-all {
 	background: #443;
@@ -219,34 +186,12 @@ textarea {
   float: left;
 }
 
-#info-what-is {
-	flow:left;
-	margin-left: 15px
-}
-
-#info-signup {
-  flow:right;
-}
 
 .more-info-box, .full-page-text{
   font: 100% "Tahoma", sans-serif;
   width: 351px;
   height: 100%;
-  margin: 10px;
   float: left;
-}
-
-#more-add-friends {
-	flow: left;
-}
-
-#more-support {
-  margin-left: 14px;
-  margin-right: 13px;
-}
-
-#more-tech {
-  flow: right;
 }
 
 #bottom-box, .full-page-text {
