@@ -108,8 +108,6 @@ If you only want to run the selenium tests:
 
 `css`, `img` you can probably figure out. 
 
-`development-bundle` is jquery-ui. Maybe we should try to get rid of it, we're not using it extensively, if at all.
-
 ## Tests
 
 In `browser` resides the functional test that are run in a browser using selenium and webdriverjs from busterjs

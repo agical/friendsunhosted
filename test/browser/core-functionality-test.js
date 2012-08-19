@@ -7,7 +7,7 @@ var createTestUser = siterobot.createTestUser;
 
 var assert = buster.assertions.assert;
 
-var NO_FRIENDS_MESSAGE = "No friends here. Add a friend in the box above!";
+var NO_FRIENDS_MESSAGE = "How do I add friends";
 
 var eq = function(expected) {
     return (function(e) { 
@@ -43,7 +43,7 @@ buster.testCase("Friends#Unhosted", {
         
         createRobot(done)   
             .openStartPage()
-            .title(eq('FRIENDS#UNHOSTED - the #unhosted friends network'))
+            .title(eq('FRIENDS#UNHOSTED - Own your network!'))
             .welcomeHeadline(eq('What is FRIENDS#UNHOSTED?'))
         .end();
     },
@@ -146,15 +146,15 @@ buster.testCase("Friends#Unhosted", {
                .loginNewUser()
                .selectFriendsInMenu()
                 .pause(500)
-               .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
+               .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
                .addFriend(username)
                .friend(1, eq(username))
                .addFriend(username)
                .errorMessage(eq("Cannot add the same user twice"))
                .removeFriend(1)
-               .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
+               .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
                .refresh()
-               .noFriendsMessage(eq(NO_FRIENDS_MESSAGE))
+               .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
            .end();
         });
         
