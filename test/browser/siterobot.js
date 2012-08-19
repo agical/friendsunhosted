@@ -271,7 +271,7 @@
         };
             
         fu.welcomeHeadline = function(text_cb) {
-            return text('#page-welcome h3', text_cb);
+            return text('#info-what-is h3', text_cb);
         };
     
         fu.welcomeMessage = function(userFn_message_cb) {
