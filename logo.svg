@@ -2,11 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="744.09448819"
@@ -19,7 +21,58 @@
    inkscape:export-xdpi="120"
    inkscape:export-ydpi="120">
   <defs
-     id="defs4" />
+     id="defs4">
+    <linearGradient
+       id="linearGradient3859">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3861" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.82517481;"
+         offset="1"
+         id="stop3863" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3851">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3853" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.88811189;"
+         offset="1"
+         id="stop3855" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3845"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3847" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3845"
+       id="linearGradient3849"
+       x1="551.58386"
+       y1="-37.451271"
+       x2="585.35791"
+       y2="-37.451271"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3859"
+       id="radialGradient3865"
+       cx="568.47089"
+       cy="-37.45127"
+       fx="568.47089"
+       fy="-37.45127"
+       r="16.887047"
+       gradientTransform="matrix(1,0,0,0.49766719,0,-18.813002)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffff96"
@@ -27,9 +80,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="350.70079"
-     inkscape:cy="784.02006"
+     inkscape:zoom="2.8"
+     inkscape:cx="209.1091"
+     inkscape:cy="695.52976"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -66,7 +119,7 @@
        inkscape:export-ydpi="201.73659" />
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="137.14285"
        y="323.79074"
        id="text2985"
@@ -78,10 +131,10 @@
          id="tspan2987"
          x="137.14285"
          y="323.79074"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium">Friends#Unhosted</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke:none">Friends#Unhosted</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:20.25091362px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:20.25091361999999862px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:url(#radialGradient3865);fill-opacity:1;stroke:none;font-family:Sans;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="552.7179"
        y="-29.148396"
        id="text2984"
@@ -94,10 +147,10 @@
          id="tspan2986"
          x="552.7179"
          y="-29.148396"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium">beta</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium;fill:url(#radialGradient3865);fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none">beta</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
        x="264.91251"
        y="337.67929"
        id="text3057"
