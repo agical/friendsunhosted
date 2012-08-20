@@ -7,7 +7,7 @@ FRIENDS#UNHOSTED is a new type of social network site where you own your network
 
 It is based on unhosted http://unhosted.org/ technology.
 
-The code is licenced under Creative Commons Attribution-ShareAlike 3.0 Unported License http://creativecommons.org/licenses/by-sa/3.0/
+The code is licensed under the AGPLv3 license (http://opensource.org/licenses/AGPL-3.0).
 
 # Install
 
