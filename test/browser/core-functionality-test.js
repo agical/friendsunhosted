@@ -37,6 +37,7 @@ var assertVisible = function() {
             };
 };
 
+
 buster.testCase("Friends#Unhosted", {
     "- has a title and info on load": function (done) {
         this.timeout = 5000;
@@ -94,15 +95,17 @@ buster.testCase("Friends#Unhosted", {
             .addComment(1, "Comment 1.1")
             .addComment(1, "Comment 1.2")
             .addComment(1, "Comment 1.3")
-            .commentVisible(1, 1, eq(false))
-            .commentVisible(1, 2, eq(true))
-            .commentVisible(1, 3, eq(true))
-            .expandStatus(1)
             .commentVisible(1, 1, eq(true))
             .commentVisible(1, 2, eq(true))
             .commentVisible(1, 3, eq(true))
             .collapseStatus(1)
+            .pause(1000)
             .commentVisible(1, 1, eq(false))
+            .commentVisible(1, 2, eq(true))
+            .commentVisible(1, 3, eq(true))
+            .expandStatus(1)
+            .pause(1000)
+            .commentVisible(1, 1, eq(true))
             .commentVisible(1, 2, eq(true))
             .commentVisible(1, 3, eq(true))
         .end();
@@ -271,5 +274,49 @@ buster.testCase("Friends#Unhosted", {
         .end();               
     },
 
-})
+    "- can write to directly to store": function (done) {
+        this.timeout = 25000;
+
+        var _username = 'mongo@localhost';
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
+                      {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        siterobot.store()
+            .setValue(_username, _category, _key, _value)
+            .then(function() {
+                createRobot(done)
+                    .loginNewUser()
+                    .selectFriendsInMenu()
+                    .pause(500)
+                    .addFriend(_username)
+                    .selectStatusesInMenu()
+                    .statusUpdate(1, eq("Nr 2"))
+                .end();
+            });
+    },
+
+    "- can see other participants in threads": function (done) {
+        this.timeout = 25000;
+
+        var _username = 'mongo@localhost';
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
+                      {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        siterobot.store()
+            .setValue(_username, _category, _key, _value)
+            .then(function() {
+                createRobot(done)
+                    .loginNewUser()
+                    .selectFriendsInMenu()
+                    .pause(500)
+                    .addFriend(_username)
+                    .selectStatusesInMenu()
+                    .statusUpdate(1, eq("Nr 2"))
+                .end();
+            });
+    },
+
+});
 

@@ -216,7 +216,7 @@
 			</div>
 
 			<div id="friends" class="logged-in">
-				<!-- ko foreach: allFriends -->
+				<!-- ko foreach: me().allFriends -->
 				<div class="friend-details" data-bind="attr: {id:'friend-' + ($index()+1)}">
 					<span class="friend storage-id" data-bind="text: username"></span>
 					<a href="#" class="remove-friend"
@@ -230,7 +230,7 @@
           <!-- /ko -->
 				</div>
 				<!-- /ko -->
-				<!-- ko if: allFriends().length==0 -->
+				<!-- ko if: me().allFriends().length==0 -->
 				<div class="friend-details" id="no-friends-message">
 					<h3>How do I add friends?</h3>
 					<p>To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address:</p>

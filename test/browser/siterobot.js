@@ -48,27 +48,55 @@
     }
     
     function createTestUser() {
-      return createNewUser("genUser" + new Date().getTime(), "1234568");
+      return createNewUser("genUser" + new Date().getTime() + '@localhost', "1234568");
     }
     
     
     function createNewUser(username, password, cb) {
+        var userSplit = username.split('@');
       var options = {
         host: 'localhost',
         port: 80,
-        path: '/create_user/localhost/' +  username + "/" + password
+        path: '/create_user/' + userSplit[1] + '/' +  userSplit[0] + '/' + password
       };
       var deferred = when.defer();
       
       http.get(options, function(res) {
         deferred.resolve(
-          {username: username + "@" + options.host,
+          {username: username,
            password: password });
       })
       .on('error', deferred.reject);
         
       return deferred.promise;
     }
+    
+    var store = function() {
+        var ret = {};
+        var redisClient=require('redis').createClient(6379, 'localhost');
+        redisClient.on("error", console.log);
+        redisClient.auth('');
+        
+        ret.setRaw = function(key, value) {
+            var result = when.defer();
+            redisClient.set(key,
+                    JSON.stringify(value),
+                    function(err, data) {
+                        console.log('err:', err);
+                        console.log('data:', data);
+                        if(err) {result.reject(err);}
+                        else {result.resolve(data);}
+                    });
+            return result.promise;
+        };
+
+        ret.setValue = function(username, category, key, value) {
+            return ret.setRaw('value:' + username + ':' + category + ':' + key, value);
+        };
+
+        return ret;
+    };
+
     
     var createRobot = function(done) {
         var fu = {};
@@ -410,5 +438,6 @@
     
     exports.createRobot = createRobot;
     exports.createTestUser = createTestUser;
+    exports.store = store;
 
 })();
