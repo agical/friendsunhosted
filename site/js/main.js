@@ -66,27 +66,37 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                                                                       return update.timestamp==oldSeen.timestamp;
                                                                   })) {
                        newSeen.push(update);
-                   } else if(!_.any(friend.allRootStatuses(), function(oldRoot) {
+                   } else if(!update.inReplyTo && !_.any(friend.allRootStatuses(), function(oldRoot) {
                                                                    return update.timestamp==oldRoot.timestamp;
                                                                })) {
                        newRoots.push(update);
                    }
                 });
                 var getTimestamp = function(item) {return item.timestamp;};
+                var getLatestTimestamp = function(rootItem) {
+                    if(rootItem.comments().length>0) {
+                        var latestComment = _.max(rootItem.comments(), function(cs) {return cs.timestamp;});
+                        return latestComment.timestamp;
+                    } else {
+                        return rootItem.timestamp;
+                    };
+                };
                 if(newRoots.length>0) {
                     _.each(newRoots, function(r) {
-                        friend.allRootStatuses.unshift(self.StatusUpdate(r));
-                        self.allRootStatuses.unshift(self.StatusUpdate(r));
+                        var su = self.StatusUpdate(r);
+                        friend.allRootStatuses.push(su);
+                        self.allRootStatuses.push(su);
                     });
+
                     self.allRootStatuses.sort(function(left, right) { 
-                        return left.timestamp == right.timestamp ? 
+                        return getLatestTimestamp(left) == getLatestTimestamp(right) ? 
                                 0 
-                                : (left.timestamp < right.timestamp ? -1 : 1); });
+                                : (getLatestTimestamp(left) < getLatestTimestamp(right) ? -1 : 1); });
 
                 }
                 if(newComments.length>0) {
                     _.each(newComments, function(r) {
-                        friend.allComments.unshift(self.StatusUpdate(r));
+                        friend.allComments.push(self.StatusUpdate(r));
                     });
                 }
                 if(newSeen.length>0) {
@@ -231,10 +241,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
           });
           allCommentArrays.push(self.me().allComments());
           var allCommentsFlat = _.flatten(allCommentArrays);
-          var res = _.filter(allCommentsFlat, function(item){
+          var threadComments = _.filter(allCommentsFlat, function(item){
               return item.inReplyTo==su.id();
           });    
-          return res;
+          var threadCommentsSorted = _.sortBy(threadComments, function(item) {return item.timestamp;});
+          return threadCommentsSorted;
       });
       
       var handleCollapse = function() {
@@ -255,9 +266,21 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.collapsed.subscribe(handleCollapse);
       
       su.doComment = function() {
+          var update = su.comment();
+          if(!update || update.trim().length == 0) {
+              return; // short-circuit
+          }
+          
+          su.comment('');
+
           fuapi
-              .addReply(su.comment(), su.id(), self.username())
-              .then(self.refreshStatuses, showError);
+              .addReply(update, su.id(), self.username())
+              .then(function(updates) {
+                  self.me().updateStatuses();
+              }, function(err) {
+                  su.comment(update);
+                  showError(err);
+              });    
       };
       return su;
     };
@@ -280,11 +303,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.username(localUsername);
                     self.loggedIn(true);
                     self.me(Friend({username:localUsername}));
+                    
                     self.me()
                         .updateFriends()
-                        .then(self.me().updateStatuses)
-                        .then(self.me().setAutoUpdateFriends)
-                        .then(self.me().setAutoUpdateStatuses)
+                            .then(self.me().updateStatuses, logWarning)
+                            .then(self.me().setAutoUpdateFriends, logWarning)
+                            .then(self.me().setAutoUpdateStatuses, logWarning)
+                    _.each(self.me().allFriends(), function(friend) {
+                        friend
+                            .updateFriends()
+                            .then(friend.updateStatuses, logWarning)
+                            .then(friend.setAutoUpdateFriends, logWarning)
+                            .then(friend.setAutoUpdateStatuses, logWarning);
+                    });
 
                     setPageFromUrl();
                 }, function(notLoggedInMsg) {
@@ -332,7 +363,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     
     self.updateStatus = function() {
-        _.each(self.me().allFriends(), function(friend) {friend.updateStatuses();});
+        var update = self.statusUpdate();
+        if(!update || update.trim().length == 0) {
+            return; // short-circuit
+        }
+        
+        self.statusUpdate('');
+
+        fuapi.addStatus(update, self.username()).then(function(updates) {
+            self.me().updateStatuses();
+        }, function(err) {
+            self.statusUpdate(update);
+            showError(err);
+        });    
     };
           
     init();
