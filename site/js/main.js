@@ -5,7 +5,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         return new Date(timestamp);
     }
     
+    function getTimestamp(item) {
+        return item.timestamp;
+    };
     
+    function getLatestTimestamp(rootItem) {
+        if(rootItem.comments().length>0) {
+            var latestComment = _.max(rootItem.comments(), function(cs) {return cs.timestamp;});
+            return latestComment.timestamp;
+        } else {
+            return rootItem.timestamp;
+        };
+    };
+
     
   function FriendsViewModel() {
     var self = this;
@@ -72,32 +84,21 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                        newRoots.push(update);
                    }
                 });
-                var getTimestamp = function(item) {return item.timestamp;};
-                var getLatestTimestamp = function(rootItem) {
-                    if(rootItem.comments().length>0) {
-                        var latestComment = _.max(rootItem.comments(), function(cs) {return cs.timestamp;});
-                        return latestComment.timestamp;
-                    } else {
-                        return rootItem.timestamp;
-                    };
-                };
+
                 if(newRoots.length>0) {
                     _.each(newRoots, function(r) {
                         var su = self.StatusUpdate(r);
                         friend.allRootStatuses.push(su);
                         self.allRootStatuses.push(su);
                     });
-
-                    self.allRootStatuses.sort(function(left, right) { 
-                        return getLatestTimestamp(left) == getLatestTimestamp(right) ? 
-                                0 
-                                : (getLatestTimestamp(left) < getLatestTimestamp(right) ? -1 : 1); });
-
                 }
                 if(newComments.length>0) {
                     _.each(newComments, function(r) {
                         friend.allComments.push(self.StatusUpdate(r));
                     });
+                }
+                if(newRoots.length>0 || newComments.length>0) {
+                    self.sortRootStatuses();
                 }
                 if(newSeen.length>0) {
                     _.each(newSeen_.sortBy(newSeen, getTimestamp), function(r) {
@@ -163,6 +164,13 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.statusUpdate = ko.observable("");    
     
     self.allRootStatuses = ko.observableArray([]);
+    self.sortRootStatuses = function() {
+        self.allRootStatuses.sort(function(left, right) { 
+            return getLatestTimestamp(left) == getLatestTimestamp(right) ? 
+                    0 
+                    : (getLatestTimestamp(left) < getLatestTimestamp(right) ? -1 : 1); });
+    };
+
 
     self.getPageFromLocation = function () {
         try {
@@ -358,10 +366,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             $("#error-panel").slideUp();
         }, 4000);
     };
-        
-  
-
-    
+ 
     self.updateStatus = function() {
         var update = self.statusUpdate();
         if(!update || update.trim().length == 0) {
