@@ -38,7 +38,8 @@
 					<input type="text" class="span2" placeholder="username@storage.com" id="username" data-bind="value: username"/><button id="do-login" class="btn" data-bind="click: login">Login</button>
 				</div>
 				<div class="logged-in" data-bind="visible: loggedIn()">
-					<span id="welcome-message" >Welcome, <span class="storage-id" data-bind="text: username()"></span>!</span><button id="do-logout" class="btn" data-bind="click: logout">Logout</button>
+					<span class="storage-id" data-bind="text: username()"></span>
+					<a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
 				</div>
 			</div>
 		</div>
@@ -195,28 +196,30 @@
 			</div>
 
 			<div id="friends" class="logged-in span12">
-				<!-- ko foreach: allFriends -->
-				<div class="friend-details span3" data-bind="attr:{id:'friend-'+($index()+1)}">
-					<span class="friend storage-id" data-bind="text:username"></span>
-					<a href="#" class="remove-friend close" data-bind="click: $parent.removeFriend">×</a>
+				<div class="row">
 					<!-- ko foreach: allFriends -->
-					<div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
-						<span class="storage-id" data-bind="text:username"></span>
-						<a href="#" class="add-friends-friend btn btn-small" data-bind="click:function(){$root.addFriend(username);}">+</a>
+					<div class="friend-details span3" data-bind="attr:{id:'friend-'+($index()+1)}">
+						<span class="friend storage-id" data-bind="text:username"></span>
+						<a href="#" class="remove-friend close" data-bind="click: $parent.removeFriend">×</a>
+						<!-- ko foreach: allFriends -->
+						<div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
+							<span class="storage-id" data-bind="text:username"></span>
+							<a href="#" class="add-friends-friend btn btn-small" data-bind="click:function(){$root.addFriend(username);}">+</a>
+						</div>
+						<!-- /ko -->
+					</div>
+					<!-- /ko -->
+					<!-- ko if: allFriends().length==0 -->
+					<div id="no-friends-message" class="friend-details span4 offset4">
+						<h3>How do I add friends?</h3>
+						<p>To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address:</p>
+						<p><strong>username@storageserver.com</strong></p>
+						<p>You add that address to your F#Un friends, and then you can see the updates of your friend.</p>
+						<h3>How do I find my friends?</h3>
+						<p>At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!</p>
 					</div>
 					<!-- /ko -->
 				</div>
-				<!-- /ko -->
-				<!-- ko if: allFriends().length==0 -->
-				<div id="no-friends-message" class="friend-details span4 offset4">
-					<h3>How do I add friends?</h3>
-					<p>To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address:</p>
-					<p><strong>username@storageserver.com</strong></p>
-					<p>You add that address to your F#Un friends, and then you can see the updates of your friend.</p>
-					<h3>How do I find my friends?</h3>
-					<p>At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!</p>
-				</div>
-				<!-- /ko -->
 			</div>
 			<br class="clearboth"/>
 		</div>

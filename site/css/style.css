@@ -35,6 +35,10 @@ a { text-decoration:none; font-style:normal; outline:0; }
 }
 .menu-selected { background-color:rgba(255,255,255,.2); color:black !important; }
 .navbar .btn { margin:0; }
+.login-area { float:right; padding-top:27px; }
+	.logged-in { margin-top:7px; }
+	.logged-in .storage-id { vertical-align:text-bottom; }
+	#do-logout { cursor:pointer; }
 
 
 
@@ -55,6 +59,7 @@ a { text-decoration:none; font-style:normal; outline:0; }
 
 
 
+#page-myfriends { margin:0; }
 .friend-details { position:relative; padding:.5em 0; cursor:pointer; text-overflow:ellipsis; overflow:hidden; }
 .friend-details .close { display:none; position:absolute; right:0; top:.4em; }
 .friend-details:hover .close { display:inline; }
@@ -69,7 +74,6 @@ a { text-decoration:none; font-style:normal; outline:0; }
 
 #header, #footer { float:top; clear:both; width:auto; }
 #footer { width:auto; background-color:#bbb; text-align:center; margin:10px; }
-.login-area { float:right; padding-top:20px; }
 
 #paypal input[type=image], #page-about input[type=image] { width:74px; }
 #page-about form { margin:0; }
