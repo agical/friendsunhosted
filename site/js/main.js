@@ -145,9 +145,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         self.me().allFriends.push(newFriend);
         newFriend
             .updateFriends()
-            .then(newFriend.updateStatuses)
-            .then(newFriend.setAutoUpdateFriends)
-            .then(newFriend.setAutoUpdateStatuses);
+            .then(newFriend.updateStatuses, logWarning)
+            .then(newFriend.setAutoUpdateFriends, logWarning)
+            .then(newFriend.setAutoUpdateStatuses, logWarning);
     };
 
     self.removeFriend = function(friendToRemove) {
@@ -311,19 +311,22 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.username(localUsername);
                     self.loggedIn(true);
                     self.me(Friend({username:localUsername}));
-                    
                     self.me()
-                        .updateFriends()
-                            .then(self.me().updateStatuses, logWarning)
-                            .then(self.me().setAutoUpdateFriends, logWarning)
-                            .then(self.me().setAutoUpdateStatuses, logWarning)
-                    _.each(self.me().allFriends(), function(friend) {
-                        friend
-                            .updateFriends()
-                            .then(friend.updateStatuses, logWarning)
-                            .then(friend.setAutoUpdateFriends, logWarning)
-                            .then(friend.setAutoUpdateStatuses, logWarning);
-                    });
+                    .updateFriends()
+                        .then(self.me().updateStatuses, logWarning)
+                        .then(self.me().setAutoUpdateFriends, logWarning)
+                        .then(self.me().setAutoUpdateStatuses, logWarning)
+                        .then(function() {
+                            _.each(self.me().allFriends(), function(friend) {
+                                friend
+                                    .updateFriends()
+                                    .then(friend.updateStatuses, logWarning)
+                                    .then(friend.setAutoUpdateFriends, logWarning)
+                                    .then(friend.setAutoUpdateStatuses, logWarning);
+                            });
+                        }, logWarning);
+                        
+                    
 
                     setPageFromUrl();
                 }, function(notLoggedInMsg) {
