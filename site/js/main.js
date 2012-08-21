@@ -50,7 +50,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         
         var addCommentToRootLater = function(comment, rootId) {
             setTimeout(function() {
-                if(comment.chancesLeft<0) {
+                if(comment.chancesLeft<1) {
                     return;
                 } else {
                     comment.chancesLeft = comment.chancesLeft-1;
@@ -61,7 +61,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 } else {
                     addCommentToRootLater(comment, rootId);
                 }
-            }, 0);
+            }, 1000/(comment.chancesLeft^2));
         };
         
         friend.updateFriends = function() {
