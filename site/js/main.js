@@ -48,6 +48,22 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         friend.allSeenParticipants = ko.observableArray([]);// [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
         friend.lastUpdated = ko.observable(0);
         
+        var addCommentToRootLater = function(comment, rootId) {
+            setTimeout(function() {
+                if(comment.chancesLeft<0) {
+                    return;
+                } else {
+                    comment.chancesLeft = comment.chancesLeft-1;
+                }
+                var r = self.threadIdToRootStatus[rootId];
+                if( r && !_.any(r.comments(), function(c) {return c.timestamp == comment.timestamp;})) {
+                    self.threadIdToRootStatus[rootId].comments.push(comment);
+                } else {
+                    addCommentToRootLater(comment, rootId);
+                }
+            }, 0);
+        };
+        
         friend.updateFriends = function() {
             var updateFriendsDone = when.defer();
             fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
@@ -56,15 +72,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             }, updateFriendsDone.reject);
             return updateFriendsDone.promise;
         };
-        
+
         friend.updateStatuses = function() {
             var updateDone = when.defer();
+        
             fuapi.fetchStatusForUser(friend.username).then(function(updates) {
                 var newRoots = [];
                 var newComments = [];
                 var newSeen = [];
                 var newLastUpdate = 0;
-                _.each(updates, function(update) {
+                var onlyRecentUpdates = updates; //_.reject(updates, function(u) {return u.timestamp<friend.lastUpdated(); });
+
+                _.each(onlyRecentUpdates, function(update) {
                    update.username = friend.username;
                    newLastUpdate = Math.max(newLastUpdate, update.timestamp);
                    
@@ -90,15 +109,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                         var su = self.StatusUpdate(r);
                         friend.allRootStatuses.push(su);
                         self.allRootStatuses.push(su);
+                        self.threadIdToRootStatus[su.id()] = su;
                     });
+                    self.sortRootStatuses();
                 }
                 if(newComments.length>0) {
                     _.each(newComments, function(r) {
-                        friend.allComments.push(self.StatusUpdate(r));
+                        var c = self.StatusUpdate(r);
+                        c.chancesLeft = 10;
+                        addCommentToRootLater(c, r.inReplyTo);
                     });
-                }
-                if(newRoots.length>0 || newComments.length>0) {
-                    self.sortRootStatuses();
                 }
                 if(newSeen.length>0) {
                     _.each(newSeen_.sortBy(newSeen, getTimestamp), function(r) {
@@ -109,7 +129,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     friend.lastUpdated(newLastUpdate);
                 }
                 updateDone.resolve(friend);
-            }, updateDone.reject);
+            }, function(err) { 
+                updateDone.reject(err);
+            });
+
             return updateDone.promise;
         };
         var max_time_between_updates = 15*60*1000;
@@ -118,7 +141,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         friend.setAutoUpdateStatuses = function() {
             var updateInterval = min_time_between_updates 
             + (max_time_between_updates - max_time_between_updates/((new Date().getTime()) - friend.lastUpdated()));
-            updateInterval = 1000*15;
             setTimeout(function() {
                 friend.updateStatuses().always(friend.setAutoUpdateStatuses);
             }, updateInterval);
@@ -126,7 +148,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
         friend.setAutoUpdateFriends = function() {
             var updateInterval = 5*60*1000;
-            updateInterval = 1000*15;
             setTimeout(function() {
                 friend.updateFriends().always(friend.setAutoUpdateFriends);
             }, 5*60*1000);
@@ -163,6 +184,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     
     self.statusUpdate = ko.observable("");    
     
+    self.threadIdToRootStatus = {};
     self.allRootStatuses = ko.observableArray([]);
     self.sortRootStatuses = function() {
         self.allRootStatuses.sort(function(left, right) { 
@@ -243,19 +265,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
       });
       
-      su.comments = ko.computed(function() {
-          var allCommentArrays = _.map(self.me().allFriends(), function(friend) {
-              return friend.allComments();
-          });
-          allCommentArrays.push(self.me().allComments());
-          var allCommentsFlat = _.flatten(allCommentArrays);
-          var threadComments = _.filter(allCommentsFlat, function(item){
-              return item.inReplyTo==su.id();
-          });    
-          var threadCommentsSorted = _.sortBy(threadComments, function(item) {return item.timestamp;});
-          return threadCommentsSorted;
-      });
-      
+      su.comments = ko.observableArray([]);
+              
       var handleCollapse = function() {
           if(su.collapsed()) {
               _.each(
@@ -270,7 +281,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
           };
       };
       
-      su.comments.subscribe(handleCollapse);
+      su.comments.subscribe(function() {
+          self.sortRootStatuses();
+          handleCollapse();
+      });
       su.collapsed.subscribe(handleCollapse);
       
       su.doComment = function() {
