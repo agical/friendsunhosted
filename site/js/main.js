@@ -50,18 +50,15 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         
         var addCommentToRootLater = function(comment, rootId) {
             setTimeout(function() {
-                if(comment.chancesLeft<1) {
-                    return;
-                } else {
-                    comment.chancesLeft = comment.chancesLeft-1;
-                }
                 var r = self.threadIdToRootStatus[rootId];
-                if( r && !_.any(r.comments(), function(c) {return c.timestamp == comment.timestamp;})) {
-                    self.threadIdToRootStatus[rootId].comments.push(comment);
+                if(r && !_.any(r.comments(), function(c) {return c.timestamp == comment.timestamp;})) {
+                    var index = _.sortedIndex(r.comments(), comment, getTimestamp);
+                    r.comments.splice(index, 0, comment);
                 } else {
+                    comment.tries = comment.tries + 1;
                     addCommentToRootLater(comment, rootId);
                 }
-            }, 1000/(comment.chancesLeft^2));
+            }, (comment.tries-1)^2*100);
         };
         
         friend.updateFriends = function() {
@@ -107,16 +104,18 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 if(newRoots.length>0) {
                     _.each(newRoots, function(r) {
                         var su = self.StatusUpdate(r);
-                        friend.allRootStatuses.push(su);
-                        self.allRootStatuses.push(su);
-                        self.threadIdToRootStatus[su.id()] = su;
+                        if(!self.threadIdToRootStatus[su.id()]) {
+                            friend.allRootStatuses.push(su);
+                            self.allRootStatuses.push(su);
+                            self.threadIdToRootStatus[su.id()] = su;
+                        }
                     });
                     self.sortRootStatuses();
                 }
                 if(newComments.length>0) {
                     _.each(newComments, function(r) {
                         var c = self.StatusUpdate(r);
-                        c.chancesLeft = 10;
+                        c.tries = 0;
                         addCommentToRootLater(c, r.inReplyTo);
                     });
                 }
@@ -283,6 +282,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       
       su.comments.subscribe(function() {
           self.sortRootStatuses();
+          _
           handleCollapse();
       });
       su.collapsed.subscribe(handleCollapse);
