@@ -1,10 +1,7 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html;" />
 <title>FRIENDS#UNHOSTED - Own your network!</title>
 <link href="css/bootstrap.min.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
@@ -27,7 +24,7 @@
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" /></a>
+			<a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" alt="FRIENDS#UNHOSTED" /></a>
 			<ul id="menubar" class="nav">
 				<li><a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a></li>
 				<li><a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a></li>
@@ -41,7 +38,8 @@
 					<input type="text" class="span2" placeholder="username@storage.com" id="username" data-bind="value: username"/><button id="do-login" class="btn" data-bind="click: login">Login</button>
 				</div>
 				<div class="logged-in" data-bind="visible: loggedIn()">
-					<span id="welcome-message" >Welcome, <span class="storage-id" data-bind="text: username()"></span>!</span><button id="do-logout" class="btn" data-bind="click: logout">Logout</button>
+					<span class="storage-id" data-bind="text: username()"></span>
+					<a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
 				</div>
 			</div>
 		</div>
@@ -110,16 +108,16 @@
         target="_blank"> <img src="img/flattr-badge-large.png"
         alt="Flattr this" title="Flattr this" border="0" />
       </a>
-      <br/>
+      </p>
       <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
         target="_blank">
         <input type="hidden" name="cmd" value="_s-xclick" /> <input
           type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> 
         PayPal: <input
           type="image" src="img/btn_donate_SM.gif" border="0" name="submit"
-          alt="PayPal - The safer, easier way to pay online!" />
+          alt="Donate with PayPal" />
       </form>
-      <br/>
+      <p>
       BitCoin: <a
         href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
         target="_blank"> <img src="img/bitcoin.png"
@@ -154,92 +152,74 @@
     </div>
 	</div>
 
-		<div id="page-status" class="page status logged-in hidden"
-			data-bind="visible: (loggedIn() && selectedTab() == 'status')">
-			<a href="" id="refresh-link" data-bind="click: refresh">Refresh
-				statuses</a>
-
-			<div class="status-update">
-				<textarea id="status-update" placeholder="What'cha doin?"
-					data-bind="value: statusUpdate"></textarea>
-				<button id="do-update-status" class="btn" data-bind="click: updateStatus">Update
-					status</button>
+		<div id="page-status" class="page status logged-in hidden" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+			<div class="status-update span6 offset3">
+				<textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate"></textarea>
+				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
 
-			<div id="status-stream"
-				data-bind="foreach: allRootStatuses().reverse()">
-				<div class="conversation"
-					data-bind="attr: {id: 'status-nr-'+($index()+1)}">
-					<div class="status-details">
-						<span class="status-update-username storage-id"
-							data-bind="text: username"></span> 
-						<span
-							class="status-update-timestamp"
-							data-bind="text: relativeTimestamp"></span> 
-						<span
-							class="status-update" data-bind="html: status"></span>
+			<div id="status-stream" class="span6 offset3" data-bind="foreach:allRootStatuses().reverse()">
+				<div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+					<div class="status-details span6">
+						<div class="row">
+							<span class="status-update-username storage-id span2" data-bind="text:username"></span>
+							<span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
+						</div>
+						<span class="status-update" data-bind="html:status"></span>
 					</div>
-					<div class="comments">
-            <span class="do-collapse-status" data-bind="visible: !collapsed()&&comments().length>2, click:collapse">Hide old comments</span>
-            <span class="do-expand-status" data-bind="visible: collapsed()&&comments().length>2, click:expand">View all <span data-bind="text: comments().length"></span> comments</span>
+					<div class="comments row">
+						<span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
+						<span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">view all <span data-bind="text:comments().length"></span> comments ▾</span>
 						<!-- ko foreach: comments -->
-						<div class="comment"
-							data-bind="visible: !collapsed(), attr: {id: 'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
-							<span class="comment-update-username storage-id"
-								data-bind="text: username"></span> <span
-								class="comment-update-timestamp"
-								data-bind="text: relativeTimestamp"></span> <span
-								class="comment-update" data-bind="html: status"></span>
+						<div class="comment span5 offset1" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+							<div class="row">
+								<span class="comment-update-username storage-id span2" data-bind="text:username"></span>
+								<span class="comment-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
+							</div>
+							<span class="comment-update" data-bind="html:status"></span>
 						</div>
 						<!-- /ko -->
-						<div class="comment-form">
-							<textarea placeholder="Your reply" class="comment"
-								data-bind="value: comment, attr: {'id':id}"></textarea>
-							<button class="do-comment btn" data-bind="click: doComment">Comment</button>
+						<div class="comment-form span5 offset1">
+							<textarea placeholder="Your reply" class="comment span5" data-bind="value:comment, attr:{'id':id}"></textarea>
+							<button class="do-comment btn" data-bind="click:doComment">Comment</button>
 						</div>
 					</div>
 				</div>
 			</div>
-      <br class="clearboth"/>
 
 		</div>
 
-		<div id="page-myfriends" class="page friends logged-in hidden"
-			data-bind="visible: (loggedIn() && selectedTab() == 'myfriends')">
-			<div id="add-a-friend" class="logged-in"
-				data-bind="visible: loggedIn()">
-				<label for="add-friends-username storage-id ">Add a friend</label>
-				<input type=text" id="add-friends-username"
-					placeholder="friendsusername@storagelocation.com"
-					data-bind="value: addFriendsUsername" />
-				<button id="do-add-friend" class="btn" data-bind="click: function(){$root.addFriend($root.addFriendsUsername());}">Add!</button>
+		<div id="page-myfriends" class="page friends logged-in hidden row" data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
+			<div id="add-a-friend" class="logged-in input-append span5 offset3" data-bind="visible:loggedIn()">
+				<input type="text" id="add-friends-username" class="span3" placeholder="friendsname@storage.com" data-bind="value:addFriendsUsername"/>
+				<button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
 			</div>
 
-			<div id="friends" class="logged-in">
-				<!-- ko foreach: allFriends -->
-				<div class="friend-details" data-bind="attr: {id:'friend-' + ($index()+1)}">
-					<span class="friend storage-id" data-bind="text: username"></span>
-					<a href="#" class="remove-friend"
-						data-bind="click: $parent.removeFriend">Remove</a>
-            <br/>
-          <!-- ko foreach: allFriends -->
-            <div class="friends-friend" data-bind="attr: {id:'friend-of-'+($parentContext.$index()+1) + '-nr-' + ($index()+1)}">
-			  		  ---<span class="storage-id" data-bind="text: username"></span> 
-			  		  <a href="#" class="add-friends-friend" data-bind="click:function() {$root.addFriend(username);}">Add</a>
-		  		  </div>
-          <!-- /ko -->
+			<div id="friends" class="logged-in span12">
+				<div class="row">
+					<!-- ko foreach: allFriends -->
+					<div class="friend-details span3" data-bind="attr:{id:'friend-'+($index()+1)}">
+						<span class="friend storage-id" data-bind="text:username"></span>
+						<a href="#" class="remove-friend close" data-bind="click: $parent.removeFriend">×</a>
+						<!-- ko foreach: allFriends -->
+						<div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
+							<span class="storage-id" data-bind="text:username"></span>
+							<a href="#" class="add-friends-friend btn btn-small" data-bind="click:function(){$root.addFriend(username);}">+</a>
+						</div>
+						<!-- /ko -->
+					</div>
+					<!-- /ko -->
+					<!-- ko if: allFriends().length==0 -->
+					<div id="no-friends-message" class="friend-details span4 offset4">
+						<h3>How do I add friends?</h3>
+						<p>To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address:</p>
+						<p><strong>username@storageserver.com</strong></p>
+						<p>You add that address to your F#Un friends, and then you can see the updates of your friend.</p>
+						<h3>How do I find my friends?</h3>
+						<p>At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!</p>
+					</div>
+					<!-- /ko -->
 				</div>
-				<!-- /ko -->
-				<!-- ko if: allFriends().length==0 -->
-				<div class="friend-details" id="no-friends-message">
-					<h3>How do I add friends?</h3>
-					<p>To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address:</p>
-					<p><strong>username@storageserver.com</strong></p>
-					<p>You add that address to your F#Un friends, and then you can see the updates of your friend.</p>
-					<h3>How do I find my friends?</h3>
-					<p>At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!</p>
-				</div>
-				<!-- /ko -->
 			</div>
 			<br class="clearboth"/>
 		</div>

@@ -147,7 +147,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
 
-      su.collapsed = ko.observable(false);
+      su.collapsed = ko.observable(true);
       su.comment = ko.observable("");
 
       su.id = ko.computed(function() {
