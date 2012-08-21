@@ -1,6 +1,17 @@
 html, body { font:100% 'OpenSans', Frutiger, sans-serif; background:#fcfcfc url(../img/dust.png); }
 body { padding-top:100px; }
 
+
+
+.logged-in { display:none; }
+.hidden { display:none; visibility:visible !important; }
+.visible { display:block; }
+a { text-decoration:none; font-style:normal; }
+#upgrading-storage-screen { display:none; }
+#error-panel { display:none; }
+
+
+
 .brand { margin:0 !important; padding:0 !important; }
 .brand a {  }
 .brand img { width:370px; padding:0 10px 10px !important; }
@@ -26,24 +37,18 @@ body { padding-top:100px; }
 .navbar .btn { margin:0; }
 
 
-button {
-  float:right;
-}
 
-h3 {
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
+.friend-details { position:relative; padding:.5em 0; cursor:pointer; text-overflow:ellipsis; overflow:hidden; }
+.friend-details .close { display:none; position:absolute; right:0; top:.4em; }
+.friend-details:hover .close { display:inline; }
+.storage-id { font-weight:bold; white-space:nowrap; }
+	.friends-friend .storage-id { font-weight:normal; }
+	.friends-friend .add-friends-friend { display:none; }
+	.friends-friend:hover .add-friends-friend { display:inline; }
+	.add-friends-friend { padding:0 .3em; border-radius:50%; background:#bbb; color:#fff; font-weight:bold; }
+	.add-friends-friend:hover { background:#ccc; color:#fff; }
 
-a {
-	text-decoration: none;
-	font-style: normal;
-	font-weight: 
-}
 
-#upgrading-storage-screen {
-	display: none;
-}
 
 #all {
   width: 1200px;
@@ -90,42 +95,12 @@ a {
 }
 
 
-#support-area {
-  padding-top: 10px;
-  padding-left: 10px;
-  float: right;
-}
-
-#support-area * {
-  padding: 3px;
-  float: left;
-}
-
 #paypal input[type=image], #page-about input[type=image] { width:74px; }
-#page-support form { margin:0; }
+#page-about form { margin:0; }
 
 
 .across-all {
 	background: #443;
-}
-
-.hidden {
-  display: none;	
-}
-
-.logged-in {
-  display: none;  
-}
-
-.visible {
-  display: block;  
-}
-
-
-.storage-id {
-  font: 100% "Tahoma", sans-serif;
-  font-weight:bold;   
-  color: #333;
 }
 
 #refresh-link {
@@ -138,17 +113,8 @@ textarea {
 	height: 80px;
 	border: 2px solid #cccccc;
 	padding: 3px;
-	font-family: Tahoma, sans-serif;
 	  float: left;
   clear: both;
-}
-
-
-#license {
-}
-
-#error-panel {
-	display: none;
 }
 
 .rounded-box, .menu-bar-item, .status-details, .comments, .info-box, .more-info-box, #footer, .full-page-text {
@@ -186,18 +152,6 @@ textarea {
   background-color: #ddd;
 }
 
-.clearright {
-  clear: right;
-}
-
-.clearleft {
-  clear: left;
-}
-
-.clearboth {
-	clear: both;
-}
-
 
 .status {
   padding-left: 10px;
@@ -208,32 +162,6 @@ textarea {
   margin-bottom: 20px;
   margin-right: 20px;
  }
-
-.friends {
-  padding-left: 10px;
-  padding-top: 10px;
-  float: left;
-  clear: right;
-  width: 600px;
-  margin-bottom: 20px;
-}
-
-#profile {
-  padding-left: 10px;
-  padding-top: 10px;
-  float: left;
-  clear: right;
-  width: 600px;
-  margin-bottom: 20px;
-}
-
-.top-left-box {
-  border-style:solid;
-  border-width:3px;
-  border-color:#666;
-  border-bottom:0px;
-  border-right:0px;
-}
 
 .status-stream {
   float: left;
