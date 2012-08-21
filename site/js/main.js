@@ -26,39 +26,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.addFriendsUsername = ko.observable("");
     self.me = ko.observable({});
 
-//    var updateFriends = function(newFriendsList) {
-//        _.each(newFriendsList, function(friendData) {
-//            self.getUpdatesForFriend(friendData.username);
-//        });
-//    };
-
-    self.getUpdatesForFriend = function(username) {
-        return fuapi.fetchStatusForUser(username).then(function(parsedData) {
-            addStatusUpdates(parsedData);
-        }, logWarning);
-    };
-    
-    self.refreshFriends = function() {
-        var deferred = when.defer();
-        if(self.loggedIn()) {
-            fuapi.fetchFriends().then(function(fetchedFriends) {
-                var newFriends = _.reject(fetchedFriends, 
-                        function(potential) {
-                            return _.any(self.me().allFriends(), 
-                                    function(existing) {
-                                        return existing.username==potential.username;
-                                    });
-                        });
-                _.each(newFriends, function(friend){
-                    self.me().allFriends.push(Friend(friend).updateFriends());
-                });
-                deferred.resolve("Friends refreshed");
-            }, deferred.reject);
-        } else {
-            deferred.reject("Not logged in");
-        }        
-        return deferred.promise;
-    };
     
     function Friend(friendData) {
         var friend = friendData;
@@ -70,15 +37,17 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         friend.lastUpdated = ko.observable(0);
         
         friend.updateFriends = function() {
+            var updateFriendsDone = when.defer();
             fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
                 friend.allFriends(_.map(data,Friend));
-            });
-            return friend;
+                updateFriendsDone.resolve(friend);
+            }, updateFriendsDone.reject);
+            return updateFriendsDone.promise;
         };
         
         friend.updateStatuses = function() {
             var updateDone = when.defer();
-            self.getUpdatesForFriend(friend.username).then(function(updates) {
+            fuapi.fetchStatusForUser(friend.username).then(function(updates) {
                 var newRoots = [];
                 var newComments = [];
                 var newSeen = [];
@@ -89,40 +58,66 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                    
                    if(update.inReplyTo && 
                       !_.any(friend.allComments(), function(oldComment) {
-                                                      return update.timestamp===oldComment.timestamp;
+                                                      return update.timestamp==oldComment.timestamp;
                                                   })) {
                        newComments.push(update);
                    } else if(update.seen && 
                               !_.any(friend.allSeenParticipants(), function(oldSeen) {
-                                                                      return update.timestamp===oldSeen.timestamp;
+                                                                      return update.timestamp==oldSeen.timestamp;
                                                                   })) {
                        newSeen.push(update);
                    } else if(!_.any(friend.allRootStatuses(), function(oldRoot) {
-                                                                   return update.timestamp===oldRoot.timestamp;
+                                                                   return update.timestamp==oldRoot.timestamp;
                                                                })) {
                        newRoots.push(update);
                    }
                 });
-                if(newRoots) friend.allRootStatuses.push.apply(newRoots);
-                if(newComments) friend.allComments.push.apply(newComments);
-                if(newSeen) friend.allSeenParticipants.push.apply(newSeen);
-                if(newLastUpdate) friend.lastUpdated(newLastUpdate);
-                updateDone.resolve();
+                var getTimestamp = function(item) {return item.timestamp;};
+                if(newRoots.length>0) {
+                    _.each(newRoots, function(r) {
+                        friend.allRootStatuses.unshift(self.StatusUpdate(r));
+                        self.allRootStatuses.unshift(self.StatusUpdate(r));
+                    });
+                    self.allRootStatuses.sort(function(left, right) { 
+                        return left.timestamp == right.timestamp ? 
+                                0 
+                                : (left.timestamp < right.timestamp ? -1 : 1); });
+
+                }
+                if(newComments.length>0) {
+                    _.each(newComments, function(r) {
+                        friend.allComments.unshift(self.StatusUpdate(r));
+                    });
+                }
+                if(newSeen.length>0) {
+                    _.each(newSeen_.sortBy(newSeen, getTimestamp), function(r) {
+                        friend.allSeenParticipants.unshift(self.StatusUpdate(r));
+                    });
+                }
+                if(newLastUpdate) {
+                    friend.lastUpdated(newLastUpdate);
+                }
+                updateDone.resolve(friend);
             }, updateDone.reject);
+            return updateDone.promise;
         };
-        var max_time_between_updates = 15*60*60*1000;
+        var max_time_between_updates = 15*60*1000;
         var min_time_between_updates = 5*1000;
         
         friend.setAutoUpdateStatuses = function() {
+            var updateInterval = min_time_between_updates 
+            + (max_time_between_updates - max_time_between_updates/((new Date().getTime()) - friend.lastUpdated()));
+            updateInterval = 1000*15;
             setTimeout(function() {
                 friend.updateStatuses().always(friend.setAutoUpdateStatuses);
-            }, min_time_between_updates 
-                + (max_time_between_updates - max_time_between_updates/((new Date().getTime()) - friend.lastUpdated())));
+            }, updateInterval);
         };
 
-        friend.setAutoFriendsUpdate = function() {
+        friend.setAutoUpdateFriends = function() {
+            var updateInterval = 5*60*1000;
+            updateInterval = 1000*15;
             setTimeout(function() {
-                friend.updateFriends().always(friend.setAutoFriendsUpdate);
+                friend.updateFriends().always(friend.setAutoUpdateFriends);
             }, 5*60*1000);
         };
 
@@ -137,14 +132,16 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         self.addFriendsUsername("");
         var newFriend = Friend(friendData);
         self.me().allFriends.push(newFriend);
-        newFriend.updateFriends();
-        newFriend.updateStatuses();
-        newFriend.setAutoFriendsUpdate();
-        newFriend.setAutoUpdateStatuses();
+        newFriend
+            .updateFriends()
+            .then(newFriend.updateStatuses)
+            .then(newFriend.setAutoUpdateFriends)
+            .then(newFriend.setAutoUpdateStatuses);
     };
 
     self.removeFriend = function(friendToRemove) {
-        fuapi.removeFriend({username:friendToRemove.username, timestamp:friendToRemove.timestamp})
+        fuapi
+            .removeFriend({username:friendToRemove.username, timestamp:friendToRemove.timestamp})
             .then(function(){onFriendRemoved(friendToRemove);}, showError);
     };
 
@@ -155,14 +152,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     
     self.statusUpdate = ko.observable("");    
     
-    self.allStatuses = ko.observableArray([]);
-    
-    self.allRootStatuses = ko.computed(function() {
-      return self.me().allFriends
-          ? _.flatten(_.map(self.me().allFriends(), function(friend) {return friend.allRootStatuses();}))
-          : [];
-      
-    });
+    self.allRootStatuses = ko.observableArray([]);
 
     self.getPageFromLocation = function () {
         try {
@@ -190,14 +180,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         return true;
     };
 
-    function StatusUpdate(suData) {
+    self.StatusUpdate = function(suData) {
       var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
       var EMAIL_REGEX =/((([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))/gm; 
       var URL_REGEX = /(\(?\b(http|https|ftp|ssh|sftp):\/\/[-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])/gm;
       var NEWLINE_REGEX = /\n/gm;
       var GT_REGEX = />/gm;
       var LT_REGEX = /</gm;
-      var su = this;
+      var su = {};
       function escapeAndFormatStatusText(text) {
           return text
                   .replace(LT_REGEX, '&lt;')
@@ -217,12 +207,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
       su.id = ko.computed(function() {
           return su.timestamp + ":" + su.username;
-        });
+      });
         
-      
       su.collapse = function() {
           su.collapsed(true);
       };
+
       su.expand = function() {
           su.collapsed(false);
       };
@@ -236,9 +226,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       });
       
       su.comments = ko.computed(function() {
-          var res = _.flatten(_.map(self.me().allFriends(), function(friend) {
+          var allCommentArrays = _.map(self.me().allFriends(), function(friend) {
               return friend.allComments();
-          }));    
+          });
+          allCommentArrays.push(self.me().allComments());
+          var allCommentsFlat = _.flatten(allCommentArrays);
+          var res = _.filter(allCommentsFlat, function(item){
+              return item.inReplyTo==su.id();
+          });    
           return res;
       });
       
@@ -253,7 +248,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
           } else {
               _.each(su.comments(), 
                       function(item) {item.expand();});
-          }
+          };
       };
       
       su.comments.subscribe(handleCollapse);
@@ -262,9 +257,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.doComment = function() {
           fuapi
               .addReply(su.comment(), su.id(), self.username())
-              .then(self.me().updateStatuses, showError);
+              .then(self.refreshStatuses, showError);
       };
-    }
+      return su;
+    };
 
     function setPageFromUrl() {
         if(window.location.href.indexOf('#access_token') > 0) {
@@ -284,10 +280,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.username(localUsername);
                     self.loggedIn(true);
                     self.me(Friend({username:localUsername}));
-                    self.me().updateFriends();
-                    self.me().updateStatuses();
-                    self.me().setAutoFriendsUpdate();
-                    self.me().setAutoUpdateStatuses();
+                    self.me()
+                        .updateFriends()
+                        .then(self.me().updateStatuses)
+                        .then(self.me().setAutoUpdateFriends)
+                        .then(self.me().setAutoUpdateStatuses)
 
                     setPageFromUrl();
                 }, function(notLoggedInMsg) {
@@ -295,10 +292,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     self.selectedTab("welcome");
                     self.loggedIn(false);
                 }).then(function() {
-//                    setTimeout(function() {
-//                        _.each(self.allRootStatuses(), function(item) {
-//                            item.collapse();});
-//                    },1000);
                 });
       
     };
@@ -336,50 +329,12 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     };
         
   
-    function addStatusUpdates(statusUpdatesArray) {
-      function statusEquals(s1, s2) {
-          return s1.username == s2.username && 
-                 s1.timestamp == s2.timestamp;
-      }
-      var existingStatuses = self.allStatuses();
-      var newUpdates = _.filter(statusUpdatesArray, function(item) {
-        return !existingStatuses || _.all(existingStatuses, function(existing) {
-            return !statusEquals(existing, item);
-          });
-      });
-      var newUpdatesAsObjects = _.map(newUpdates, function(item) {
-        return new StatusUpdate(item);
-      });
-      var all = _.union(existingStatuses, newUpdatesAsObjects);
-      var allSorted = _.sortBy(all, function(item) {
-          if(item.comments().length>0) {
-              var latestComment = _.max(item.comments(), function(cs) {return cs.timestamp;});
-              return latestComment.timestamp;
-          } else {
-              return item.timestamp;
-          };
-      });
-      self.allStatuses(allSorted);
-    }
-
 
     
     self.updateStatus = function() {
-//        if(!self.statusUpdate() || self.statusUpdate().trim().length == 0) {
-//            return; // short-circuit
-//        }
-//      
-//        fuapi.addStatus(self.statusUpdate(), self.username()).then(function(updates) {
-//            
-//            addStatusUpdates(updates);
-//            self.statusUpdate('');
-//        }, showError);    
+        _.each(self.me().allFriends(), function(friend) {friend.updateStatuses();});
     };
-    
-
-//    setInterval( self.refresh, 15000);
-//    setInterval( self.refreshFriends, 600000);
-      
+          
     init();
     
   };
