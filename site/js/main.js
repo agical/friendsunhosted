@@ -60,7 +60,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 }
             }, (comment.tries-1)^2*100);
         };
-        
+
+        var addParticipantsToRootLater = function(seen, rootId) {
+            setTimeout(function() {
+                var r = self.threadIdToRootStatus[rootId];
+                if(r && !_.any(r.participants(), function(c) {return c == seen.seen;})) {
+                    r.participants.push(seen.seen);
+                } else {
+                    seen.tries = seen.tries + 1;
+                    addParticipantsToRootLater(seen, rootId);
+                }
+            }, (seen.tries-1)^2*100);
+        };
+
         friend.updateFriends = function() {
             var updateFriendsDone = when.defer();
             fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
@@ -89,10 +101,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                                                       return update.timestamp==oldComment.timestamp;
                                                   })) {
                        newComments.push(update);
-                   } else if(update.seen && 
-                              !_.any(friend.allSeenParticipants(), function(oldSeen) {
-                                                                      return update.timestamp==oldSeen.timestamp;
-                                                                  })) {
+                   } else if(update.seen) {
                        newSeen.push(update);
                    } else if(!update.inReplyTo && !_.any(friend.allRootStatuses(), function(oldRoot) {
                                                                    return update.timestamp==oldRoot.timestamp;
@@ -120,8 +129,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     });
                 }
                 if(newSeen.length>0) {
-                    _.each(newSeen_.sortBy(newSeen, getTimestamp), function(r) {
-                        friend.allSeenParticipants.unshift(self.StatusUpdate(r));
+                    _.each(newSeen, function(r) {
+                        r.tries = 0;
+                        addParticipantsToRootLater(r, r.thread);
                     });
                 }
                 if(newLastUpdate) {
@@ -239,7 +249,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.timestamp = suData.timestamp;
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
-      su.participants = ko.observableArray(['arne@anka.se', 'mongo@localhost']);
+      su.participants = ko.observableArray([]);
       su.collapsed = ko.observable(false);
       su.comment = ko.observable("");
 

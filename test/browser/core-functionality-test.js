@@ -304,18 +304,20 @@ buster.testCase("Friends#Unhosted", {
         var _key = 'friendsunhosted_status';
         var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
                       {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost",'inReplyTo':'1345183170572:mongo@localhost'},
-                      {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'}];
+                      {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'},
+                      {'seen':'peppe@bodega.es', 'thread':'1345183170572:mongo@localhost'},
+                      ];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
             .then(function() {
                 createRobot(done)
                     .loginNewUser()
                     .selectFriendsInMenu()
-                    .pause(500)
+                    .pause(5000)
                     .addFriend(_username)
                     .selectStatusesInMenu()
                     .comment(1, 1, eq("Nr 2"))
-                    .threadParticipants(1, eq(['arne@anka.se','mongo@localhost']))
+                    .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es']))
                 .end();
             });
     },
