@@ -236,11 +236,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                   .replace(URL_REGEX,'<a href="$1" target="_blank">$1</a>');
       }
       su.status = escapeAndFormatStatusText(suData.status);
-      
       su.timestamp = suData.timestamp;
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
-
+      su.participants = ko.observableArray(['arne@anka.se', 'mongo@localhost']);
       su.collapsed = ko.observable(false);
       su.comment = ko.observable("");
 
