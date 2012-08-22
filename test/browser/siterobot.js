@@ -335,7 +335,7 @@
         };
 
         fu.threadParticipants = function(nr, array_cb) {
-            return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split());});
+            return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split(' '));});
         };
 
         fu.collapseStatus = function(nr) {
