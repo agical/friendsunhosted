@@ -85,7 +85,7 @@
                         console.log('err:', err);
                         console.log('data:', data);
                         if(err) {result.reject(err);}
-                        else {result.resolve(data);}
+                        else {result.resolve(ret);}
                     });
             return result.promise;
         };

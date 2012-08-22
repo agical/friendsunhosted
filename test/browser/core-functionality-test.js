@@ -299,25 +299,34 @@ buster.testCase("Friends#Unhosted", {
     "- can see other participants in threads": function (done) {
         this.timeout = 25000;
 
-        var _username = 'mongo@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
+
+        var _username = 'mongo@localhost';
         var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
                       {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost",'inReplyTo':'1345183170572:mongo@localhost'},
                       {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'},
                       {'seen':'peppe@bodega.es', 'thread':'1345183170572:mongo@localhost'},
                       ];
+        var _username2 = 'bongo@localhost';
+        var _value2 = [{"status":"Från bongo","timestamp":1345183170666,"username":"bongo@localhost",'inReplyTo':'1345183170572:mongo@localhost'},
+                      {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'},
+                      {'seen':'arnold@isback.es', 'thread':'1345183170572:mongo@localhost'},
+                      ];
         siterobot.store()
-            .setValue(_username, _category, _key, _value)
+            .setValue(_username, _category, _key, _value).then(function(store) {
+                return store.setValue(_username2, _category, _key, _value2);
+            })
             .then(function() {
                 createRobot(done)
                     .loginNewUser()
                     .selectFriendsInMenu()
                     .pause(5000)
                     .addFriend(_username)
+                    .addFriend(_username2)
                     .selectStatusesInMenu()
                     .comment(1, 1, eq("Nr 2"))
-                    .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es']))
+                    .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es', 'arnold@isback.es']))
                 .end();
             });
     },
