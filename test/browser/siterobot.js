@@ -308,7 +308,7 @@
         
         fu.loggedInUser = function(user_cb) {
             return userAndText('#username', user_cb);
-        }
+        };
         
         fu.setStatus = function(status) {
             return setAndClick("#status-update", status, "#do-update-status");
@@ -332,6 +332,10 @@
 
         fu.statusTimeStamp = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
+        };
+
+        fu.threadParticipants = function(nr, array_cb) {
+            return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split());});
         };
 
         fu.collapseStatus = function(nr) {
