@@ -85,13 +85,29 @@
                         console.log('err:', err);
                         console.log('data:', data);
                         if(err) {result.reject(err);}
-                        else {result.resolve(ret);}
+                        else {result.resolve({'data':data,'store':ret});}
                     });
             return result.promise;
         };
 
         ret.setValue = function(username, category, key, value) {
             return ret.setRaw('value:' + username + ':' + category + ':' + key, value);
+        };
+
+        ret.getRaw = function(key) {
+            var result = when.defer();
+            redisClient.get(key,
+                    function(err, data) {
+                        console.log('err:', err);
+                        console.log('data:', data);
+                        if(err) {result.reject(err);}
+                        else {result.resolve({'data':data,'store':ret});}
+                    });
+            return result.promise;
+        };
+
+        ret.getValue = function(username, category, key) {
+            return ret.getRaw('value:' + username + ':' + category + ':' + key);
         };
 
         return ret;
