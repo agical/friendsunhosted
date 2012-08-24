@@ -264,11 +264,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       });
 
       su.addParticipant = function(usernameToAdd) {
-          if(su.mySeenParticipants.indexOf(usernameToAdd)<0 && usernameToAdd!=su.username) {
-              fuapi.addThreadParticipant(self.username(), su.id(), usernameToAdd).then(
-                  function() {su.mySeenParticipants.push(usernameToAdd);}
-              );
-          }
+//          if(su.mySeenParticipants.indexOf(usernameToAdd)<0 && usernameToAdd!=su.username) {
+//              fuapi.addThreadParticipant(self.username(), su.id(), usernameToAdd).then(
+//                  function() {su.mySeenParticipants.push(usernameToAdd);}
+//              );
+//          }
       };
               
       su.collapse = function() {
