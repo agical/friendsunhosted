@@ -96,10 +96,11 @@
 
         ret.getRaw = function(key) {
             var result = when.defer();
+            console.log("--------------Getting", key);
             redisClient.get(key,
                     function(err, data) {
-                        console.log('err:', err);
-                        console.log('data:', data);
+                        console.log('--------------err:', err);
+                        console.log('--------------data:', data);
                         if(err) {result.reject(err);}
                         else {result.resolve({'data':data,'store':ret});}
                     });
@@ -448,7 +449,7 @@
         
         fu.end = function() {
             defPeek().then(function() {
-                fu.b.end(done);
+                fu.b.end(function(){done(fu);});
             });
             return fu;
         };

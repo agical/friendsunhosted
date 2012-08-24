@@ -51,6 +51,11 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         var addCommentToRootLater = function(comment, rootId) {
             setTimeout(function() {
                 var r = self.threadIdToRootStatus[rootId];
+                
+                if(r) {
+                    r.addParticipant(comment.username);
+                }
+                
                 if(r && !_.any(r.comments(), function(c) {return c.timestamp == comment.timestamp;})) {
                     var index = _.sortedIndex(r.comments(), comment, getTimestamp);
                     r.comments.splice(index, 0, comment);
@@ -250,13 +255,22 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
       su.participants = ko.observableArray([]);
+      su.mySeenParticipants = ko.observableArray([]);
       su.collapsed = ko.observable(false);
       su.comment = ko.observable("");
 
       su.id = ko.computed(function() {
           return su.timestamp + ":" + su.username;
       });
-        
+
+      su.addParticipant = function(usernameToAdd) {
+          if(su.mySeenParticipants.indexOf(usernameToAdd)<0 && usernameToAdd!=su.username) {
+              fuapi.addThreadParticipant(self.username(), su.id(), usernameToAdd).then(
+                  function() {su.mySeenParticipants.push(usernameToAdd);}
+              );
+          }
+      };
+              
       su.collapse = function() {
           su.collapsed(true);
       };
@@ -291,7 +305,6 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       
       su.comments.subscribe(function() {
           self.sortRootStatuses();
-          _
           handleCollapse();
       });
       su.collapsed.subscribe(handleCollapse);

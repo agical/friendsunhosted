@@ -296,7 +296,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "- can see other participants in threads": function (done) {
+    "//- can see other participants in threads": function (done) {
         this.timeout = 25000;
 
         var _category = 'public';
@@ -313,22 +313,56 @@ buster.testCase("Friends#Unhosted", {
                       {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'},
                       {'seen':'arnold@isback.es', 'thread':'1345183170572:mongo@localhost'},
                       ];
-        siterobot.store()
+        var store = siterobot.store();
+        store
             .setValue(_username, _category, _key, _value).then(function(dataAndStore) {
-                return dataAndStore.store.setValue(_username2, _category, _key, _value2);
+                return store.setValue(_username2, _category, _key, _value2);
             })
             .then(function() {
-                createRobot(done)
+                createRobot(function(robot) {
+                    robot.user.then(function(u) {
+                        setTimeout(
+                                function() {
+                                    store
+                                    .getValue(u.username, _category, _key)
+                                    .then(function(dataAndStore) {
+                                        console.log(u.username, _category, _key, dataAndStore);
+                                        assert(dataAndStore);
+                                        assert(dataAndStore.data);
+                                        assert.equals(dataAndStore.data[0].seen, 'bongo@localhost');
+                                        assert.equals(dataAndStore.data[0].thread, '1345183170572:mongo@localhost');
+                                    },eq('No error')).always(done);
+                                }, 1000);
+                    });
+                })
                     .loginNewUser()
                     .selectFriendsInMenu()
-                    .pause(5000)
+                    .pause(500)
                     .addFriend(_username)
                     .addFriend(_username2)
                     .selectStatusesInMenu()
                     .comment(1, 1, eq("Nr 2"))
                     .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es', 'arnold@isback.es']))
-                .end();
+                .end().lastFn.promise.then();
             });
+    },
+
+    "- can see other participants in threads": function (done) {
+        this.timeout = 25000;
+
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+
+        var store = siterobot.store();
+        store
+            .getValue('genUser1345752952184@localhost', _category, _key)
+            .then(function(dataAndStore) {
+                console.log('genUser1345752952184@localhost', _category, _key, dataAndStore);
+                assert(dataAndStore);
+                assert(dataAndStore.data);
+                assert.equals(dataAndStore.data[0].seen, 'bongo@localhost');
+                assert.equals(dataAndStore.data[0].thread, '1345183170572:mongo@localhost');
+            },eq('No error')).always(done);
     },
 
 });
