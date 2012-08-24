@@ -152,6 +152,14 @@ define([], function() {
               });
         };
         
+        fuapi.addThreadParticipant = function(username, thread, usernameSeen ) {
+            return addStatusOrReply({
+                'timestamp': fuapi.getTimestamp(),
+                'thread': thread,
+                'seen': usernameSeen,
+              });
+        };
+        
         fuapi.addBackgroundTaskListeners = function(before, after) {
           fuapi.beforeBackgroundTaskListeners.push(before);  
           fuapi.afterBackgroundTaskListeners.push(after);  

@@ -178,6 +178,8 @@
 							data-bind="text: relativeTimestamp"></span> 
 						<span
 							class="status-update" data-bind="html: status"></span>
+						<span class="participants" 
+						  data-bind="foreach: participants"><a data-bind="{text: $data}"></a> </span>
 					</div>
 					<div class="comments">
             <span class="do-collapse-status" data-bind="visible: !collapsed()&&comments().length>2, click:collapse">Hide old comments</span>

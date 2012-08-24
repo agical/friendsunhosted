@@ -82,16 +82,28 @@
             redisClient.set(key,
                     JSON.stringify(value),
                     function(err, data) {
-                        console.log('err:', err);
-                        console.log('data:', data);
                         if(err) {result.reject(err);}
-                        else {result.resolve(data);}
+                        else {result.resolve({'data':data,'store':ret});}
                     });
             return result.promise;
         };
 
         ret.setValue = function(username, category, key, value) {
             return ret.setRaw('value:' + username + ':' + category + ':' + key, value);
+        };
+
+        ret.getRaw = function(key) {
+            var result = when.defer();
+            redisClient.get(key,
+                    function(err, data) {
+                        if(err) {result.reject(err);}
+                        else {result.resolve({'data':data,'store':ret});}
+                    });
+            return result.promise;
+        };
+
+        ret.getValue = function(username, category, key) {
+            return ret.getRaw('value:' + username + ':' + category + ':' + key);
         };
 
         return ret;
@@ -308,7 +320,7 @@
         
         fu.loggedInUser = function(user_cb) {
             return userAndText('#username', user_cb);
-        }
+        };
         
         fu.setStatus = function(status) {
             return setAndClick("#status-update", status, "#do-update-status");
@@ -332,6 +344,10 @@
 
         fu.statusTimeStamp = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
+        };
+
+        fu.threadParticipants = function(nr, array_cb) {
+            return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split(' '));});
         };
 
         fu.collapseStatus = function(nr) {
@@ -428,7 +444,7 @@
         
         fu.end = function() {
             defPeek().then(function() {
-                fu.b.end(done);
+                fu.b.end(function(){done(fu);});
             });
             return fu;
         };
