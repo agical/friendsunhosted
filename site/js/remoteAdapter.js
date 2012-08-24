@@ -76,15 +76,12 @@ define(['underscore', 'remoteStorage', 'when'],
           var stringData = JSON.stringify(value);
           client.put(key, stringData, function(err) {
               if(err) {
-                  console.log("remoteAdapter:", "PUT", "Error:", err, key, stringData);
                   deferred.reject(err);
               } else {
                   client.get(key, function(err, checkedData) {
                       if(!err && checkedData == stringData) {
-                          console.log("remoteAdapter:", "PUT", key, stringData);
                           deferred.resolve(value);
                       } else {
-                          console.log("remoteAdapter:", "PUT", "Error:", err, key, stringData);
                           deferred.reject("Could not verify written data, possibly because of " + err);
                       }
                   });

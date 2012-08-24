@@ -153,10 +153,6 @@ define([], function() {
         };
         
         fuapi.addThreadParticipant = function(username, thread, usernameSeen ) {
-//            var d = when.defer();
-//            console.log("========= Would have added thread part:", username, thread, usernameSeen);
-//            d.resolve("OK");
-//            return d.promise;
             return addStatusOrReply({
                 'timestamp': fuapi.getTimestamp(),
                 'thread': thread,

@@ -82,8 +82,6 @@
             redisClient.set(key,
                     JSON.stringify(value),
                     function(err, data) {
-                        console.log('err:', err);
-                        console.log('data:', data);
                         if(err) {result.reject(err);}
                         else {result.resolve({'data':data,'store':ret});}
                     });
@@ -96,11 +94,8 @@
 
         ret.getRaw = function(key) {
             var result = when.defer();
-            console.log("--------------Getting", key);
             redisClient.get(key,
                     function(err, data) {
-                        console.log('--------------err:', err);
-                        console.log('--------------data:', data);
                         if(err) {result.reject(err);}
                         else {result.resolve({'data':data,'store':ret});}
                     });
