@@ -25,12 +25,6 @@ var match = function(expected) {
     })(expected);
 };
 
-var isTrue = function(fn) {
-    return function(actual) {
-        assert.isTrue(fn(actual));
-    };
-};
-
 var assertVisible = function() {
     return function(b) {
                 assert(b.isVisible(css));
@@ -358,6 +352,8 @@ buster.testCase("Friends#Unhosted", {
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq(_value[0].status))
                     .statusUpdate(2, eq(_value[1].status))
+                    .isStatusVisible(1, eq(true))
+                    .isStatusVisible(3, eq(false))
                 .end();
             });
     },
