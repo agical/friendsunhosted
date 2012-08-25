@@ -25,12 +25,6 @@ var match = function(expected) {
     })(expected);
 };
 
-var isTrue = function(fn) {
-    return function(actual) {
-        assert.isTrue(fn(actual));
-    };
-};
-
 var assertVisible = function() {
     return function(b) {
                 assert(b.isVisible(css));
@@ -276,8 +270,10 @@ buster.testCase("Friends#Unhosted", {
         var _username = 'mongo@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
-                      {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        var firstTimestamp = new Date().getTime()-100000;
+
+        var _value = [{"status":"Hej\nhopp 11","timestamp":firstTimestamp,"username":"mongo@localhost"}, 
+                      {"status":"Nr 2","timestamp":firstTimestamp+50000,"username":"mongo@localhost"}];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
             .then(function() {
@@ -297,17 +293,18 @@ buster.testCase("Friends#Unhosted", {
 
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-
+        var firstTimestamp = new Date().getTime()-100000;
+        
         var _username = 'mongo@localhost';
-        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
-                      {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost",'inReplyTo':'1345183170572:mongo@localhost'},
-                      {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'},
-                      {'seen':'peppe@bodega.es', 'thread':'1345183170572:mongo@localhost'},
+        var _value = [{"status":"Hej\nhopp 11","timestamp":firstTimestamp,"username":"mongo@localhost"}, 
+                      {"status":"Nr 2","timestamp":firstTimestamp+30000,"username":"mongo@localhost",'inReplyTo':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arne@anka.se', 'thread':firstTimestamp+':mongo@localhost'},
+                      {'seen':'peppe@bodega.es', 'thread':firstTimestamp+':mongo@localhost'},
                       ];
         var _username2 = 'bongo@localhost';
-        var _value2 = [{"status":"Från bongo","timestamp":1345183170666,"username":"bongo@localhost",'inReplyTo':'1345183170572:mongo@localhost'},
-                      {'seen':'arne@anka.se', 'thread':'1345183170572:mongo@localhost'},
-                      {'seen':'arnold@isback.es', 'thread':'1345183170572:mongo@localhost'},
+        var _value2 = [{"status":"Från bongo","timestamp":firstTimestamp+60000,"username":"bongo@localhost",'inReplyTo':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arne@anka.se', 'thread':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arnold@isback.es', 'thread':firstTimestamp+':mongo@localhost'},
                       ];
         var store = siterobot.store();
         store
@@ -324,6 +321,44 @@ buster.testCase("Friends#Unhosted", {
                     .selectStatusesInMenu()
                     .comment(1, 1, eq("Nr 2"))
                     .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es', 'arnold@isback.es']))
+                .end();
+            });
+    },
+
+    
+    "- display one week at a time with a fetch more button": function (done) {
+        this.timeout = 25000;
+
+        var _username = 'mongo@localhost';
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+        var ONE_DAY_MS = 1000*60*60*24;
+        var now = new Date().getTime();
+
+        var _value = [{"status":"Now","timestamp":now,"username":"mongo@localhost"}, 
+                      {"status":"6 days ago","timestamp":now-ONE_DAY_MS*6,"username":"mongo@localhost"},
+                      {"status":"8 days ago","timestamp":now-ONE_DAY_MS*8,"username":"mongo@localhost"},
+                      {"status":"13 days ago","timestamp":now-ONE_DAY_MS*13,"username":"mongo@localhost"},
+                      {"status":"15 days ago","timestamp":now-ONE_DAY_MS*15,"username":"mongo@localhost"},
+                      ];
+        siterobot.store()
+            .setValue(_username, _category, _key, _value)
+            .then(function() {
+                createRobot(done)
+                    .loginNewUser()
+                    .selectFriendsInMenu()
+                    .pause(500)
+                    .addFriend(_username)
+                    .selectStatusesInMenu()
+                    .statusUpdate(1, eq(_value[0].status))
+                    .statusUpdate(2, eq(_value[1].status))
+                    .isStatusVisible(3, eq(false))
+                    .getMoreUpdates()
+                    .statusUpdate(3, eq(_value[2].status))
+                    .statusUpdate(4, eq(_value[3].status))
+                    .isStatusVisible(5, eq(false))
+                    .getMoreUpdates()
+                    .statusUpdate(5, eq(_value[4].status))
                 .end();
             });
     },

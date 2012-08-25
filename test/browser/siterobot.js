@@ -220,7 +220,7 @@
                     .pause(200)
                     .waitFor(css, 2000) 
                     .isVisible(css, function(visible) {
-                        element_cb(visible);
+                        element_cb(!visible.value && visible);
                         d.resolve();
                     });
             });   
@@ -329,7 +329,15 @@
         fu.statusUpdate = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update', text_cb);
         };
+
+        fu.isStatusVisible = function(nr, visible_cb) {
+            return isVisible('#status-nr-' + nr + ' .status-update', visible_cb);
+        };
         
+        fu.getMoreUpdates = function() {
+            return click('#do-get-more-updates');
+        }
+
         fu.pageSource = function(text_cb) {
             return source(text_cb);
         };
