@@ -37,9 +37,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     self.addFriendsUsername = ko.observable("");
     self.me = ko.observable({});
-    var ONE_DAY_MS = 1000*60*60*24;
-    self.timeLimitForData = ko.observable(new Date().getTime()-(ONE_DAY_MS * 7));
     
+    var ONE_DAY_MS = 1000*60*60*24;
+    var GET_MORE_INCREMENT = ONE_DAY_MS*7;
+    self.timeLimitForData = ko.observable(new Date().getTime()-GET_MORE_INCREMENT);
+    
+    self.getMoreUpdates = function() {
+        self.timeLimitForData(self.timeLimitForData()-GET_MORE_INCREMENT);
+    };
     
     function Friend(friendData) {
         var friend = friendData;
@@ -49,6 +54,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         friend.allComments = ko.observableArray([]);
         friend.allSeenParticipants = ko.observableArray([]);// [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
         friend.lastUpdated = ko.observable(0);
+        
+        self.timeLimitForData.subscribe(function() {
+            friend.updateStatuses();
+        });
         
         var addCommentToRootLater = function(comment, rootId) {
             setTimeout(function() {

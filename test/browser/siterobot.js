@@ -333,6 +333,10 @@
         fu.isStatusVisible = function(nr, visible_cb) {
             return isVisible('#status-nr-' + nr + ' .status-update', visible_cb);
         };
+        
+        fu.getMoreUpdates = function() {
+            return click('#do-get-more-updates');
+        }
 
         fu.pageSource = function(text_cb) {
             return source(text_cb);

@@ -352,8 +352,13 @@ buster.testCase("Friends#Unhosted", {
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq(_value[0].status))
                     .statusUpdate(2, eq(_value[1].status))
-                    .isStatusVisible(1, eq(true))
                     .isStatusVisible(3, eq(false))
+                    .getMoreUpdates()
+                    .statusUpdate(3, eq(_value[2].status))
+                    .statusUpdate(4, eq(_value[3].status))
+                    .isStatusVisible(5, eq(false))
+                    .getMoreUpdates()
+                    .statusUpdate(5, eq(_value[4].status))
                 .end();
             });
     },
