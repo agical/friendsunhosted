@@ -93,8 +93,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
         friend.updateFriends = function() {
             var updateFriendsDone = when.defer();
-            fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
-                friend.allFriends(_.map(data,Friend));
+            fuapi.fetchFriendsOfFriend(friendData.username).then(function(fetchedFriends){
+                var newFriendsRaw = _.reject(fetchedFriends, 
+                    function(newFriend) {
+                        return _.any(friend.allFriends(), 
+                            function(oldFriend){
+                                return oldFriend.username==newFriend.username;
+                            });
+                });
+                if(friend.allFriends().length==0) {
+                    friend.allFriends(_.map(newFriendsRaw,Friend));
+                } else {
+                    friend.allFriends().push.apply(friend.allFriends(), _.map(newFriendsRaw,Friend));
+                }
                 updateFriendsDone.resolve(friend);
             }, updateFriendsDone.reject);
             return updateFriendsDone.promise;
@@ -192,7 +203,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             var updateInterval = 5*60*1000;
             setTimeout(function() {
                 friend.updateFriends().always(friend.setAutoUpdateFriends);
-            }, 5*60*1000);
+            }, updateInterval);
         };
 
         return friend;

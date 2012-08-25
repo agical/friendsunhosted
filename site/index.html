@@ -155,10 +155,11 @@
 
 		<div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
 			<div class="status-update span6">
+        <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
 				<textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate"></textarea>
 				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
-
+      
 			<div id="status-stream" class="span6" data-bind="foreach:allRootStatuses().reverse()">
 				<div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
 					<div class="status-details span6">
