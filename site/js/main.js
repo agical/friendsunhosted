@@ -56,7 +56,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         friend.lastUpdated = ko.observable(0);
         
         self.timeLimitForData.subscribe(function() {
-            friend.updateStatuses();
+            setTimeout(friend.updateStatuses, 0);
         });
         
         var addCommentToRootLater = function(comment, rootId) {
