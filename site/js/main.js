@@ -172,64 +172,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             fuapi.fetchStatusForUser(friend.username).then(function(updates) {
                 rawUpdates = updates;
                 
-                var newRoots = [];
-                var newComments = [];
-                var newSeen = [];
-                var newLastUpdate = 0;
-                var onlyRecentUpdates = _.reject(updates, function(u) {
-                    return u.timestamp < self.timeLimitForData(); //|| u.timestamp<friend.lastUpdated(); 
-                });
-
-                _.each(onlyRecentUpdates, function(update) {
-                   update.username = friend.username;
-                   newLastUpdate = Math.max(newLastUpdate, update.timestamp);
-                   
-                   if(update.inReplyTo && 
-                      !_.any(friend.allComments(), function(oldComment) {
-                                                      return update.timestamp==oldComment.timestamp;
-                                                  })) {
-                       newComments.push(update);
-                   } else if(update.seen) {
-                       newSeen.push(update);
-                   } else if(!update.inReplyTo && !_.any(friend.allRootStatuses(), function(oldRoot) {
-                                                                   return update.timestamp==oldRoot.timestamp;
-                                                               })) {
-                       newRoots.push(update);
-                   }
-                });
-
-                if(newRoots.length>0) {
-                    _.each(newRoots, function(r) {
-                        var su = self.StatusUpdate(r);
-                        if(!self.threadIdToRootStatus[su.id()]) {
-                            friend.allRootStatuses.push(su);
-                            self.allRootStatuses.push(su);
-                            self.threadIdToRootStatus[su.id()] = su;
-                        }
-                    });
-                    self.sortRootStatuses();
-                }
-                if(newComments.length>0) {
-                    _.each(newComments, function(r) {
-                        var c = self.StatusUpdate(r);
-                        c.tries = 0;
-                        addCommentToRootLater(c, r.inReplyTo);
-                    });
-                }
-                if(newSeen.length>0) {
-                    _.each(newSeen, function(r) {
-                        r.tries = 0;
-                        addParticipantsToRootLater(r, r.thread);
-                    });
-                }
-                if(newLastUpdate) {
-                    friend.lastUpdated(newLastUpdate);
-                }
-                updateDone.resolve(friend);
-            }, function(err) { 
-                updateDone.reject(err);
-            });
-
+                friend.showMoreStatuses().then(updateDone.resolve, updateDone.reject);
+            }, updateDone.reject);
             return updateDone.promise;
         };
 
