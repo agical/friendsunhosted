@@ -25,12 +25,6 @@ var match = function(expected) {
     })(expected);
 };
 
-var isTrue = function(fn) {
-    return function(actual) {
-        assert.isTrue(fn(actual));
-    };
-};
-
 var assertVisible = function() {
     return function(b) {
                 assert(b.isVisible(css));
@@ -54,8 +48,8 @@ buster.testCase("Friends#Unhosted", {
             
         createRobot(done)  
             .loginNewUser()
-            .welcomeMessage(function(user) {
-                return eq("Welcome, " + user.username + "!");
+            .loggedInUser(function(user) {
+                return eq(user.username);
             })
         .end();
     },
@@ -95,17 +89,17 @@ buster.testCase("Friends#Unhosted", {
             .addComment(1, "Comment 1.1")
             .addComment(1, "Comment 1.2")
             .addComment(1, "Comment 1.3")
-            .commentVisible(1, 1, eq(true))
-            .commentVisible(1, 2, eq(true))
-            .commentVisible(1, 3, eq(true))
-            .collapseStatus(1)
-            .pause(1000)
             .commentVisible(1, 1, eq(false))
             .commentVisible(1, 2, eq(true))
             .commentVisible(1, 3, eq(true))
             .expandStatus(1)
             .pause(1000)
             .commentVisible(1, 1, eq(true))
+            .commentVisible(1, 2, eq(true))
+            .commentVisible(1, 3, eq(true))
+            .collapseStatus(1)
+            .pause(1000)
+            .commentVisible(1, 1, eq(false))
             .commentVisible(1, 2, eq(true))
             .commentVisible(1, 3, eq(true))
         .end();
@@ -171,13 +165,10 @@ buster.testCase("Friends#Unhosted", {
             var friendsFriend = when.defer();
             var allDone = when.defer();
             createTestUser().then(function(friendObject) {
-                console.log(friendObject);
-
                 friendsFriend.resolve(friendObject.username);
                 createRobot(allDone.resolve)
                     .loginNewUser()
                     .loggedInUser(function(userWithFriendUsername) {
-                        console.log(userWithFriendUsername);
                         friend.resolve(userWithFriendUsername.username);
                         return match(/.*/);
                     })
@@ -191,7 +182,6 @@ buster.testCase("Friends#Unhosted", {
         
         when.all(createFriendWithFriend(),
             function(users) {
-                console.log(users);
                 var friend = users[0];
                 var friendsFriend = users[1];
                 createRobot(done)
@@ -280,8 +270,10 @@ buster.testCase("Friends#Unhosted", {
         var _username = 'mongo@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
-                      {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        var firstTimestamp = new Date().getTime()-100000;
+
+        var _value = [{"status":"Hej\nhopp 11","timestamp":firstTimestamp,"username":"mongo@localhost"}, 
+                      {"status":"Nr 2","timestamp":firstTimestamp+50000,"username":"mongo@localhost"}];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
             .then(function() {
@@ -299,11 +291,56 @@ buster.testCase("Friends#Unhosted", {
     "- can see other participants in threads": function (done) {
         this.timeout = 25000;
 
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+        var firstTimestamp = new Date().getTime()-100000;
+        
+        var _username = 'mongo@localhost';
+        var _value = [{"status":"Hej\nhopp 11","timestamp":firstTimestamp,"username":"mongo@localhost"}, 
+                      {"status":"Nr 2","timestamp":firstTimestamp+30000,"username":"mongo@localhost",'inReplyTo':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arne@anka.se', 'thread':firstTimestamp+':mongo@localhost'},
+                      {'seen':'peppe@bodega.es', 'thread':firstTimestamp+':mongo@localhost'},
+                      ];
+        var _username2 = 'bongo@localhost';
+        var _value2 = [{"status":"Från bongo","timestamp":firstTimestamp+60000,"username":"bongo@localhost",'inReplyTo':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arne@anka.se', 'thread':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arnold@isback.es', 'thread':firstTimestamp+':mongo@localhost'},
+                      ];
+        var store = siterobot.store();
+        store
+            .setValue(_username, _category, _key, _value).then(function(dataAndStore) {
+                return store.setValue(_username2, _category, _key, _value2);
+            })
+            .then(function() {
+                createRobot(done)
+                    .loginNewUser()
+                    .selectFriendsInMenu()
+                    .pause(500)
+                    .addFriend(_username)
+                    .addFriend(_username2)
+                    .selectStatusesInMenu()
+                    .comment(1, 1, eq("Nr 2"))
+                    .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es', 'arnold@isback.es']))
+                .end();
+            });
+    },
+
+    
+    "- display one week at a time with a fetch more button": function (done) {
+        this.timeout = 25000;
+
         var _username = 'mongo@localhost';
         var _category = 'public';
         var _key = 'friendsunhosted_status';
-        var _value = [{"status":"Hej\nhopp 11","timestamp":1345183170572,"username":"mongo@localhost"}, 
-                      {"status":"Nr 2","timestamp":1345183170573,"username":"mongo@localhost"}];
+        var ONE_DAY_MS = 1000*60*60*24;
+        var now = new Date().getTime();
+
+        var _value = [{"status":"Now","timestamp":now,"username":"mongo@localhost"}, 
+                      {"status":"2 days ago","timestamp":now-ONE_DAY_MS*2,"username":"mongo@localhost"},
+                      {"status":"4 days ago","timestamp":now-ONE_DAY_MS*4,"username":"mongo@localhost"},
+                      {"status":"5 days ago","timestamp":now-ONE_DAY_MS*5,"username":"mongo@localhost"},
+                      {"status":"7 days ago","timestamp":now-ONE_DAY_MS*7,"username":"mongo@localhost"},
+                      ];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
             .then(function() {
@@ -313,7 +350,15 @@ buster.testCase("Friends#Unhosted", {
                     .pause(500)
                     .addFriend(_username)
                     .selectStatusesInMenu()
-                    .statusUpdate(1, eq("Nr 2"))
+                    .statusUpdate(1, eq(_value[0].status))
+                    .statusUpdate(2, eq(_value[1].status))
+                    .isStatusVisible(3, eq(false))
+                    .getMoreUpdates()
+                    .statusUpdate(3, eq(_value[2].status))
+                    .statusUpdate(4, eq(_value[3].status))
+                    .isStatusVisible(5, eq(false))
+                    .getMoreUpdates()
+                    .statusUpdate(5, eq(_value[4].status))
                 .end();
             });
     },

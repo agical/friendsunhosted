@@ -38,7 +38,7 @@
 					<input type="text" class="span2" placeholder="username@storage.com" id="username" data-bind="value: username"/><button id="do-login" class="btn" data-bind="click: login">Login</button>
 				</div>
 				<div class="logged-in" data-bind="visible: loggedIn()">
-					<span class="storage-id" data-bind="text: username()"></span>
+					<span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
 					<a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
 				</div>
 			</div>
@@ -152,13 +152,13 @@
     </div>
 	</div>
 
-		<div id="page-status" class="page status logged-in hidden" data-bind="visible:(loggedIn() && selectedTab()=='status')">
-			<div class="status-update span6 offset3">
+		<div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+			<div class="status-update span6">
 				<textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate"></textarea>
 				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
 
-			<div id="status-stream" class="span6 offset3" data-bind="foreach:allRootStatuses().reverse()">
+			<div id="status-stream" class="span6" data-bind="foreach:allRootStatuses().reverse()">
 				<div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
 					<div class="status-details span6">
 						<div class="row">
@@ -166,6 +166,7 @@
 							<span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
 						</div>
 						<span class="status-update" data-bind="html:status"></span>
+            <span class="participants" data-bind="foreach: participants"><a data-bind="{text: $data}"></a> </span>
 					</div>
 					<div class="comments row">
 						<span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
@@ -186,18 +187,22 @@
 					</div>
 				</div>
 			</div>
+      <br class="clearboth"/>
+      <div id="get-more-updates">
+         <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
+      </div>
 
 		</div>
 
-		<div id="page-myfriends" class="page friends logged-in hidden row" data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
-			<div id="add-a-friend" class="logged-in input-append span5 offset3" data-bind="visible:loggedIn()">
+		<div id="page-myfriends" class="page friends logged-in hidden row span12" data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
+			<div id="add-a-friend" class="logged-in input-append span5" data-bind="visible:loggedIn()">
 				<input type="text" id="add-friends-username" class="span3" placeholder="friendsname@storage.com" data-bind="value:addFriendsUsername"/>
 				<button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
 			</div>
 			<div id="friends" class="logged-in span12">
 				<div class="row">
 					<!-- ko foreach: me().allFriends -->
-					<div class="friend-details span3" data-bind="attr:{id:'friend-'+($index()+1)}">
+					<div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
 						<span class="friend storage-id" data-bind="text:username"></span>
 						<a href="#" class="remove-friend close" data-bind="click: $parent.removeFriend">×</a>
 						<!-- ko foreach: allFriends -->
@@ -270,7 +275,9 @@
 					<p>The easiest is to get an account on one of the following
 						storage providers:</p>
 					<ul>
-						<li><a target="top" href="https://5apps.com/users/sign_up">5apps</a></li>
+            <li><a target="_blank" href="https://5apps.com/users/sign_up">5apps</a></li>
+            <li><a target="_blank" href="https://portknox.net">PortKnox</a></li>
+            <li><a target="_blank" href="https://owncube.com">OwnCube</a></li>
 					</ul>
 					<p>You will get a username that looks like an email address:</p>
 					<p>
@@ -283,17 +290,11 @@
 						state. You can read more about #unhosted storage providers here -
 						you can even host your own:</p>
 					<ul>
-						<li><a target="top"
+						<li><a target="_blank"
 							href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds
 								listing of storage providers</a></li>
 					</ul>
-
-					<p>
-						One of the listed services, <a target="top"
-							href="https://owncube.com/">OwnCube</a>, is not on our list. After
-						a serious outage and bad customer relation management, we cannot
-						recommend this service. Feel free to use it, at your own peril.
-					</p>
+					<p>Get unhosted today!</p>
 				</div>
 
 			</div>

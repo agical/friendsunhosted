@@ -108,10 +108,17 @@ define([], function() {
             return afterUserStatus.promise;
         };
         
+        var cleanFromSeenInThread = function(updates) {
+            return _.reject(updates, function(item) {
+                return item.seen;
+            });
+        };
+        
         var addStatusOrReply = function(statusData) {
             var afterStatusUpdate = when.defer();
             rem.fetchUserData(STATUS_KEY_V3).then(function(statusUpdates) {
                 statusUpdates = statusUpdates || [];
+                statusUpdates = cleanFromSeenInThread(statusUpdates);
                 statusUpdates.push(statusData);
                 rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
                     afterStatusUpdate.resolve(statusUpdates);
@@ -152,6 +159,15 @@ define([], function() {
               });
         };
         
+        /*
+        fuapi.addThreadParticipant = function(username, thread, usernameSeen ) {
+            return addStatusOrReply({
+                'timestamp': fuapi.getTimestamp(),
+                'thread': thread,
+                'seen': usernameSeen,
+              });
+        };
+        */
         fuapi.addBackgroundTaskListeners = function(before, after) {
           fuapi.beforeBackgroundTaskListeners.push(before);  
           fuapi.afterBackgroundTaskListeners.push(after);  

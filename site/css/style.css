@@ -61,12 +61,12 @@ a { text-decoration:none; font-style:normal; outline:0; }
 
 #page-myfriends { margin:0; }
 .friend-details { position:relative; padding:.5em 0; cursor:pointer; text-overflow:ellipsis; overflow:hidden; }
-.friend-details .close { display:none; position:absolute; right:0; top:.4em; }
-.friend-details:hover .close { display:inline; }
+/*.friend-details .close { display:none; position:absolute; right:0; top:.4em; }*/
+.friend-details .close { display:inline; }
 .storage-id { font-weight:bold; white-space:nowrap; }
 	.friends-friend .storage-id { font-weight:normal; }
-	.friends-friend .add-friends-friend { display:none; }
-	.friends-friend:hover .add-friends-friend { display:inline; }
+	/*.friends-friend .add-friends-friend { display:none; }*/
+	.friends-friend .add-friends-friend { display:inline; }
 	.add-friends-friend { padding:0 .3em; border-radius:50%; background:#bbb; color:#fff; font-weight:bold; }
 	.add-friends-friend:hover { background:#ccc; color:#fff; }
 
