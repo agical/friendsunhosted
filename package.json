@@ -1,10 +1,10 @@
 {
   "name": "friendsunhosted",
   "version": "0.0.1",
-  "homepage": "http://friendsunhosted.com",
+  "homepage": "http://friendsunhosted.com",  
+  "scripts":{"preinstall": "wget http://selenium.googlecode.com/files/selenium-server-standalone-2.25.0.jar && mv selenium-server-standalone-2.25.0.jar node_modules "},
   "devDependencies": {
     "buster-amd": "~0.2.0",
-    "selenium": "~2.20.0",
     "buster": "~0.6.2",
     "webdriverjs": "~0.6.9",
     "soda": "~0.2.5",

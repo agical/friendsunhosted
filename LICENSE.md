@@ -1,2 +1,4 @@
-This code is licenced under Creative Commons Attribution-ShareAlike 3.0 Unported License http://creativecommons.org/licenses/by-sa/3.0/
+(c) Agical AB 2012 
+This work is licensed under AGPLv3
+http://opensource.org/licenses/AGPL-3.0
 

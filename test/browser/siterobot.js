@@ -48,27 +48,67 @@
     }
     
     function createTestUser() {
-      return createNewUser("genUser" + new Date().getTime(), "1234568");
+      return createNewUser("genUser" + new Date().getTime() + '@localhost', "1234568");
     }
     
     
     function createNewUser(username, password, cb) {
+        var userSplit = username.split('@');
       var options = {
         host: 'localhost',
         port: 80,
-        path: '/create_user/localhost/' +  username + "/" + password
+        path: '/create_user/' + userSplit[1] + '/' +  userSplit[0] + '/' + password
       };
       var deferred = when.defer();
       
       http.get(options, function(res) {
         deferred.resolve(
-          {username: username + "@" + options.host,
+          {username: username,
            password: password });
       })
       .on('error', deferred.reject);
         
       return deferred.promise;
     }
+    
+    var store = function() {
+        var ret = {};
+        var redisClient=require('redis').createClient(6379, 'localhost');
+        redisClient.on("error", console.log);
+        redisClient.auth('');
+        
+        ret.setRaw = function(key, value) {
+            var result = when.defer();
+            redisClient.set(key,
+                    JSON.stringify(value),
+                    function(err, data) {
+                        if(err) {result.reject(err);}
+                        else {result.resolve({'data':data,'store':ret});}
+                    });
+            return result.promise;
+        };
+
+        ret.setValue = function(username, category, key, value) {
+            return ret.setRaw('value:' + username + ':' + category + ':' + key, value);
+        };
+
+        ret.getRaw = function(key) {
+            var result = when.defer();
+            redisClient.get(key,
+                    function(err, data) {
+                        if(err) {result.reject(err);}
+                        else {result.resolve({'data':data,'store':ret});}
+                    });
+            return result.promise;
+        };
+
+        ret.getValue = function(username, category, key) {
+            return ret.getRaw('value:' + username + ':' + category + ':' + key);
+        };
+
+        return ret;
+    };
+
     
     var createRobot = function(done) {
         var fu = {};
@@ -180,7 +220,7 @@
                     .pause(200)
                     .waitFor(css, 2000) 
                     .isVisible(css, function(visible) {
-                        element_cb(visible);
+                        element_cb(!visible.value && visible);
                         d.resolve();
                     });
             });   
@@ -271,16 +311,12 @@
         };
             
         fu.welcomeHeadline = function(text_cb) {
-            return text('#page-welcome h3', text_cb);
+            return text('#info-what-is h3', text_cb);
         };
     
-        fu.welcomeMessage = function(userFn_message_cb) {
-            return userAndText('#welcome-message', userFn_message_cb);
-        };
-        
         fu.loggedInUser = function(user_cb) {
-            return userAndText('#username', user_cb);
-        }
+            return userAndText('#logged-in-user', user_cb);
+        };
         
         fu.setStatus = function(status) {
             return setAndClick("#status-update", status, "#do-update-status");
@@ -289,7 +325,15 @@
         fu.statusUpdate = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update', text_cb);
         };
+
+        fu.isStatusVisible = function(nr, visible_cb) {
+            return isVisible('#status-nr-' + nr + ' .status-update', visible_cb);
+        };
         
+        fu.getMoreUpdates = function() {
+            return click('#do-get-more-updates');
+        }
+
         fu.pageSource = function(text_cb) {
             return source(text_cb);
         };
@@ -304,6 +348,10 @@
 
         fu.statusTimeStamp = function(nr, text_cb) {
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
+        };
+
+        fu.threadParticipants = function(nr, array_cb) {
+            return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split(' '));});
         };
 
         fu.collapseStatus = function(nr) {
@@ -400,7 +448,7 @@
         
         fu.end = function() {
             defPeek().then(function() {
-                fu.b.end(done);
+                fu.b.end(function(){done(fu);});
             });
             return fu;
         };
@@ -410,5 +458,6 @@
     
     exports.createRobot = createRobot;
     exports.createTestUser = createTestUser;
+    exports.store = store;
 
 })();

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>FRIENDS#UNHOSTED - the #unhosted friends network</title>
-<link type="text/css"
-	href="css/custom-theme/jquery-ui-1.8.20.custom.css" rel="stylesheet" />
-<link type="text/css" href="css/style.css" rel="stylesheet" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/style.css" rel="stylesheet" />
+<link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+<title>FRIENDS#UNHOSTED - Own your network!</title>
 <script type="text/javascript" data-main="js/main" src="js/require.js"></script>
 <script type="text/javascript">
     // Configuring the RequireJS paths to have versions in one place
@@ -13,76 +14,49 @@
         paths : {
             "jquery" : "jquery-1.7.2.min",
             "ko" : "knockout-2.1.0.debug",
-            "ui" : "jquery-ui-1.8.20.custom.min"
+            "ui" : "bootstrap.min"
         }
     });
 </script>
 </head>
 
 <body>
-  <div id="loading-screen">
+
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" alt="FRIENDS#UNHOSTED" /></a>
+			<ul id="menubar" class="nav">
+				<li><a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a></li>
+				<li><a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a></li>
+				<!--<li><a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a></li>-->
+				<!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
+				<li><a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a></li>
+			</ul>
+
+			<div class="login-area">
+				<div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
+					<input type="text" class="span2" placeholder="username@storage.com" id="username" data-bind="value: username"/><button id="do-login" class="btn" data-bind="click: login">Login</button>
+				</div>
+				<div class="logged-in" data-bind="visible: loggedIn()">
+					<span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
+					<a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+
+<div id="loading-screen">
     Loading...
   </div>
 
   <div id="upgrading-storage-screen">
     Upgrading storage
   </div>
-
-
-	<div id="all">
-		<div id="header" >
-			<div class="logo">
-				<img id="logo-top" src="img/logo.png" />
-			</div>
-      <div class="login-area">
-        <div class="not-logged-in" data-bind="visible: !loggedIn()">
-          <input placeholder="username@storageserver.com" id="username"
-            data-bind="value: username" size="26"/>
-          <button id="do-login" data-bind="click: login">Login</button>
-        </div>
-        <div class="logged-in" data-bind="visible: loggedIn()">
-          <span id="welcome-message" >Welcome, <span class="storage-id" data-bind="text: username()"></span>!</span>
-          <button id="do-logout" data-bind="click: logout">Logout</button>
-        </div>
-      </div>
-      <div id="support-area">
-      
-        <div class="support" id="flattr">
-          <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
-            target="_blank"> <img src="img/flattr-badge-large.png"
-            alt="Flattr this" title="Flattr this" border="0" />
-          </a>
-        </div>
-        <div class="support" id="paypal">
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
-            target="_blank">
-            <input type="hidden" name="cmd" value="_s-xclick" /> <input
-              type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> <input
-              type="image" src="img/btn_donate_SM.gif" border="0" name="submit"
-              alt="PayPal - The safer, easier way to pay online!" />
-          </form>
-        </div>
-        <div class="support" id="bitcoin">
-          <a
-            href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
-            target="_blank"> <img src="img/bitcoin.png"
-            alt="BitCoin donation" /> BitCoin
-          </a>
-        </div>
-        <br class="clearboth"/>
-      </div>
-		</div>
-
-    <div id="menubar">
-      <a class="menu-bar-item" id="menu-welcome" href="#welcome" data-bind="click: function() { selectTab('welcome') }">Welcome!</a>
-      <a class="menu-bar-item" id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
-      <a class="menu-bar-item" id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
-      <!--<a class="menu-bar-item" id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>-->
-      <!--<a class="menu-bar-item" id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a>-->
-      <a class="menu-bar-item" id="menu-support" href="#support" data-bind="click: function() { selectTab('support') }">Support</a>
-      <a class="menu-bar-item" id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
-      <br class="clearboth"/>
-    </div>
 
 		<div class="ui-widget" id="error-panel">
 			<div class="ui-state-error ui-corner-all">
@@ -94,12 +68,15 @@
       <br class="clearboth"/>
 		</div>
 
-    <div id="page-about" class="page about full-page-text hidden" data-bind="visible: selectedTab() == 'about'">
+    <div id="page-about" class="page about full-page-text hidden row" data-bind="visible: selectedTab() == 'about'">
+		<div class="span6">
       <h3>About FRIENDS#UNHOSTED</h3>
       <p>
 	      FRIENDS#UNHOSTED is developed by the staff at <a href="http://agical.com" target="_blank">Agical</a>, 
 	      a Swedish IT consultancy firm with a passion for building the software community and for open source. 
-	      F#Un is open source and released with some rights reserved, under the Creative Commons Attribution-ShareAlike 3.0 license. 
+	      F#Un is open source and released with some rights reserved under the 
+	      <a rel="license" target="_blank" href="http://opensource.org/licenses/AGPL-3.0">AGPLv3</a> 
+	      license.
 	      The source is available at our <a target="_blank" href="https://github.com/agical/friendsunhosted">GitHub repository</a>   
 	      Feel free to fork it and help us out.
       </p>
@@ -108,29 +85,40 @@
 	      users, not by some Mega Corp. The #unhosted technology makes this possible. At the moment, all 
 	      data is public, meaning anyone can read anything you write. We intend to add privacy enhancing 
 	      features using common cryptographic solutions.
-      </p>      
+      </p>
+      
+		<h3>Give me the technical details!</h3>
+		<p>Regarding how #unhosted works, please read the material on <a href="http://unhosted.org/">unhosted.org</a>. Simply put, it is a secure, standardized, API for storing key-value data pairs in different categories.</p>
+		<p>F#Un uses (as of now in early beta) the <em>public</em> category storage of your unhosted account. This means that anyone can see your updates and your list of friends, in a twitterish style. The plan for the future is to share keys to lock the stuff you only want your friends to see, so stay tuned for that.</p>
+      
+		<p>
+      <a rel="license" target="_blank"
+                          href="http://opensource.org/licenses/AGPL-3.0">
+                          This work is licensed under AGPLv3</a>.
+		</p>	 
     </div>
 
-    <div id="page-support" class="page support full-page-text hidden"  data-bind="visible: selectedTab() == 'support'">
+	<div class="span6">
       <h3>Support us!</h3>
-      <p>
-      If you like what we do, please support us by sending us some donations using one of:  
-      </p>
+
+	<p>This app has so far been developed on spare time. Hopefully, with a little help from our friends (that means You), we can start developing during normal business hours, part or full time. Please, Flattr the application, send some BitCoins our way, or donate using PayPal.</p>
+
+	<p>If you like what we do, please support us by sending us some donations using one of:</p>
       <p>        
       Flattr: <a href="http://flattr.com/thing/741361/FRIENDSUNHOSTED"
         target="_blank"> <img src="img/flattr-badge-large.png"
         alt="Flattr this" title="Flattr this" border="0" />
       </a>
-      <br/>
+      </p>
       <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
         target="_blank">
         <input type="hidden" name="cmd" value="_s-xclick" /> <input
           type="hidden" name="hosted_button_id" value="C32DLYU6B48BE" /> 
         PayPal: <input
           type="image" src="img/btn_donate_SM.gif" border="0" name="submit"
-          alt="PayPal - The safer, easier way to pay online!" />
+          alt="Donate with PayPal" />
       </form>
-      <br/>
+      <p>
       BitCoin: <a
         href="https://blockchain.info/address/1HNo18T8KEiuaMws7E8f5J4SB7A24FRJGg"
         target="_blank"> <img src="img/bitcoin.png"
@@ -163,90 +151,80 @@
       </p>
       
     </div>
+	</div>
 
-		<div id="page-status" class="page status logged-in hidden"
-			data-bind="visible: (loggedIn() && selectedTab() == 'status')">
-			<a href="" id="refresh-link" data-bind="click: refresh">Refresh
-				statuses</a>
-
-			<div class="status-update">
-				<textarea id="status-update" placeholder="What'cha doin?"
-					data-bind="value: statusUpdate"></textarea>
-				<button id="do-update-status" data-bind="click: updateStatus">Update
-					status</button>
+		<div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+			<div class="status-update span6">
+				<textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate"></textarea>
+				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
 
-			<div id="status-stream"
-				data-bind="foreach: allRootStatuses().reverse()">
-				<div class="conversation"
-					data-bind="attr: {id: 'status-nr-'+($index()+1)}">
-					<div class="status-details">
-						<span class="status-update-username storage-id"
-							data-bind="text: username"></span> 
-						<span
-							class="status-update-timestamp"
-							data-bind="text: relativeTimestamp"></span> 
-						<span
-							class="status-update" data-bind="html: status"></span>
+			<div id="status-stream" class="span6" data-bind="foreach:allRootStatuses().reverse()">
+				<div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+					<div class="status-details span6">
+						<div class="row">
+							<span class="status-update-username storage-id span2" data-bind="text:username"></span>
+							<span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
+						</div>
+						<span class="status-update" data-bind="html:status"></span>
+            <span class="participants" data-bind="foreach: participants"><a data-bind="{text: $data}"></a> </span>
 					</div>
-					<div class="comments">
-            <span class="do-collapse-status" data-bind="visible: !collapsed()&&comments().length>2, click:collapse">Hide old comments</span>
-            <span class="do-expand-status" data-bind="visible: collapsed()&&comments().length>2, click:expand">View all <span data-bind="text: comments().length"></span> comments</span>
+					<div class="comments row">
+						<span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
+						<span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">view all <span data-bind="text:comments().length"></span> comments ▾</span>
 						<!-- ko foreach: comments -->
-						<div class="comment"
-							data-bind="visible: !collapsed(), attr: {id: 'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
-							<span class="comment-update-username storage-id"
-								data-bind="text: username"></span> <span
-								class="comment-update-timestamp"
-								data-bind="text: relativeTimestamp"></span> <span
-								class="comment-update" data-bind="html: status"></span>
+						<div class="comment span5 offset1" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+							<div class="row">
+								<span class="comment-update-username storage-id span2" data-bind="text:username"></span>
+								<span class="comment-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
+							</div>
+							<span class="comment-update" data-bind="html:status"></span>
 						</div>
 						<!-- /ko -->
-						<div class="comment-form">
-							<textarea placeholder="Your reply" class="comment"
-								data-bind="value: comment, attr: {'id':id}"></textarea>
-							<button class="do-comment" data-bind="click: doComment">Comment</button>
+						<div class="comment-form span5 offset1">
+							<textarea placeholder="Your reply" class="comment span5" data-bind="value:comment, attr:{'id':id}"></textarea>
+							<button class="do-comment btn" data-bind="click:doComment">Comment</button>
 						</div>
 					</div>
 				</div>
 			</div>
       <br class="clearboth"/>
+      <div id="get-more-updates">
+         <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
+      </div>
 
 		</div>
 
-		<div id="page-myfriends" class="page friends logged-in hidden"
-			data-bind="visible: (loggedIn() && selectedTab() == 'myfriends')">
-			<div id="add-a-friend" class="logged-in"
-				data-bind="visible: loggedIn()">
-				<label for="add-friends-username storage-id ">Add a friend</label>
-				<input id="add-friends-username"
-					placeholder="friendsusername@storagelocation.com"
-					data-bind="value: addFriendsUsername" />
-				<button id="do-add-friend" data-bind="click: function(){$root.addFriend($root.addFriendsUsername());}">Add!</button>
+		<div id="page-myfriends" class="page friends logged-in hidden row span12" data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
+			<div id="add-a-friend" class="logged-in input-append span5" data-bind="visible:loggedIn()">
+				<input type="text" id="add-friends-username" class="span3" placeholder="friendsname@storage.com" data-bind="value:addFriendsUsername"/>
+				<button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
 			</div>
-
-			<div id="friends" class="logged-in">
-				<!-- ko foreach: allFriends -->
-				<div class="friend-details" data-bind="attr: {id:'friend-' + ($index()+1)}">
-					<span class="friend storage-id" data-bind="text: username"></span>
-					<a href="#" class="remove-friend"
-						data-bind="click: $parent.removeFriend">Remove</a>
-            <br/>
-          <!-- ko foreach: allFriends -->
-            <div class="friends-friend" data-bind="attr: {id:'friend-of-'+($parentContext.$index()+1) + '-nr-' + ($index()+1)}">
-			  		  ---<span class="storage-id" data-bind="text: username"></span> 
-			  		  <a href="#" class="add-friends-friend" data-bind="click:function() {$root.addFriend(username);}">Add</a>
-		  		  </div>
-          <!-- /ko -->
+			<div id="friends" class="logged-in span12">
+				<div class="row">
+					<!-- ko foreach: me().allFriends -->
+					<div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
+						<span class="friend storage-id" data-bind="text:username"></span>
+						<a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend">×</a>
+						<!-- ko foreach: allFriends -->
+						<div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
+							<span class="storage-id" data-bind="text:username"></span>
+							<a href="#" class="add-friends-friend btn btn-small" data-bind="click:function(){$root.addFriend(username);}">+</a>
+						</div>
+						<!-- /ko -->
+					</div>
+					<!-- /ko -->
+					<!-- ko if: me().allFriends().length==0 -->
+					<div id="no-friends-message" class="friend-details span4 offset4">
+						<h3>How do I add friends?</h3>
+						<p>To add a friend to your network, you need to get your friends storage address. That storage address looks like an email address:</p>
+						<p><strong>username@storageserver.com</strong></p>
+						<p>You add that address to your F#Un friends, and then you can see the updates of your friend.</p>
+						<h3>How do I find my friends?</h3>
+						<p>At the moment, there is no central server where you can find your friends, that would kind of defeat the purpose of the unhosted thing. Since there is no central server, you need to get in contact with your friends using email or some existing social media. Neat, huh?!</p>
+					</div>
+					<!-- /ko -->
 				</div>
-				<!-- /ko -->
-				<!-- ko if: allFriends().length==0 -->
-				<div class="friend-details">
-					<p>
-						<strong id="no-friends-message">No friends here. Add a friend in the box above!</strong>
-					</p>
-				</div>
-				<!-- /ko -->
 			</div>
 			<br class="clearboth"/>
 		</div>
@@ -258,140 +236,81 @@
 			</div>
       <br class="clearboth"/>
 		</div>
-		
+
 		<div id="page-welcome" class="hidden" data-bind="visible: selectedTab()=='welcome'">
+			<div class="row">
 
-			<div id="info-what-is" class="info-box clearleft">
-				<h3>What is FRIENDS#UNHOSTED?</h3>
+				<div id="info-what-is" class="info-box span5">
+					<h3>What is FRIENDS#UNHOSTED?</h3>
 
-				<p>
-					FRIENDS#UNHOSTED is an alternative social network for those of us
-					who want to own our social network data. With F#Un, your data is not
-					stored at a central server, but at a place of your choosing using
-					an <a href="http://unhosted.org/" target="top">#unhosted
-						remoteStorage</a>. You can even host the data server on your home
-					network, given that the server is reachable from the internet.
-				</p>
-				<p>Signing up is a little bit different than with other social
-					sites. Since you own your data, you need to decide where to put it,
-					we don't do that for you. We don't own you, you do!</p>
-			</div>
+					<p>
+						FRIENDS#UNHOSTED is an alternative social network for those of us
+						who want to own our social network data. With F#Un, your data is not
+						stored at a central server, but at a place of your choosing using
+						an <a href="http://unhosted.org/" target="top">#unhosted
+							remoteStorage</a>. You can even host the data server on your home
+						network, given that the server is reachable from the internet.
+					</p>
+					<p>Signing up is a little bit different than with other social
+						sites. Since you own your data, you need to decide where to put it,
+						we don't do that for you. We don't own you, you do!</p>
+				</div>
 
-			<div id="info-signup" class="info-box clearright">
-				<h3>How do I signup?</h3>
-				<p>The easiest is to get an account on one of the following
-					storage providers:</p>
-				<ul>
-					<li><a target="top" href="https://5apps.com/users/sign_up">5apps</a></li>
-				</ul>
-				<p>You will get a username that looks like an email address:</p>
-				<p>
-					<span class="storage-id">username@storageserver.com</span>
-				</p>
-				<p>Enter that username in the loginbox and press Login. You will
-					get redirected to that storage provider site to grand
-					FRIENDS#UNHOSTED access your storage. After granting access, you
-					will be redirected back to FRIENDS#UNHOSTED, now in a logged in
-					state. You can read more about #unhosted storage providers here -
-					you can even host your own:</p>
-				<ul>
-					<li><a target="top"
-						href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds
-							listing of storage providers</a></li>
-				</ul>
-
-				<p>
-					One of the listed services, <a target="top"
-						href="https://owncube.com/">OwnCube</a>, is not on our list. After
-					a serious outage and bad customer relation management, we cannot
-					recommend this service. Feel free to use it, at your own peril.
-				</p>
-			</div>
-
-			<div id="more-add-friend" class="more-info-box clearleft">
-				<h3>How do I add friends?</h3>
-				<p>To add a friend to your network, you need to get your friends
-					storage address. That storage address looks like an email address:
-				</p>
-				<p>
-					<span class="storage-id">username@storageserver.com</span>
-				</p>
-				<p>You add that address to your F#Un friends, and then you can
-					see the updates of your friend.</p>
-				<h3>How do I find my friends?</h3>
-				<p>At the moment, there is no central server where you can find
-					your friends, that would kind of defeat the purpose of the unhosted
-					thing. Since there is no central server, you need to get in contact
-					with your friends using email or some existing social media. Neat,
-					huh?!</p>
-			</div>
-
-			<div id="more-support" class="more-info-box">
-				<h3>How do I support FRIENDS#UNHOSTED?</h3>
-				<p>This app has so far been developed on spare time. Hopefully,
-					with a little help from our friends (that means You), we can start
-					developing during normal business hours, part or full time. Please,
-					Flattr the application with the button in the header. Send some
-					BitCoins our way. Or donate using PayPal, if that is your only
-					option.</p>
-				<p>You can also support the application by supplying patches on
-					GitHub. As you can see, we need better design, better interaction,
-					more features like image handling, and more. You could also just
-					report bugs to us in a nice and consise way using the GitHub issue
-					system.</p>
-
+				<div id="info-signup" class="info-box span5">
+					<h3>How do I signup?</h3>
+					<p>The easiest is to get an account on one of the following
+						storage providers:</p>
+					<ul>
+            <li><a target="_blank" href="https://5apps.com/users/sign_up">5apps</a></li>
+            <li><a target="_blank" href="https://portknox.net">PortKnox</a></li>
+            <li><a target="_blank" href="https://owncube.com">OwnCube</a></li>
+					</ul>
+					<p>You will get a username that looks like an email address:</p>
+					<p>
+						<span class="storage-id">username@storageserver.com</span>
+					</p>
+					<p>Enter that username in the loginbox and press Login. You will
+						get redirected to that storage provider site to grand
+						FRIENDS#UNHOSTED access your storage. After granting access, you
+						will be redirected back to FRIENDS#UNHOSTED, now in a logged in
+						state. You can read more about #unhosted storage providers here -
+						you can even host your own:</p>
+					<ul>
+						<li><a target="_blank"
+							href="https://github.com/unhosted/website/wiki/remoteStorage-providers">#unhosteds
+								listing of storage providers</a></li>
+					</ul>
+					<p>Get unhosted today!</p>
+				</div>
+      </div>
+      <div class="row">
+        <div class="more-info-box span10">
+          <h3>Why should I care that it is #unhosted?</h3>
+          <p>The big social network sites, like Facebook, Twitter, Google
+            and many more, give you free storage for your stuff. But, there is
+            no such thing as a "free lunch" (or storage). They monitor and
+            explore your social network and your personal life to launch
+            marketing campaigns and direct ads, and sometimes they even claim
+            ownership of the stuff you add, like status updates, pictures and
+            documents. If that is fine with you, then excellent, give your
+            stuff to, and share your private life with, The Big Ones!</p>
+          <p>If, on the other hand, you have that nagging little doubt
+            that there is something fishy going on, FRIENDS#UNHOSTED is for
+            you!</p>
+        </div>
 
 			</div>
 
-
-			<div id="more-tech" class="more-info-box clearright">
-				<h3>Give me the technical details!</h3>
-				<p>
-					Regarding how #unhosted works, please read the material on <a
-						href="http://unhosted.org/">unhosted.org</a>. Simply put, it is a
-					secure, standardized, API for storing key-value data pairs in
-					different categories.
-				</p>
-
-				<p>
-					F#Un uses (as of now in early beta) the <em>public</em> category
-					storage of your unhosted account. This means that anyone can see
-					your updates and your list of friends, in a twitterish style. The
-					plan for the future is to share keys to lock the stuff you only
-					want your friends to see, so stay tuned for that.
-				</p>
-			</div>
-
-			<div id="bottom-box" class="more-info-box">
-				<h3>Why should I care that it is #unhosted?</h3>
-				<p>The big social network sites, like Facebook, Twitter, Google
-					and many more, give you free storage for your stuff. But, there is
-					no such thing as a "free lunch" (or storage). They monitor and
-					explore your social network and your personal life to launch
-					marketing campaigns and direct ads, and sometimes they even claim
-					ownership of the stuff you add, like status updates, pictures and
-					documents. If that is fine with you, then excellent, give your
-					stuff to, and share your private life with, The Big Ones!</p>
-				<p>If, on the other hand, you have that nagging little doubt
-					that there is something fishy going on, FRIENDS#UNHOSTED is for
-					you!</p>
-			</div>
-      <br class="clearboth"/>
-		</div>
-
-		<div id="footer" class="">
-			<div id="license">
-				<a rel="license"
-					href="http://creativecommons.org/licenses/by-sa/3.0/"><img
-					alt="Creative Commons License" src="img/creativecommons.png" /></a>
-				This work is licensed under a <a rel="license"
-					href="http://creativecommons.org/licenses/by-sa/3.0/">Creative
-					Commons Attribution-ShareAlike 3.0 Unported License</a>.
-			</div>
 		</div>
 	</div>
+  <br class="clearboth"/>
+  <div id="footer" class="">
+          <div id="license">
+                  &copy; Agical AB 2012. This site is licensed under the <a rel="license" target="_blank"
+                          href="http://opensource.org/licenses/AGPL-3.0">
+                          AGPLv3 license</a>. By using the site, you accept the license.
+          </div>
+   </div>
 
 </body>
 </html>
-
-
