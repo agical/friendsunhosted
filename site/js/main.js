@@ -331,17 +331,28 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                   .replace(EMAIL_REGEX, '<a href="mailto:$1" target="_blank">$1</a>')
                   .replace(URL_REGEX,'<a href="$1" target="_blank">$1</a>');
       }
-      su.status = escapeAndFormatStatusText(suData.status);
       su.timestamp = suData.timestamp;
       su.username = suData.username;
       su.inReplyTo = suData.inReplyTo;
+
+      su.status = escapeAndFormatStatusText(suData.status);
+      
       su.participants = ko.observableArray([]);
       su.mySeenParticipants = ko.observableArray([]);
       su.collapsed = ko.observable(false);
+      su.comments = ko.observableArray([]);
       su.comment = ko.observable("");
 
       su.id = ko.computed(function() {
           return su.timestamp + ":" + su.username;
+      });
+
+      su.relativeTimestamp = ko.computed(function() {
+          var time = new Date(su.timestamp);
+          return time.toLocaleDateString() == new Date().toLocaleDateString() ?
+                  time.toLocaleTimeString() 
+                  :
+                  time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
       });
 
       su.addParticipant = function(usernameToAdd) {
@@ -360,15 +371,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
           su.collapsed(false);
       };
       
-      su.relativeTimestamp = ko.computed(function() {
-        var time = new Date(su.timestamp);
-        return time.toLocaleDateString() == new Date().toLocaleDateString() ?
-                time.toLocaleTimeString() 
-                :
-                time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
-      });
       
-      su.comments = ko.observableArray([]);
               
       var handleCollapse = function() {
           if(su.collapsed()) {
@@ -388,6 +391,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
           self.sortRootStatuses();
           handleCollapse();
       });
+      
       su.collapsed.subscribe(handleCollapse);
       
       su.doComment = function() {
