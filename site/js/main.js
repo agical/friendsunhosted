@@ -286,7 +286,8 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
       
       su.participants = ko.observableArray([]);
       su.mySeenParticipants = ko.observableArray([]);
-      su.collapsed = ko.observable(false);
+      //su.collapsed = ko.observable(false);
+      su.collapsed = ko.observable(true);
       su.comments = ko.observableArray([]);
       su.comment = ko.observable("");
 

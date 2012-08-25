@@ -314,12 +314,8 @@
             return text('#info-what-is h3', text_cb);
         };
     
-        fu.welcomeMessage = function(userFn_message_cb) {
-            return userAndText('#welcome-message', userFn_message_cb);
-        };
-        
         fu.loggedInUser = function(user_cb) {
-            return userAndText('#username', user_cb);
+            return userAndText('#logged-in-user', user_cb);
         };
         
         fu.setStatus = function(status) {
