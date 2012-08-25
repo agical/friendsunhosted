@@ -39,7 +39,7 @@ var assertVisible = function() {
 
 
 buster.testCase("Friends#Unhosted", {
-    "- has a title and info on load": function (done) {
+    "//- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createRobot(done)   
@@ -49,7 +49,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can login a user": function (done) {
+    "//- can login a user": function (done) {
         this.timeout = 25000;
             
         createRobot(done)  
@@ -60,7 +60,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can let user add status updates": function (done) {
+    "//- can let user add status updates": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -76,7 +76,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can comment on status updates": function (done) {
+    "//- can comment on status updates": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -87,7 +87,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can collapse and expand conversations": function (done) {
+    "//- can collapse and expand conversations": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -111,7 +111,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- emails and links are clickables": function (done) {
+    "//- emails and links are clickables": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -140,7 +140,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "- can let user add, list and remove friends": function (done) {
+    "//- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -163,7 +163,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "- user can see friends of friends and add them": function (done) {
+    "//- user can see friends of friends and add them": function (done) {
         this.timeout = 25000;
 
         function createFriendWithFriend() {
@@ -206,7 +206,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "- can let user see friends messages": function (done) {
+    "//- can let user see friends messages": function (done) {
         this.timeout = 25000;
 
         var waitForUserAddingStatus = when.defer();
@@ -235,7 +235,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "- keeps login status on refresh": function (done) {
+    "//- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -245,7 +245,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- can logout user": function (done) {
+    "//- can logout user": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -256,7 +256,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "- shows latest activity on top": function (done) {
+    "//- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         createRobot(done).loginNewUser()
@@ -270,7 +270,7 @@ buster.testCase("Friends#Unhosted", {
         .end();               
     },
 
-    "- can write to directly to store": function (done) {
+    "//- can write to directly to store": function (done) {
         this.timeout = 25000;
 
         var _username = 'mongo@localhost';
@@ -294,7 +294,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "- can see other participants in threads": function (done) {
+    "//- can see other participants in threads": function (done) {
         this.timeout = 25000;
 
         var _category = 'public';
@@ -329,7 +329,38 @@ buster.testCase("Friends#Unhosted", {
                     .threadParticipants(1, eq(['arne@anka.se','peppe@bodega.es', 'arnold@isback.es']))
                 .end();
             });
-    }
+    },
+
+    
+    "- display one week at a time with a fetch more button": function (done) {
+        this.timeout = 25000;
+
+        var _username = 'mongo@localhost';
+        var _category = 'public';
+        var _key = 'friendsunhosted_status';
+        var ONE_DAY_MS = 1000*60*60*24;
+        var now = new Date().getTime();
+
+        var _value = [{"status":"Now","timestamp":now,"username":"mongo@localhost"}, 
+                      {"status":"6 days ago","timestamp":now-ONE_DAY_MS*6,"username":"mongo@localhost"},
+                      {"status":"8 days ago","timestamp":now-ONE_DAY_MS*8,"username":"mongo@localhost"},
+                      {"status":"13 days ago","timestamp":now-ONE_DAY_MS*13,"username":"mongo@localhost"},
+                      {"status":"15 days ago","timestamp":now-ONE_DAY_MS*15,"username":"mongo@localhost"},
+                      ];
+        siterobot.store()
+            .setValue(_username, _category, _key, _value)
+            .then(function() {
+                createRobot(done)
+                    .loginNewUser()
+                    .selectFriendsInMenu()
+                    .pause(500)
+                    .addFriend(_username)
+                    .selectStatusesInMenu()
+                    .statusUpdate(1, eq(_value[0].status))
+                    .statusUpdate(2, eq(_value[1].status))
+                .end();
+            });
+    },
 
 });
 
