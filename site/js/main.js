@@ -55,8 +55,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
         friend.allSeenParticipants = ko.observableArray([]);// [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
         friend.lastUpdated = ko.observable(0);
         
+        var rawUpdates = [];
+        
         self.timeLimitForData.subscribe(function() {
-            setTimeout(friend.updateStatuses, 0);
+            setTimeout(friend.showMoreStatuses, 0);
         });
         
         var addCommentToRootLater = function(comment, rootId) {
@@ -98,10 +100,75 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             return updateFriendsDone.promise;
         };
 
+        friend.showMoreStatuses = function() {
+            var updateDone = when.defer();
+        
+            var updates = rawUpdates;
+                
+            var newRoots = [];
+            var newComments = [];
+            var newSeen = [];
+            var newLastUpdate = 0;
+            var onlyRecentUpdates = _.reject(updates, function(u) {
+                return u.timestamp < self.timeLimitForData(); //|| u.timestamp<friend.lastUpdated(); 
+            });
+
+            _.each(onlyRecentUpdates, function(update) {
+               update.username = friend.username;
+               newLastUpdate = Math.max(newLastUpdate, update.timestamp);
+               
+               if(update.inReplyTo && 
+                  !_.any(friend.allComments(), function(oldComment) {
+                                                  return update.timestamp==oldComment.timestamp;
+                                              })) {
+                   newComments.push(update);
+               } else if(update.seen) {
+                   newSeen.push(update);
+               } else if(!update.inReplyTo && !_.any(friend.allRootStatuses(), function(oldRoot) {
+                                                               return update.timestamp==oldRoot.timestamp;
+                                                           })) {
+                   newRoots.push(update);
+               }
+            });
+
+            if(newRoots.length>0) {
+                _.each(newRoots, function(r) {
+                    var su = self.StatusUpdate(r);
+                    if(!self.threadIdToRootStatus[su.id()]) {
+                        friend.allRootStatuses.push(su);
+                        self.allRootStatuses.push(su);
+                        self.threadIdToRootStatus[su.id()] = su;
+                    }
+                });
+                self.sortRootStatuses();
+            }
+            if(newComments.length>0) {
+                _.each(newComments, function(r) {
+                    var c = self.StatusUpdate(r);
+                    c.tries = 0;
+                    addCommentToRootLater(c, r.inReplyTo);
+                });
+            }
+            if(newSeen.length>0) {
+                _.each(newSeen, function(r) {
+                    r.tries = 0;
+                    addParticipantsToRootLater(r, r.thread);
+                });
+            }
+            if(newLastUpdate) {
+                friend.lastUpdated(newLastUpdate);
+            }
+            updateDone.resolve(friend);
+
+            return updateDone.promise;
+        };
+
         friend.updateStatuses = function() {
             var updateDone = when.defer();
         
             fuapi.fetchStatusForUser(friend.username).then(function(updates) {
+                rawUpdates = updates;
+                
                 var newRoots = [];
                 var newComments = [];
                 var newSeen = [];
@@ -162,6 +229,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
             return updateDone.promise;
         };
+
         var max_time_between_updates = 15*60*1000;
         var min_time_between_updates = 5*1000;
         
