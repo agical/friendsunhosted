@@ -39,7 +39,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
     self.me = ko.observable({});
     
     var ONE_DAY_MS = 1000*60*60*24;
-    var GET_MORE_INCREMENT = ONE_DAY_MS*7;
+    var GET_MORE_INCREMENT = ONE_DAY_MS*3;
     self.timeLimitForData = ko.observable(new Date().getTime()-GET_MORE_INCREMENT);
     
     self.getMoreUpdates = function() {

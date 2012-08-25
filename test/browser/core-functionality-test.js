@@ -336,10 +336,10 @@ buster.testCase("Friends#Unhosted", {
         var now = new Date().getTime();
 
         var _value = [{"status":"Now","timestamp":now,"username":"mongo@localhost"}, 
-                      {"status":"6 days ago","timestamp":now-ONE_DAY_MS*6,"username":"mongo@localhost"},
-                      {"status":"8 days ago","timestamp":now-ONE_DAY_MS*8,"username":"mongo@localhost"},
-                      {"status":"13 days ago","timestamp":now-ONE_DAY_MS*13,"username":"mongo@localhost"},
-                      {"status":"15 days ago","timestamp":now-ONE_DAY_MS*15,"username":"mongo@localhost"},
+                      {"status":"2 days ago","timestamp":now-ONE_DAY_MS*2,"username":"mongo@localhost"},
+                      {"status":"4 days ago","timestamp":now-ONE_DAY_MS*4,"username":"mongo@localhost"},
+                      {"status":"5 days ago","timestamp":now-ONE_DAY_MS*5,"username":"mongo@localhost"},
+                      {"status":"7 days ago","timestamp":now-ONE_DAY_MS*7,"username":"mongo@localhost"},
                       ];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
