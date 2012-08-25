@@ -37,7 +37,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     self.addFriendsUsername = ko.observable("");
     self.me = ko.observable({});
-
+    var ONE_DAY_MS = 1000*60*60*24;
+    self.timeLimitForData = ko.observable(new Date().getTime()-(ONE_DAY_MS * 7));
+    
     
     function Friend(friendData) {
         var friend = friendData;
@@ -95,7 +97,9 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                 var newComments = [];
                 var newSeen = [];
                 var newLastUpdate = 0;
-                var onlyRecentUpdates = updates; //_.reject(updates, function(u) {return u.timestamp<friend.lastUpdated(); });
+                var onlyRecentUpdates = _.reject(updates, function(u) {
+                    return u.timestamp < self.timeLimitForData(); //|| u.timestamp<friend.lastUpdated(); 
+                });
 
                 _.each(onlyRecentUpdates, function(update) {
                    update.username = friend.username;
