@@ -204,7 +204,7 @@
 					<!-- ko foreach: me().allFriends -->
 					<div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
 						<span class="friend storage-id" data-bind="text:username"></span>
-						<a href="#" class="remove-friend close" data-bind="click: $parent.removeFriend">×</a>
+						<a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend">×</a>
 						<!-- ko foreach: allFriends -->
 						<div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
 							<span class="storage-id" data-bind="text:username"></span>
@@ -239,7 +239,7 @@
 		<div id="page-welcome" class="hidden" data-bind="visible: selectedTab()=='welcome'">
 			<div class="row">
 
-				<div id="info-what-is" class="info-box span4">
+				<div id="info-what-is" class="info-box span6">
 					<h3>What is FRIENDS#UNHOSTED?</h3>
 
 					<p>
@@ -255,22 +255,7 @@
 						we don't do that for you. We don't own you, you do!</p>
 				</div>
 
-				<div class="more-info-box span4">
-					<h3>Why should I care that it is #unhosted?</h3>
-					<p>The big social network sites, like Facebook, Twitter, Google
-						and many more, give you free storage for your stuff. But, there is
-						no such thing as a "free lunch" (or storage). They monitor and
-						explore your social network and your personal life to launch
-						marketing campaigns and direct ads, and sometimes they even claim
-						ownership of the stuff you add, like status updates, pictures and
-						documents. If that is fine with you, then excellent, give your
-						stuff to, and share your private life with, The Big Ones!</p>
-					<p>If, on the other hand, you have that nagging little doubt
-						that there is something fishy going on, FRIENDS#UNHOSTED is for
-						you!</p>
-				</div>
-
-				<div id="info-signup" class="info-box span4">
+				<div id="info-signup" class="info-box span6">
 					<h3>How do I signup?</h3>
 					<p>The easiest is to get an account on one of the following
 						storage providers:</p>
@@ -296,6 +281,22 @@
 					</ul>
 					<p>Get unhosted today!</p>
 				</div>
+      </div>
+      <div class="row">
+        <div class="more-info-box span12">
+          <h3>Why should I care that it is #unhosted?</h3>
+          <p>The big social network sites, like Facebook, Twitter, Google
+            and many more, give you free storage for your stuff. But, there is
+            no such thing as a "free lunch" (or storage). They monitor and
+            explore your social network and your personal life to launch
+            marketing campaigns and direct ads, and sometimes they even claim
+            ownership of the stuff you add, like status updates, pictures and
+            documents. If that is fine with you, then excellent, give your
+            stuff to, and share your private life with, The Big Ones!</p>
+          <p>If, on the other hand, you have that nagging little doubt
+            that there is something fishy going on, FRIENDS#UNHOSTED is for
+            you!</p>
+        </div>
 
 			</div>
 
