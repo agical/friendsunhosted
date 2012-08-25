@@ -75,7 +75,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                     seen.tries = seen.tries + 1;
                     addParticipantsToRootLater(seen, rootId);
                 }
-            }, (seen.tries-1)^2*100);
+            }, (seen.tries-1)^2*(100+Math.floor(Math.random()*51)));
         };
 
         friend.updateFriends = function() {
