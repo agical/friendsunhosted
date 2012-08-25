@@ -59,7 +59,7 @@ a { text-decoration:none; font-style:normal; outline:0; }
 		.comment-form { position:relative; }
 		.comment-form textarea { height:50px; }
 		.do-comment { position:absolute; right:0; bottom:1.2em; }
-		.do-collapse-status, .do-expand-status { float:right; font-size:.8em; color:#777; cursor:pointer; }
+		.do-collapse-status, .do-expand-status { float:right; font-size:.8em; color:#333; cursor:pointer; }
 
 
 
