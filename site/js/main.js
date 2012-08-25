@@ -124,21 +124,24 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                    newComments.push(update);
                } else if(update.seen) {
                    newSeen.push(update);
-               } else if(!update.inReplyTo && !_.any(friend.allRootStatuses(), function(oldRoot) {
+               } else if(!update.inReplyTo 
+                       &&
+                       !self.threadIdToRootStatus[update.timestamp + update.username]
+                       && 
+                       !_.any(friend.allRootStatuses(), function(oldRoot) {
                                                                return update.timestamp==oldRoot.timestamp;
-                                                           })) {
+                                                           }) 
+                       ) {
                    newRoots.push(update);
                }
             });
 
             if(newRoots.length>0) {
-                _.each(newRoots, function(r) {
-                    var su = self.StatusUpdate(r);
-                    if(!self.threadIdToRootStatus[su.id()]) {
-                        friend.allRootStatuses.push(su);
-                        self.allRootStatuses.push(su);
-                        self.threadIdToRootStatus[su.id()] = su;
-                    }
+                var addThese = _.map(newRoots, self.StatusUpdate);
+                friend.allRootStatuses().push.apply(friend.allRootStatuses(), addThese);
+                self.allRootStatuses().push.apply(self.allRootStatuses(), addThese);
+                _.each(addThese, function(su) {
+                    self.threadIdToRootStatus[su.id()] = su;
                 });
                 self.sortRootStatuses();
             }
@@ -387,8 +390,10 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
           };
       };
       
+      var throttledSort = _.throttle(self.sortRootStatuses, 1000);
+      
       su.comments.subscribe(function() {
-          self.sortRootStatuses();
+          throttledSort();
           handleCollapse();
       });
       
