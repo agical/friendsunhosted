@@ -14,8 +14,21 @@ function(when) {
     }
 
     function eq(expected) {
-        return function(actual) {return assert.equals(expected, actual);};
-    }
+        return (function(e) { 
+                    return function(actual) {
+                        assert.equals(actual, e);
+                    };
+        })(expected);
+    };
+
+    function match(expected) {
+        return (function(e) { 
+                    return function(actual) {
+                        assert.match(actual, e);
+                    };
+        })(expected);
+    };
+
     
-    return {'resolved': resolved, 'rejected': rejected, 'eq': eq};
+    return {'resolved': resolved, 'rejected': rejected, 'eq': eq, 'match': match};
 });

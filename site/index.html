@@ -13,8 +13,9 @@
     require.config({
         paths : {
             "jquery" : "jquery-1.7.2.min",
-            "ko" : "knockout-2.1.0.debug",
-            "ui" : "bootstrap.min"
+            "ui" : "bootstrap.min",
+            "bootbox" : "bootbox",
+            "ko" : "knockout-2.1.0.debug"
         }
     });
 </script>
@@ -58,10 +59,10 @@
     Upgrading storage
   </div>
 
-		<div class="ui-widget" id="error-panel">
-			<div class="ui-state-error ui-corner-all">
+		<div class="" id="error-panel">
+			<div class="">
 				<p>
-					<span class="ui-icon ui-icon-alert"></span> <strong>Alert:</strong>
+					<span class=""></span> <strong>Alert:</strong>
 					<span id="error-message"></span>
 				</p>
 			</div>
@@ -155,10 +156,11 @@
 
 		<div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
 			<div class="status-update span6">
+        <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
 				<textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate"></textarea>
 				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
-
+      
 			<div id="status-stream" class="span6" data-bind="foreach:allRootStatuses().reverse()">
 				<div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
 					<div class="status-details span6">

@@ -1,5 +1,5 @@
-require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'], 
-        function($, _, ui, ko, when, fuapi) {
+require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi'], 
+        function($, ui, bb, _, ko, when, fuapi) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -93,8 +93,19 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
         friend.updateFriends = function() {
             var updateFriendsDone = when.defer();
-            fuapi.fetchFriendsOfFriend(friendData.username).then(function(data){
-                friend.allFriends(_.map(data,Friend));
+            fuapi.fetchFriendsOfFriend(friendData.username).then(function(fetchedFriends){
+                var newFriendsRaw = _.reject(fetchedFriends, 
+                    function(newFriend) {
+                        return _.any(friend.allFriends(), 
+                            function(oldFriend){
+                                return oldFriend.username==newFriend.username;
+                            });
+                });
+                if(friend.allFriends().length==0) {
+                    friend.allFriends(_.map(newFriendsRaw,Friend));
+                } else {
+                    friend.allFriends().push.apply(friend.allFriends(), _.map(newFriendsRaw,Friend));
+                }
                 updateFriendsDone.resolve(friend);
             }, updateFriendsDone.reject);
             return updateFriendsDone.promise;
@@ -192,14 +203,14 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             var updateInterval = 5*60*1000;
             setTimeout(function() {
                 friend.updateFriends().always(friend.setAutoUpdateFriends);
-            }, 5*60*1000);
+            }, updateInterval);
         };
 
         return friend;
     };
     
     self.addFriend = function(username) {
-        fuapi.addFriend(username).then(onFriendAdded, showError);
+        fuapi.addFriend(username).then(onFriendAdded, logWarning);
     };
 
     var onFriendAdded = function(friendData) {
@@ -358,7 +369,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
                   self.me().updateStatuses();
               }, function(err) {
                   su.comment(update);
-                  showError(err);
+                  logWarning(err);
               });    
       };
       return su;
@@ -434,11 +445,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     var showError = function(message) {
         console.log(message);
-        $('#error-message').text(message);
-        $('#error-panel').slideDown();
-        setTimeout(function() {
-            $("#error-panel").slideUp();
-        }, 4000);
+        bootbox.alert(message);
     };
  
     self.updateStatus = function() {
@@ -453,7 +460,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
             self.me().updateStatuses();
         }, function(err) {
             self.statusUpdate(update);
-            showError(err);
+            logWarning(err);
         });    
     };
           

@@ -47,9 +47,9 @@ a { text-decoration:none; font-style:normal; outline:0; }
 
 
 .status-update { position:relative; width:100%; clear:both; padding-bottom:1em; }
-	#status-update { height:50px; }
-	#do-update-status { position:absolute; right:0; bottom:1.95em; }
-
+	#status-update { height:50px; margin-bottom: 0px }
+  #do-update-status {float:right; margin-top: 0px;}
+  #refresh-statuses {float:right;}
 .status-stream {  }
 	.conversation { padding:1.5em 0; border-top:1px #ccc dotted; }
 	.status-update-timestamp, .comment-update-timestamp { float:right; font-size:.8em; padding:5px 5px 5px 10px; font-style:italic; color:#aaa; }
@@ -57,8 +57,8 @@ a { text-decoration:none; font-style:normal; outline:0; }
 		.comments { font-size:.8em; }
 		.comment { width:100%; margin-bottom:1.2em; }
 		.comment-form { position:relative; }
-		.comment-form textarea { height:50px; }
-		.do-comment { position:absolute; right:0; bottom:1.2em; }
+		.comment-form textarea { height:50px; margin-bottom: 0px;}
+		.do-comment { float:right; margin-top: 0px; }
 		.do-collapse-status, .do-expand-status { float:right; font-size:.8em; color:#333; cursor:pointer; }
 
 

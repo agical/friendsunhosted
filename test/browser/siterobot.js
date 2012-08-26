@@ -211,7 +211,20 @@
             });   
             return fu;
         };
-        
+
+        var clickButton = function(clickCss) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                fu.b
+                    .pause(200)
+                    .waitFor(clickCss, 2000) 
+                    .setValue(clickCss, "\n")
+                    .buttonClick(clickCss, d.resolve);
+            });   
+            return fu;
+        };
+
         var isVisible = function(css, element_cb) {
             var last = defPeek();
             var d = defPush();
@@ -332,7 +345,7 @@
         
         fu.getMoreUpdates = function() {
             return click('#do-get-more-updates');
-        }
+        };
 
         fu.pageSource = function(text_cb) {
             return source(text_cb);
@@ -417,7 +430,15 @@
         };
         
         fu.errorMessage = function(text_cb) {
-            return text("#error-message", text_cb);
+            return text(".bootbox .modal-body", text_cb);
+        };
+        
+        fu.clickErrorOk = function() {
+            return click(".bootbox a[data-handler=0]");
+        };
+
+        fu.clickOkInConfirmWriteToEmptyStore = function() {
+            return clickButton(".bootbox .btn-primary");
         };
         
         fu.refresh = function() {
