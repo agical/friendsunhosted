@@ -33,7 +33,9 @@ define([], function() {
                 if(value && _.any(value, function(f) {
                     return f.username==friendsUsername;
                 })) {
-                    afterAdding.reject('Cannot add the same user twice');
+                    dialog.info('Cannot add the same user twice').then(function() {
+                        afterAdding.reject('Cannot add the same user twice');
+                    }, afterAdding.reject);
                     return afterAdding.promise;
                 }
 

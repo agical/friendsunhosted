@@ -210,7 +210,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
     };
     
     self.addFriend = function(username) {
-        fuapi.addFriend(username).then(onFriendAdded, showError);
+        fuapi.addFriend(username).then(onFriendAdded, logWarning);
     };
 
     var onFriendAdded = function(friendData) {

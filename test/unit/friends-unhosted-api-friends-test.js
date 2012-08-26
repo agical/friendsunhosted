@@ -29,22 +29,21 @@ function(fuc, _, when, remoteAdapter, help) {
             fu.fetchFriendsOfFriend('some@user.com').always(eq(friends)).always(done);
         },
 
-        "//- put friend in emty storage alerts user": function(done) {
-            var friends = [{'username': 'test@agical.com', 'timestamp':9876543210},
-                          {'username': 'fersuch@agical.com', 'timestamp':9876543211}];
+        "- cannot add same user twice": function(done) {
+            var friends = [{'username': 'some@user.com', 'timestamp':9876543210}];
 
-            ra.expects('getPublicData')
-                .withArgs('some@user.com', 'friendsunhosted_friends')
+            ra.expects('fetchUserData')
+                .withExactArgs('friendsunhosted_friends')
                 .returns(resolved(friends));
             
-            fakeDialog.confirm = function(message) {
+            fakeDialog.info = function(message) {
                 assert.defined(message);
                 var ret = when.defer();
                 ret.resolve();
                 return ret.promise;
             };
 
-            fu.fetchFriendsOfFriend('some@user.com').always(eq(friends)).always(done);
+            fu.addFriend('some@user.com').always(eq("Cannot add the same user twice")).always(done);
         },
         
         "- Puts new friend for no friends in repo when confirm is ok": function(done) {
