@@ -211,7 +211,20 @@
             });   
             return fu;
         };
-        
+
+        var clickButton = function(clickCss) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                fu.b
+                    .pause(200)
+                    .waitFor(clickCss, 2000) 
+                    .setValue(clickCss, "\n")
+                    .buttonClick(clickCss, d.resolve);
+            });   
+            return fu;
+        };
+
         var isVisible = function(css, element_cb) {
             var last = defPeek();
             var d = defPush();
@@ -424,6 +437,10 @@
             return click(".bootbox a[data-handler=0]");
         };
 
+        fu.clickOkInConfirmWriteToEmptyStore = function() {
+            return clickButton(".bootbox .btn-primary");
+        };
+        
         fu.refresh = function() {
             var last = defPeek();
             var d = defPush();

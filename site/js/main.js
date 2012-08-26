@@ -369,7 +369,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                   self.me().updateStatuses();
               }, function(err) {
                   su.comment(update);
-                  showError(err);
+                  logWarning(err);
               });    
       };
       return su;
@@ -460,7 +460,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             self.me().updateStatuses();
         }, function(err) {
             self.statusUpdate(update);
-            showError(err);
+            logWarning(err);
         });    
     };
           
