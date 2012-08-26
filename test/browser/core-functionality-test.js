@@ -149,6 +149,7 @@ buster.testCase("Friends#Unhosted", {
                 .pause(500)
                .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
                .addFriend(username)
+               .clickOkInConfirmWriteToEmptyStore()
                .friend(1, eq(username))
                .addFriend(username)
                .errorMessage(eq("Cannot add the same user twice"))
@@ -179,6 +180,7 @@ buster.testCase("Friends#Unhosted", {
                     })
                    .selectFriendsInMenu()
                    .addFriend(friendObject.username)
+                   .clickOkInConfirmWriteToEmptyStore()
                 .end();
             },function(err){friend.reject(err);friendsFriend.reject(err);});
             
@@ -193,6 +195,7 @@ buster.testCase("Friends#Unhosted", {
                    .loginNewUser()
                    .selectFriendsInMenu()
                    .addFriend(friend)
+                   .clickOkInConfirmWriteToEmptyStore()
                    .friend(1, eq(friend))
                    .friendsFriend(1, 1, eq(friendsFriend))
                    .refresh()
@@ -224,6 +227,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(user.username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq("The message of the added"))
                     .statusGetUsername(1, eq(user.username))
@@ -291,6 +295,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(_username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq("Nr 2"))
                 .end();
@@ -326,6 +331,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(_username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .addFriend(_username2)
                     .selectStatusesInMenu()
                     .comment(1, 1, eq("Nr 2"))
@@ -358,6 +364,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(_username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq(_value[0].status))
                     .statusUpdate(2, eq(_value[1].status))
