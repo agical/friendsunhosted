@@ -9,6 +9,13 @@ define([], function() {
         fuapi.beforeBackgroundTaskListeners = [];
         fuapi.afterBackgroundTaskListeners = [];
         
+        
+        var verifyUpdatingEmptyFriends = function() {
+            return dialog
+                .confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " +
+                "If this really is the first friend you add, then all is fine and you may press the ok button.");
+        };
+
         fuapi.addFriend = function(friendsUsername) {
             var afterAdding = when.defer();
 
@@ -21,23 +28,38 @@ define([], function() {
             
             var friendData = {"username": friendsUsername,
                             "timestamp": fuapi.getTimestamp()};
+            
             rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-                value = value || [];
-                if(_.any(value, function(f) {
-                        return f.username==friendsUsername;
-                    })) {
+                if(value && _.any(value, function(f) {
+                    return f.username==friendsUsername;
+                })) {
                     afterAdding.reject('Cannot add the same user twice');
-                } else {
+                    return afterAdding.promise;
+                }
+
+                function doAddFriend() {
+                    value = value || [];
                     value.push(friendData);
                     rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
                         afterAdding.resolve(friendData);
                     }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
                 }
+                                
+                if(!value) {
+                    verifyUpdatingEmptyFriends()
+                        .then(doAddFriend, afterAdding.reject);
+                } else {
+                    doAddFriend();
+                }
+
             }, function(err) { 
                 if(err == 404) {
-                    rem.putUserData(FRIENDS_KEY, [friendData]).then(function(keyValCat) {
-                        afterAdding.resolve(friendData);
-                    }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
+                    verifyUpdatingEmptyFriends()
+                        .then(function() {
+                            rem.putUserData(FRIENDS_KEY, [friendData]).then(function(keyValCat) {
+                                afterAdding.resolve(friendData);
+                            }, function(err) { afterAdding.reject("Could not put friend in storage: "+ err);});
+                        }, afterAdding.reject);
                 } else {
                     afterAdding.reject("Could not fetch friend data from storage: "+ err);
                 }
@@ -114,7 +136,7 @@ define([], function() {
             });
         };
         
-        var verifyUpdatingEmptyFriends = function() {
+        var verifyUpdatingEmptyStatus = function() {
             return dialog
                 .confirm("You seem to have no data in your store. Press Cancel if you have made previous updates! " +
                 "If this really is your first update, then all is fine and you may press the ok button.");
@@ -134,14 +156,14 @@ define([], function() {
                     });
                 };
                 if(!statusUpdates) {
-                    verifyUpdatingEmptyFriends()
+                    verifyUpdatingEmptyStatus()
                         .then(doUpdate, afterStatusUpdate.reject);
                 } else {
                     doUpdate();
                 }
             }, function(err) { 
                 if(err == 404) {
-                    verifyUpdatingEmptyFriends()
+                    verifyUpdatingEmptyStatus()
                     .then( function() {
                                 rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
                                     afterStatusUpdate.resolve([statusData]);
