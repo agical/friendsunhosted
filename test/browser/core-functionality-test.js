@@ -60,6 +60,7 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .setStatus("Hello, #unhosted world!")
+            .clickOkInConfirmWriteToEmptyStore()
             .statusUpdate(1, eq("Hello, #unhosted world!"))
             .statusUsername(1, function(user) {return eq(user.username);})
             .statusTimeStamp(1, assert)
@@ -75,6 +76,7 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .setStatus("Hello, #unhosted world!")
+            .clickOkInConfirmWriteToEmptyStore()
             .statusUpdate(1, eq("Hello, #unhosted world!"))
             .addComment(1, "Hello to you!")
             .comment(1, 1, eq("Hello to you!"))
@@ -86,6 +88,7 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .setStatus("Status update 1")
+            .clickOkInConfirmWriteToEmptyStore()
             .addComment(1, "Comment 1.1")
             .addComment(1, "Comment 1.2")
             .addComment(1, "Comment 1.3")
@@ -111,6 +114,7 @@ buster.testCase("Friends#Unhosted", {
         createRobot(done)  
             .loginNewUser()
             .setStatus("daniel@agical.com http://dn.se https://github.com ftp://sunet.se ssh://server.dom sftp://server.dom")
+            .clickOkInConfirmWriteToEmptyStore()
             .pause(500)
             .pageSource(match(/<a(| target="_blank") href="mailto:daniel@agical.com"(| target="_blank")>daniel@agical.com<\/a>/))
             .pageSource(match(/<a(| target="_blank") href="http:\/\/dn.se"(| target="_blank")>http:\/\/dn.se<\/a>/))
@@ -145,9 +149,11 @@ buster.testCase("Friends#Unhosted", {
                 .pause(500)
                .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
                .addFriend(username)
+               .clickOkInConfirmWriteToEmptyStore()
                .friend(1, eq(username))
                .addFriend(username)
                .errorMessage(eq("Cannot add the same user twice"))
+               .clickErrorOk()
                .removeFriend(1)
                .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
                .refresh()
@@ -174,6 +180,7 @@ buster.testCase("Friends#Unhosted", {
                     })
                    .selectFriendsInMenu()
                    .addFriend(friendObject.username)
+                   .clickOkInConfirmWriteToEmptyStore()
                 .end();
             },function(err){friend.reject(err);friendsFriend.reject(err);});
             
@@ -188,6 +195,7 @@ buster.testCase("Friends#Unhosted", {
                    .loginNewUser()
                    .selectFriendsInMenu()
                    .addFriend(friend)
+                   .clickOkInConfirmWriteToEmptyStore()
                    .friend(1, eq(friend))
                    .friendsFriend(1, 1, eq(friendsFriend))
                    .refresh()
@@ -208,6 +216,7 @@ buster.testCase("Friends#Unhosted", {
         var b1 = createRobot(waitForUserAddingStatus.resolve)
             .loginNewUser()
             .setStatus("The message of the added")
+            .clickOkInConfirmWriteToEmptyStore()
             .statusUpdate(1, eq("The message of the added"))
             .logout()
         .end();
@@ -218,10 +227,12 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(user.username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq("The message of the added"))
                     .statusGetUsername(1, eq(user.username))
                     .setStatus("The message of the adder")
+                    .clickOkInConfirmWriteToEmptyStore()
                     .statusUpdate(1, eq("The message of the adder"))
                     .statusUpdate(2, eq("The message of the added"))
                 .end();
@@ -234,6 +245,7 @@ buster.testCase("Friends#Unhosted", {
         
         createRobot(done).loginNewUser()
             .setStatus("Hello, #unhosted world!")
+            .clickOkInConfirmWriteToEmptyStore()
             .refresh()
             .statusUpdate(1, eq("Hello, #unhosted world!"))
         .end();
@@ -255,6 +267,7 @@ buster.testCase("Friends#Unhosted", {
          
         createRobot(done).loginNewUser()
             .setStatus("First status")
+            .clickOkInConfirmWriteToEmptyStore()
             .setStatus("Second status")
             .statusUpdate(1, eq("Second status"))
             .statusUpdate(2, eq("First status"))
@@ -282,6 +295,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(_username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq("Nr 2"))
                 .end();
@@ -317,6 +331,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(_username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .addFriend(_username2)
                     .selectStatusesInMenu()
                     .comment(1, 1, eq("Nr 2"))
@@ -326,7 +341,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "- display one week at a time with a fetch more button": function (done) {
+    "- display 3 days at a time with a fetch more button": function (done) {
         this.timeout = 25000;
 
         var _username = 'mongo@localhost';
@@ -349,6 +364,7 @@ buster.testCase("Friends#Unhosted", {
                     .selectFriendsInMenu()
                     .pause(500)
                     .addFriend(_username)
+                    .clickOkInConfirmWriteToEmptyStore()
                     .selectStatusesInMenu()
                     .statusUpdate(1, eq(_value[0].status))
                     .statusUpdate(2, eq(_value[1].status))

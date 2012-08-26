@@ -1,5 +1,5 @@
-define(['underscore', 'when', 'remoteAdapter', 'friendsUnhostedCode'], 
-        function( _, when, rem, friendsUnhostedCode) {
-            return friendsUnhostedCode(_, when, rem);
+define(['underscore', 'when', 'remoteAdapter', 'friendsUnhostedCode', 'dialog'], 
+        function( _, when, rem, friendsUnhostedCode, dialog) {
+            return friendsUnhostedCode(_, when, rem, dialog);
 });
 
