@@ -14,9 +14,9 @@ define(['bootbox', 'when'],
                 
                 bootbox.confirm(message, function(confirmed) {
                     if (confirmed) {
-                        result.resolve();
+                        result.resolve("User choose OK on '" + message + "'");
                     } else {
-                        result.reject();
+                        result.reject("User cancelled on '" + message + "'");
                     }
                 });
                 

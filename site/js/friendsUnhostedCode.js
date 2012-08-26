@@ -114,21 +114,38 @@ define([], function() {
             });
         };
         
+        var verifyUpdatingEmptyFriends = function() {
+            return dialog
+                .confirm("You seem to have no data in your store. Press Cancel if you have made previous updates! " +
+                "If this really is your first update, then all is fine and you may press the ok button.");
+        };
+        
         var addStatusOrReply = function(statusData) {
             var afterStatusUpdate = when.defer();
             rem.fetchUserData(STATUS_KEY_V3).then(function(statusUpdates) {
-                statusUpdates = statusUpdates || [];
-                statusUpdates = cleanFromSeenInThread(statusUpdates);
-                statusUpdates.push(statusData);
-                rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
-                    afterStatusUpdate.resolve(statusUpdates);
-                }, function(err) { 
-                    afterStatusUpdate.reject("Could set status data: " + err);
-                });
+                var doUpdate = function() {
+                    statusUpdates = statusUpdates || [];
+                    statusUpdates = cleanFromSeenInThread(statusUpdates);
+                    statusUpdates.push(statusData);
+                    rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
+                        afterStatusUpdate.resolve(statusUpdates);
+                    }, function(err) { 
+                        afterStatusUpdate.reject("Could set status data: " + err);
+                    });
+                };
+                if(!statusUpdates) {
+                    verifyUpdatingEmptyFriends()
+                        .then(doUpdate, afterStatusUpdate.reject);
+                } else {
+                    doUpdate();
+                }
             }, function(err) { 
                 if(err == 404) {
-                    rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
-                        afterStatusUpdate.resolve([statusData]);
+                    verifyUpdatingEmptyFriends()
+                    .then( function() {
+                                rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
+                                    afterStatusUpdate.resolve([statusData]);
+                                }, afterStatusUpdate.reject);
                     }, afterStatusUpdate.reject);
                 } else {
                     afterStatusUpdate.reject("Could not access status data: " + err);
