@@ -1,5 +1,5 @@
-require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'], 
-        function($, _, ui, ko, when, fuapi) {
+require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi'], 
+        function($, ui, bb, _, ko, when, fuapi) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -445,11 +445,7 @@ require(['jquery', 'underscore', 'ui', 'ko', 'when', 'friendsUnhostedApi'],
 
     var showError = function(message) {
         console.log(message);
-        $('#error-message').text(message);
-        $('#error-panel').slideDown();
-        setTimeout(function() {
-            $("#error-panel").slideUp();
-        }, 4000);
+        bootbox.alert(message);
     };
  
     self.updateStatus = function() {

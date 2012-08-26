@@ -148,6 +148,7 @@ buster.testCase("Friends#Unhosted", {
                .friend(1, eq(username))
                .addFriend(username)
                .errorMessage(eq("Cannot add the same user twice"))
+               .clickErrorOk()
                .removeFriend(1)
                .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
                .refresh()

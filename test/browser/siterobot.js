@@ -417,9 +417,13 @@
         };
         
         fu.errorMessage = function(text_cb) {
-            return text("#error-message", text_cb);
+            return text(".bootbox .modal-body", text_cb);
         };
         
+        fu.clickErrorOk = function() {
+            return click(".bootbox a[data-handler=0]");
+        };
+
         fu.refresh = function() {
             var last = defPeek();
             var d = defPush();
