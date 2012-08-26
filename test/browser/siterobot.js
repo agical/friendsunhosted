@@ -332,7 +332,7 @@
         
         fu.getMoreUpdates = function() {
             return click('#do-get-more-updates');
-        }
+        };
 
         fu.pageSource = function(text_cb) {
             return source(text_cb);

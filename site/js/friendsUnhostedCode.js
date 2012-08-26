@@ -1,5 +1,5 @@
 define([], function() {
-    return function( _, when, rem) {
+    return function( _, when, rem, dialog) {
 
         var fuapi = {};
         var STATUS_KEY_V3 = 'friendsunhosted_status';
