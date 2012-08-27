@@ -34,7 +34,6 @@
 				<!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
 				<li><a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a></li>
 			</ul>
-
 			<div class="login-area">
 				<div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
 					<input type="text" class="span2" placeholder="username@storage.com" id="username" data-bind="value: username"/><button id="do-login" class="btn" data-bind="click: login">Login</button>
@@ -43,6 +42,14 @@
 					<span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
 					<a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
 				</div>
+        <div class="color-picker">
+          <select class="color-picker-select">
+            <option>not blue</option>
+            <option>pink</option>
+            <option>orchid</option>
+            <option>olive</option>
+          </select>
+        </div>
 			</div>
 		</div>
 	</div>
