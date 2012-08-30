@@ -1,6 +1,6 @@
-require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi'], 
-        function($, ui, bb, _, ko, when, fuapi) {
-
+require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment'], 
+        function($, ui, bb, _, ko, when, fuapi, moment) {
+	    
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
     }
@@ -308,10 +308,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
       su.relativeTimestamp = ko.computed(function() {
           var time = new Date(su.timestamp);
-          return time.toLocaleDateString() == new Date().toLocaleDateString() ?
-                  time.toLocaleTimeString() 
-                  :
-                  time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
+	  return moment(time).fromNow();
       });
 
       su.addParticipant = function(usernameToAdd) {
