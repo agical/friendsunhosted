@@ -2,6 +2,7 @@
     var val = {};
 
     var http = require("http");
+    var request = require("request"); 
     var webdriverjs = require("webdriverjs");
     var when = require("when");
 
@@ -54,21 +55,21 @@
     
     function createNewUser(username, password, cb) {
         var userSplit = username.split('@');
-      var options = {
-        host: 'localhost',
-        port: 80,
-        path: '/create_user/' + userSplit[1] + '/' +  userSplit[0] + '/' + password
-      };
-      var deferred = when.defer();
-      
-      http.get(options, function(res) {
-        deferred.resolve(
-          {username: username,
-           password: password });
-      })
-      .on('error', deferred.reject);
+        var deferred = when.defer();
+
+        request.get('http://localhost/create_user/' + userSplit[1] + '/' +  userSplit[0] + '/' + password,
+                    function(error, response, body) {
+                        if (error) {
+                            deferred.reject();
+                        }
+                        else {
+                            deferred.resolve(
+                                {username: username,
+                                password: password });
+                        }
+                    });
         
-      return deferred.promise;
+        return deferred.promise;
     }
     
     var store = function() {
@@ -77,19 +78,19 @@
         ret.setRaw = function(key, value) {
             var result = when.defer();
 
-            var options = {
-              host: 'localhost',
-              port: 80,
-              path: '/put/' + key + '/' + escape( JSON.stringify(value) )
-            };
+            request.put({url:'http://localhost/storage/' + key,
+                         body: value},
+                        function(error, response, body) {
+                            if (error) {
+                                result.reject();
+                            }
+                            else {
+                                result.resolve(
+                                    {data:response,
+                                    store:ret});
+                            }
+                        });
             
-            http.get(options, function(res) {
-              result.resolve(
-                {data: res,
-                 store: ret });
-            })
-            .on('error', result.reject);
-              
             return result.promise;
         };
 
@@ -101,19 +102,18 @@
 
             var result = when.defer();
 
-            var options = {
-              host: 'localhost',
-              port: 80,
-              path: '/get/' + key 
-            };
+            request.get('http://localhost/storage/' + key,
+                        function(error, response, body) {
+                            if (error) {
+                                result.reject();
+                            }
+                            else {
+                                result.resolve(
+                                    {data: response, 
+                                    store: ret});
+                            }
+                        });
             
-            http.get(options, function(res) {
-              result.resolve(
-                {data: res,
-                 store: ret });
-            })
-            .on('error', result.reject);
-              
             return result.promise;
         };
 
