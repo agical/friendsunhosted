@@ -73,18 +73,23 @@
     
     var store = function() {
         var ret = {};
-        var redisClient=require('redis').createClient(6379, 'localhost');
-        redisClient.on("error", console.log);
-        redisClient.auth('');
         
         ret.setRaw = function(key, value) {
             var result = when.defer();
-            redisClient.set(key,
-                    JSON.stringify(value),
-                    function(err, data) {
-                        if(err) {result.reject(err);}
-                        else {result.resolve({'data':data,'store':ret});}
-                    });
+
+            var options = {
+              host: 'localhost',
+              port: 80,
+              path: '/put/' + key + '/' + escape( JSON.stringify(value) )
+            };
+            
+            http.get(options, function(res) {
+              result.resolve(
+                {data: res,
+                 store: ret });
+            })
+            .on('error', result.reject);
+              
             return result.promise;
         };
 
@@ -93,12 +98,22 @@
         };
 
         ret.getRaw = function(key) {
+
             var result = when.defer();
-            redisClient.get(key,
-                    function(err, data) {
-                        if(err) {result.reject(err);}
-                        else {result.resolve({'data':data,'store':ret});}
-                    });
+
+            var options = {
+              host: 'localhost',
+              port: 80,
+              path: '/get/' + key 
+            };
+            
+            http.get(options, function(res) {
+              result.resolve(
+                {data: res,
+                 store: ret });
+            })
+            .on('error', result.reject);
+              
             return result.promise;
         };
 
