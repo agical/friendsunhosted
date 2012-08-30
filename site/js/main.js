@@ -306,11 +306,17 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
           return su.timestamp + ":" + su.username;
       });
 
-      su.relativeTimestamp = ko.computed(function() {
+      su.relativeTimestamp = ko.observable("");
+      
+      var updateRelativeTimestamp = function() {
           var time = new Date(su.timestamp);
-	  return moment(time).fromNow();
-      });
+          su.relativeTimestamp(moment(time).fromNow());
+          setTimeout(updateRelativeTimestamp, Math.min((new Date().getTime()-su.timestamp)/2, 1000*10*(120-Math.floor(Math.random()*60))));
+      };
 
+      updateRelativeTimestamp();
+     
+      
       su.addParticipant = function(usernameToAdd) {
 //          if(su.mySeenParticipants.indexOf(usernameToAdd)<0 && usernameToAdd!=su.username) {
 //              fuapi.addThreadParticipant(self.username(), su.id(), usernameToAdd).then(
