@@ -81,14 +81,14 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="209.1091"
+     inkscape:cx="366.25196"
      inkscape:cy="695.52976"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1871"
+     inkscape:window-width="1920"
      inkscape:window-height="1056"
-     inkscape:window-x="49"
+     inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
@@ -164,23 +164,26 @@
          y="337.67929">Own your network!</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:84%;letter-spacing:-0.16000001000000000px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        x="292.41342"
        y="432.061"
        id="text2985-6"
-       sodipodi:linespacing="125%"
-       inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/favicon.png"
-       inkscape:export-xdpi="201.73659"
-       inkscape:export-ydpi="201.73659"><tspan
+       sodipodi:linespacing="84%"
+       inkscape:export-filename="/home/daniel/dev/unbook/tehfrens/site/favicon.ico.png"
+       inkscape:export-xdpi="17.839451"
+       inkscape:export-ydpi="17.839451"><tspan
          sodipodi:role="line"
          id="tspan2987-0"
          x="292.41342"
          y="432.061"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Downcome;-inkscape-font-specification:Downcome Medium;letter-spacing:-4.18px"><tspan
-   style="letter-spacing:-9.5px"
-   id="tspan3798">F</tspan><tspan
-   style="fill:#ff6600;fill-opacity:1;letter-spacing:-4.1px"
-   id="tspan3792">#</tspan>U</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:84%;letter-spacing:-0.16000001000000000px;font-family:Downcome;-inkscape-font-specification:Downcome Medium">  F <tspan
+   style="line-height:84%;letter-spacing:-0.16000001000000000px;fill:#ff6600;fill-opacity:1"
+   id="tspan3792"># </tspan></tspan><tspan
+         sodipodi:role="line"
+         x="292.41342"
+         y="463.26102"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:84%;letter-spacing:0px;font-family:Downcome;-inkscape-font-specification:Downcome Medium"
+         id="tspan3022">  U N   </tspan></text>
     <text
        xml:space="preserve"
        style="font-size:20.25091362px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Sans"
@@ -256,5 +259,14 @@
          id="tspan3059-9"
          x="448.05743"
          y="208.40826">Own your network!</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="370"
+       y="387.36218"
+       id="text3075"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3077" /></text>
   </g>
 </svg>
