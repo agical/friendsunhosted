@@ -2,13 +2,14 @@
   "name": "friendsunhosted",
   "version": "0.0.1",
   "homepage": "http://friendsunhosted.com",  
-  "scripts":{"preinstall": "mkdir node_modules; wget http://selenium.googlecode.com/files/selenium-server-standalone-2.25.0.jar && mv selenium-server-standalone-2.25.0.jar node_modules "},
+  "scripts":{"preinstall": "./maybe_install_selenium.sh"},
   "devDependencies": {
     "buster-amd": "~0.2.0",
     "buster": "~0.6.2",
     "webdriverjs": "~0.6.9",
     "soda": "~0.2.5",
-    "when": "~1.4.2"
+    "when": "~1.4.2",
+    "moment": ""
   },
   "repository": {
     "type": "git",
