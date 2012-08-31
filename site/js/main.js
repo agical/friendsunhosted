@@ -476,6 +476,24 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         $('#loading-screen').hide();
         $('#all').slideDown('fast');
     });
+
+
+  var selectColor = function(event) {
+    color = this.value
+    if(color === 'not blue'){
+      $(".info-box").attr('style', "")
+      $(".navbar-inner").attr('style', "")
+    } else {
+      $(".info-box").attr('style', "background-color: " + color + ";")
+      $(".navbar-inner").attr('style', "background-color: " + color + "; background-image: none;")
+    }
+  }
+
+  var initColorPicker = function(){
+    $('.color-picker-select').change(selectColor);
+  };
+
+  $("document").ready(initColorPicker());
   
 });
 

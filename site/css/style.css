@@ -93,5 +93,7 @@ a { text-decoration:none; font-style:normal; outline:0; }
 .info-box { color:#000; background-color:#FD7A23; }
 #bottom-box, .full-page-text { height:auto; float:left; background-color:#ddd; }
 
-
+.color-picker-select {
+	height: 1.3em;
+}
 
