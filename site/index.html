@@ -157,7 +157,7 @@
 		<div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
 			<div class="status-update span6">
         <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
-                        <textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', event: {keypress: addOnEnter}"></textarea>
+                        <textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
 				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
       
@@ -184,7 +184,7 @@
 						</div>
 						<!-- /ko -->
 						<div class="comment-form span5 offset1">
-                                                    <textarea placeholder="Your reply" class="comment span5" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, event:{keypress: commentOnEnter}"></textarea>
+                                                    <textarea placeholder="Your reply" class="comment span5" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
 							<button class="do-comment btn" data-bind="click:doComment">Comment</button>
 						</div>
 					</div>

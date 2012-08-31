@@ -24,6 +24,20 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
           return keyCode === ENTER_KEY && keyEvent.ctrlKey;
     };
 
+    ko.bindingHandlers.executeOnEnter = {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            var allBindings = allBindingsAccessor();
+            $(element).keypress(function (event) {
+                if (isSubmit(event)) {
+                    allBindings.executeOnEnter.call(viewModel);
+                    return false;
+                }
+                return true;
+            });
+        }
+    };
+
+
   function FriendsViewModel() {
     var self = this;
     
@@ -363,13 +377,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
       
       su.collapsed.subscribe(handleCollapse);
       
-      su.commentOnEnter = function(data, e) {
-          if (isSubmit(e)) {
-              data.doComment();
-              return false;
-          }
-          return true;
-      };
       su.doComment = function() {
           var update = su.comment();
           if(!update || update.trim().length == 0) {
@@ -463,14 +470,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         bootbox.alert(message);
     };
  
-    self.addOnEnter = function(data, e) {
-        if (isSubmit(e)) {
-            data.updateStatus();
-            return false;
-        }
-        return true;
-    };
-
     self.updateStatus = function() {
         var update = self.statusUpdate();
         if(!update || update.trim().length == 0) {
