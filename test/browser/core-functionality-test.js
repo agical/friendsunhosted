@@ -302,7 +302,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "//- can see other participants in threads": function (done) {
+    "- can see other participants in threads": function (done) {
         this.timeout = 25000;
 
         var _category = 'public';
