@@ -157,7 +157,7 @@
 		<div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
 			<div class="status-update span6">
         <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
-				<textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate"></textarea>
+                        <textarea id="status-update" class="span6" placeholder="What'cha doin?" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', event: {keypress: addOnEnter}"></textarea>
 				<button id="do-update-status" class="btn" data-bind="click:updateStatus">Post!</button>
 			</div>
       

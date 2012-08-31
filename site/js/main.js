@@ -451,6 +451,15 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         bootbox.alert(message);
     };
  
+    self.addOnEnter = function(data, e) {
+        var keyCode = (e.which ? e.which : e.keyCode);
+        if (keyCode === 13 && event.ctrlKey) {
+            data.updateStatus();
+            return false;
+        }
+        return true;
+    };
+
     self.updateStatus = function() {
         var update = self.statusUpdate();
         if(!update || update.trim().length == 0) {
