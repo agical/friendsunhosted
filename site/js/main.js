@@ -18,7 +18,12 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
     };
 
-    
+    var ENTER_KEY = 13;
+    function isSubmit(keyEvent) {
+          var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
+          return keyCode === ENTER_KEY && keyEvent.ctrlKey;
+    };
+
   function FriendsViewModel() {
     var self = this;
     
@@ -359,8 +364,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
       su.collapsed.subscribe(handleCollapse);
       
       su.commentOnEnter = function(data, e) {
-          var keyCode = (e.which ? e.which : e.keyCode);
-          if (keyCode === 13 && event.ctrlKey) {
+          if (isSubmit(e)) {
               data.doComment();
               return false;
           }
@@ -460,8 +464,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
     };
  
     self.addOnEnter = function(data, e) {
-        var keyCode = (e.which ? e.which : e.keyCode);
-        if (keyCode === 13 && event.ctrlKey) {
+        if (isSubmit(e)) {
             data.updateStatus();
             return false;
         }
