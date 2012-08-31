@@ -184,7 +184,7 @@
 						</div>
 						<!-- /ko -->
 						<div class="comment-form span5 offset1">
-							<textarea placeholder="Your reply" class="comment span5" data-bind="value:comment, attr:{'id':id}"></textarea>
+                                                    <textarea placeholder="Your reply" class="comment span5" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, event:{keypress: commentOnEnter}"></textarea>
 							<button class="do-comment btn" data-bind="click:doComment">Comment</button>
 						</div>
 					</div>

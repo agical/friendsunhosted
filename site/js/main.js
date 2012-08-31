@@ -358,6 +358,14 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
       
       su.collapsed.subscribe(handleCollapse);
       
+      su.commentOnEnter = function(data, e) {
+          var keyCode = (e.which ? e.which : e.keyCode);
+          if (keyCode === 13 && event.ctrlKey) {
+              data.doComment();
+              return false;
+          }
+          return true;
+      };
       su.doComment = function() {
           var update = su.comment();
           if(!update || update.trim().length == 0) {
