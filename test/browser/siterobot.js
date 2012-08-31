@@ -79,7 +79,8 @@
             var result = when.defer();
 
             request.put({url:'http://localhost/storage/' + key,
-                         body: value},
+                         json:true,
+                         body: JSON.stringify(value)},
                         function(error, response, body) {
                             if (error) {
                                 result.reject();
