@@ -20,7 +20,7 @@ function formatFile(file) {
         });
         fs.writeFile(file, r, function(err) {
             if (err) def.reject(err);
-            def.resolve("File ", file, "reformatted");
+            def.resolve("File '" + file + "' reformatted");
         });
     });
     return def.promise;
