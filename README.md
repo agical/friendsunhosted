@@ -27,12 +27,7 @@ Install the javascript dependencies via `npm install`
 
 Maybe you still need to `sudo npm install --global buster`
 
-## Install redis database
-sudo apt-get install redis-server
-
 ## Get a local storage (express-storage):
-
-This storage uses redis.
 
 Clone or fork https://github.com/agical/express-storage:
 
