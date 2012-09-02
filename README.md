@@ -116,3 +116,15 @@ In `unit` resides the unit tests that are run in all registered browsers in bust
 
 If this sounds corny, read up on BusterJS (http://busterjs.org/). :-)
 
+## Code formatting
+
+In the root, run 
+
+`node format.js <file1> <file2> ... <fileN>`
+
+Works for js, html and css. 
+
+NOTE: We have not started using this in the files. Test it and git reset --hard. 
+Soon, very soon, it will be mandatory.
+
+
