@@ -18,7 +18,26 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
     };
 
-    
+    var ENTER_KEY = 13;
+    function isSubmit(keyEvent) {
+          var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
+          return keyCode === ENTER_KEY && keyEvent.ctrlKey;
+    };
+
+    ko.bindingHandlers.executeOnEnter = {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            var allBindings = allBindingsAccessor();
+            $(element).keypress(function (event) {
+                if (isSubmit(event)) {
+                    allBindings.executeOnEnter.call(viewModel);
+                    return false;
+                }
+                return true;
+            });
+        }
+    };
+
+
   function FriendsViewModel() {
     var self = this;
     
