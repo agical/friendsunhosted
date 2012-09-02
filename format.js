@@ -13,7 +13,7 @@ var formatter = new jsb();
 var formattings = {
         'js':  formatter.beautify_js,
         'html':formatter.beautify_html,
-        'css':formatter.beautify_html
+        'css':formatter.beautify_css
 };
 
 var options = {
