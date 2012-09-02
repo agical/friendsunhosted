@@ -22,7 +22,7 @@ var options = {
     };
 
 function fileType(file) {
-    return fileName.substr(fileName.lastIndexOf('.') + 1);
+    return file.substr(file.lastIndexOf('.') + 1);
 }
 
 function formatFile(file) {
