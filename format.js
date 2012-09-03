@@ -1,5 +1,5 @@
 var jsb = require('node-js-beautify');
-var _ = require('./site/js/underscore');
+var _ = require('./site/js/vendor/underscore');
 var when = require('when');
 var fs = require('fs');
 
