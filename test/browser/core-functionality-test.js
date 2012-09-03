@@ -209,7 +209,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     "- can let user see friends messages": function (done) {
-        this.timeout = 25000;
+        this.timeout = 35000;
 
         var waitForUserAddingStatus = when.defer();
         

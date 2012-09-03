@@ -7,15 +7,19 @@
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
 <title>FRIENDS#UNHOSTED - Own your network!</title>
-<script type="text/javascript" data-main="js/main" src="js/require.js"></script>
+<script type="text/javascript" data-main="js/main" src="js/vendor/require.js"></script>
 <script type="text/javascript">
     // Configuring the RequireJS paths to have versions in one place
     require.config({
         paths : {
-            "jquery" : "jquery-1.7.2.min",
-            "ui" : "bootstrap.min",
-            "bootbox" : "bootbox",
-            "ko" : "knockout-2.1.0.debug"
+            "jquery" : "vendor/jquery-1.7.2.min",
+            "ui" : "vendor/bootstrap.min",
+            "bootbox" : "vendor/bootbox",
+            "ko" : "vendor/knockout-2.1.0.debug",
+            "moment" : "vendor/moment",
+            "underscore" : "vendor/underscore",
+            "when" : "vendor/when",
+            "remoteStorage": "vendor/remoteStorage"
         }
     });
 </script>
