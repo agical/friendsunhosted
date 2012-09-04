@@ -23,6 +23,9 @@
         return driver;
     }
     
+    function throwErr(err) {
+        throw err;
+    }
     function createTestBrowser(done) {
       var client = createFirefoxDriver();
     
@@ -129,6 +132,16 @@
     var createRobot = function(done) {
         var fu = {};
 
+        function doStep(fn) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise
+                .then(function() {return fn(d);}, onError);
+    
+            return fu;
+            
+        }
+        
         var onError = function(err) {
             console.log("============ Error:\n", err);
             fu.end();
@@ -149,9 +162,7 @@
         };
         
         var text = function(css, cb) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b
                     .pause(500)
                     .waitFor(css, 2000) 
@@ -165,9 +176,7 @@
                             d.reject("Value is undefined for " + css);
                         }
                     });
-            }, onError);
-    
-            return fu;
+            });
         };
 
         var source = function(cb) {
@@ -297,10 +306,9 @@
             
             fu.user = when.defer();
             
-            
             createTestUser().then(function(user) {
                 fu.user.resolve(user);                
-            });
+            }, throwErr);
             
             fu.user.promise.then(function(user)  {
                 fu.b
@@ -322,7 +330,7 @@
                                 {browser: fu.b,
                                 loggedInUser: user});
                     });
-            });
+            }, throwErr);
             return fu;
         };
 
@@ -486,9 +494,7 @@
         fu.end = function() {
             defPeek().then(function() {
                 fu.b.end(function(){done(fu);});
-            }, function(err) {
-                throw err;
-            });
+            }, throwErr);
             return fu;
         };
         
