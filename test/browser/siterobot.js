@@ -180,22 +180,16 @@
         };
 
         var source = function(cb) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b.getSource(function(v) {
                             cb(v);
                             d.resolve();
                     });
-            }, onError);
-    
-            return fu;
+            });
         };
 
         var userAndText = function(css, user_text_cb) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.user.promise.then(function(user) {
                     fu.b
                         .pause(200)
@@ -206,7 +200,6 @@
                         });
                 });
             });
-            return fu;
         };
     
         var setAndClick = function(setCss, val, clickCss) {
