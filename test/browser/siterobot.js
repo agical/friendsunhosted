@@ -7,7 +7,7 @@
     var when = require("when");
 
     function createChromeDriver() {
-      return webdriverjs.remote({desiredCapabilities:{
+        return webdriverjs.remote({desiredCapabilities:{
         browserName:"chrome", 
         seleniumProtocol: 'WebDriver',
         'chrome.switches': ['--start-maximized','--disable-popup-blocking']}});
@@ -486,6 +486,8 @@
         fu.end = function() {
             defPeek().then(function() {
                 fu.b.end(function(){done(fu);});
+            }, function(err) {
+                throw err;
             });
             return fu;
         };
