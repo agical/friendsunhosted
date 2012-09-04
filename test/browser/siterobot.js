@@ -203,89 +203,69 @@
         };
     
         var setAndClick = function(setCss, val, clickCss) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b
-                    .pause(200)
-                   .waitFor(setCss, 2000) 
-                    .setValue(setCss, " ")
-                    .clearElement(setCss)
-                    .setValue(setCss, val)
-                    .waitFor(clickCss, 2000) 
-                    .click(clickCss, d.resolve);
-            });   
-            return fu;
+                .pause(200)
+                .waitFor(setCss, 2000) 
+                .setValue(setCss, " ")
+                .clearElement(setCss)
+                .setValue(setCss, val)
+                .waitFor(clickCss, 2000) 
+                .click(clickCss, d.resolve);
+            });
         };
         
         var click = function(clickCss) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b
-                    .pause(200)
-                    .waitFor(clickCss, 2000) 
-                    .click(clickCss, d.resolve);
-            });   
-            return fu;
+                .pause(200)
+                .waitFor(clickCss, 2000) 
+                .click(clickCss, d.resolve);
+            });
         };
 
         var clickButton = function(clickCss) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b
-                    .pause(200)
-                    .waitFor(clickCss, 2000) 
-                    .setValue(clickCss, "\n")
-                    .buttonClick(clickCss, d.resolve);
-            });   
-            return fu;
+                .pause(200)
+                .waitFor(clickCss, 2000) 
+                .setValue(clickCss, "\n")
+                .buttonClick(clickCss, d.resolve);
+            });
         };
 
         var isVisible = function(css, element_cb) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b
-                    .pause(200)
-                    .waitFor(css, 2000) 
-                    .isVisible(css, function(visible) {
-                        element_cb(!visible.value && visible);
-                        d.resolve();
-                    });
-            });   
-            return fu;
+                .pause(200)
+                .waitFor(css, 2000) 
+                .isVisible(css, function(visible) {
+                    element_cb(!visible.value && visible);
+                    d.resolve();
+                });
+            });
         };
     
         fu.debug = function(cb) {
             cb("On setup", fu);
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            var ret = doStep(function(d) {
                 cb("In execution", fu);
                 d.resolve();
             });
             cb("After setup", fu);
-    
-            return fu;
+            return ret;
         };
         
         fu.pause = function(millis) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b.pause(millis, d.resolve);
             });
-    
-            return fu;
             
         };
     
         fu.openStartPage = function() {
             var d = defPush();
-            fu.b
-                .url("http://localhost:8000/");
+            fu.b.url("http://localhost:8000/");
 
             fu.b.waitFor('#footer', 5000, function() {
                 d.resolve();
@@ -313,9 +293,6 @@
                     .setValue("#username", user.username)
                     .waitFor("#username", 2000)
                     .click("#do-login")
-//                    .pause(200)
-//                    .waitFor('input[name="password"]', 500) 
-//                    .setValue('input[name="password"]', user.password)
                     .pause(200)
                     .waitFor('input[value="Allow"]', 500) 
                     .click('input[value="Allow"]', function() {
@@ -328,16 +305,13 @@
         };
 
         fu.title = function(title_cb) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise.then(function() {
+            return doStep(function(d) {
                 fu.b
                     .getTitle(function(t) { 
                     title_cb(t);
                     d.resolve();
                 });
             });
-            return fu;
         };
             
         fu.welcomeHeadline = function(text_cb) {
