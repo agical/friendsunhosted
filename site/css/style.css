@@ -191,7 +191,9 @@ a {
     color:#000;
     padding: 10px;
 }
-
+.push {
+    height: 80px;
+}
 #paypal-image {
     width:74px;
 }
