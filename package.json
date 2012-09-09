@@ -2,7 +2,9 @@
   "name": "friendsunhosted",
   "version": "0.0.1",
   "homepage": "http://friendsunhosted.com",  
-  "scripts":{"preinstall": "./maybe_install_selenium.sh"},
+  "scripts":{
+    "preinstall": "./maybe_install_selenium.sh; sudo npm install -g http-server"
+  },
   "devDependencies": {
     "buster-amd": "~0.2.0",
     "buster": "~0.6.2",
