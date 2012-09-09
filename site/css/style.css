@@ -190,7 +190,7 @@ a {
     text-align:center;
     margin:10px;
 }
-#paypal input[type=image], #page-about input[type=image] {
+#paypal-image {
     width:74px;
 }
 #page-about form {
