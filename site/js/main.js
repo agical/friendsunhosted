@@ -19,11 +19,12 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
     };
 
-    var ENTER_KEY = 13;
+    var CR = 13;
+    var LF = 10;
 
     function isSubmit(keyEvent) {
         var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
-        return keyCode === ENTER_KEY && keyEvent.ctrlKey;
+        return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
     };
 
     ko.bindingHandlers.executeOnEnter = {
