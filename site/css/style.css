@@ -5,14 +5,11 @@ html, body {
 body {
     padding-top:100px;
 }
-#container {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1400px;
-}
+
 .logged-in {
     display:none;
 }
+
 .hidden {
     display:none;
     visibility:visible !important;
@@ -24,9 +21,6 @@ a {
     text-decoration:none;
     font-style:normal;
     outline:0;
-}
-#upgrading-storage-screen {
-    display:none;
 }
 #error-panel {
     display:none;
@@ -179,24 +173,32 @@ a {
     background:#ccc;
     color:#fff;
 }
-#header, #footer {
+#header {
     float:top;
     clear:both;
     width:auto;
 }
 #footer {
-    width:auto;
-    background-color:#bbb;
-    text-align:center;
-    margin:10px;
+	  width:100%;
+    background-color:#db5801;
+    background-image:-moz-linear-gradient(top, #db5801, #fd7a23);
+    background-image:-ms-linear-gradient(top, #db5801, #fd7a23);
+    background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#db5801), to(#fd7a23));
+    background-image:-webkit-linear-gradient(top, #db5801, #fd7a23);
+    background-image:-o-linear-gradient(top, #db5801, #fd7a23);
+    background-image:linear-gradient(top, #db5801, #fd7a23);
+    background-repeat:repeat-x;
+    color:#000;
+    padding: 10px;
 }
+
 #paypal-image {
     width:74px;
 }
 #page-about form {
     margin:0;
 }
-.rounded-box, .menu-bar-item, .info-box, .more-info-box, #footer, .full-page-text {
+.rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
     border-radius:5px;
@@ -209,7 +211,7 @@ a {
     /* IE 5.5 - 7 */
     filter:progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=180, Color='#808080');
 }
-.rounded-box, .info-box, .more-info-box, #footer, .full-page-text {
+.rounded-box, .info-box, .more-info-box,.full-page-text {
     padding:10px;
     margin-bottom:20px;
 }
@@ -217,7 +219,7 @@ a {
     color:#000;
     background-color:#FD7A23;
 }
-#bottom-box, .full-page-text {
+.full-page-text {
     height:auto;
     float:left;
     background-color:#ddd;
