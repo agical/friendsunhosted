@@ -9,6 +9,8 @@
     "webdriverjs": "~0.6.9",
     "soda": "~0.2.5",
     "when": "~1.4.2",
+    "request": "~2.11.0",
+    "node-js-beautify": "~0.1.0"
   },
   "repository": {
     "type": "git",

@@ -27,12 +27,7 @@ Install the javascript dependencies via `npm install`
 
 Maybe you still need to `sudo npm install --global buster`
 
-## Install redis database
-sudo apt-get install redis-server
-
 ## Get a local storage (express-storage):
-
-This storage uses redis.
 
 Clone or fork https://github.com/agical/express-storage:
 
@@ -115,4 +110,16 @@ In `browser` resides the functional test that are run in a browser using seleniu
 In `unit` resides the unit tests that are run in all registered browsers in busterjs.
 
 If this sounds corny, read up on BusterJS (http://busterjs.org/). :-)
+
+## Code formatting
+
+In the root, run 
+
+`node format.js <file1> <file2> ... <fileN>`
+
+Works for js, html and css. 
+
+NOTE: We have not started using this in the files. Test it and git reset --hard. 
+Soon, very soon, it will be mandatory.
+
 
