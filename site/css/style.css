@@ -48,8 +48,8 @@ a {
     color:#000;
 }
 .navbar .nav > li > a {
-    padding-top:3.5em;
-    padding-bottom:.5em;
+    padding-top:60px;
+    padding-bottom: 5px;
     color:black;
     text-shadow:0 1px 0 #fd7a23;
 }
@@ -82,7 +82,7 @@ a {
     position:relative;
     width:100%;
     clear:both;
-    padding-bottom:1em;
+    padding-bottom:2px;
 }
 #status-update {
     height:50px;
@@ -98,12 +98,12 @@ a {
 .status-stream {
 }
 .conversation {
-    padding:1.5em 0;
+    padding:10px 0;
     border-top:1px #ccc dotted;
 }
 .status-update-timestamp, .comment-update-timestamp {
     float:right;
-    font-size:.8em;
+    font-size: 12px;2
     padding:5px 5px 5px 10px;
     font-style:italic;
     color:#aaa;
@@ -111,14 +111,14 @@ a {
 .status-details {
     padding:5px;
     width:100%;
-    margin-bottom:1em;
+    margin-bottom:2p;
 }
 .comments {
-    font-size:.8em;
+    font-size:14px;
 }
 .comment {
     width:100%;
-    margin-bottom:1.2em;
+    margin-bottom:10px;
 }
 .comment-form {
     position:relative;
@@ -133,7 +133,7 @@ a {
 }
 .do-collapse-status, .do-expand-status {
     float:right;
-    font-size:.8em;
+    font-size:12px;
     color:#333;
     cursor:pointer;
 }
@@ -142,7 +142,7 @@ a {
 }
 .friend-details {
     position:relative;
-    padding:.5em 0;
+    padding:5px 0;
     cursor:pointer;
     text-overflow:ellipsis;
     overflow:hidden;
@@ -163,7 +163,7 @@ a {
     display:inline;
 }
 .add-friends-friend {
-    padding:0 .3em;
+    padding:0 5px;
     border-radius:50%;
     background:#bbb;
     color:#fff;
