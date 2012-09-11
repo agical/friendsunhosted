@@ -1,4 +1,5 @@
-require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment'], function($, ui, bb, _, ko, when, fuapi, moment) {
+require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment'], 
+        function($, ui, bb, _, ko, when, fuapi, moment) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -54,6 +55,8 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
 
         self.addFriendsUsername = ko.observable("");
+        self.inviteFriendEmail = ko.observable("");
+        
         self.me = ko.observable({});
 
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
@@ -225,7 +228,13 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         self.addFriend = function(username) {
             fuapi.addFriend(username).then(onFriendAdded, logWarning);
         };
+        
+        self.inviteFriendByEmail = function(email) {
+            window.open('mailto:' + email + '?subject=JoinMeAtFriendsUnhosted&body=BodyText', '_blank');
+            self.inviteFriendEmail("");
+        };
 
+        
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
                 var newFriend = Friend(friendData);

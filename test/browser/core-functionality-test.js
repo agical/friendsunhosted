@@ -162,7 +162,7 @@ buster.testCase("Friends#Unhosted", {
         });
         
     },
-
+    
     "- user can see friends of friends and add them": function (done) {
         this.timeout = 25000;
 
