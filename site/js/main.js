@@ -229,10 +229,23 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             fuapi.addFriend(username).then(onFriendAdded, logWarning);
         };
         
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) { 
+              return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+              ;
+            });
+          };
+        
         self.inviteFriendByEmail = function(email) {
-            
-            window.open('mailto:' + email + '?subject=JoinMeAtFriendsUnhosted&body=BodyText', '_blank');
-            self.inviteFriendEmail("");
+            $.get('email-invitation.txt', function(data) {
+                var bodyEscaped = encodeURIComponent(data.format(self.username()));
+                var subjectEscaped = "Join me at Friends#Unhosted!";
+                window.open("mailto:{0}?subject={1}&body={2}".format(email, subjectEscaped, bodyEscaped), '_blank');
+                self.inviteFriendEmail("");
+            });
         };
 
         
@@ -420,8 +433,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                         friend.updateFriends().then(friend.updateStatuses, logWarning).then(friend.setAutoUpdateFriends, logWarning).then(friend.setAutoUpdateStatuses, logWarning);
                     });
                 }, logWarning);
-
-
 
                 setPageFromUrl();
             }, function(notLoggedInMsg) {
