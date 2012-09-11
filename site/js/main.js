@@ -230,6 +230,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
         
         self.inviteFriendByEmail = function(email) {
+            
             window.open('mailto:' + email + '?subject=JoinMeAtFriendsUnhosted&body=BodyText', '_blank');
             self.inviteFriendEmail("");
         };
