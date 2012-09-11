@@ -7,7 +7,6 @@ var createTestUser = siterobot.createTestUser;
 
 var assert = buster.assertions.assert;
 
-var NO_FRIENDS_MESSAGE = "How do I add friends";
 
 var eq = function(expected) {
     return (function(e) { 
@@ -140,6 +139,7 @@ buster.testCase("Friends#Unhosted", {
     
     "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
+        var NO_FRIENDS_MESSAGE = "How do I add friends";
         
         createTestUser().then(function(userToBeAdded) {
             var username = userToBeAdded.username;
