@@ -275,14 +275,14 @@
         };
 
         fu.open = function(url) {
-            var d = defPush();
-            fu.b.url(url);
-
-            fu.b.waitFor('#footer', 5000, function() {
-                d.resolve();
+            return doStep(function(d) {
+                fu.b.url(url, function(data) {
+                    console.log("Changed url to:", url);
+                });
+                fu.b.waitFor('#footer', 5000, function() {
+                    d.resolve();
+                });
             });
-
-            return fu;
         };
 
         fu.loginNewUser = function() {

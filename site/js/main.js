@@ -226,7 +226,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
 
         self.addFriend = function(username) {
-            fuapi.addFriend(username).then(onFriendAdded, logWarning);
+            return fuapi.addFriend(username).then(onFriendAdded, logWarning);
         };
         
         String.prototype.format = function() {
@@ -411,11 +411,14 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
         function setPageFromUrl() {
             var href = window.location.href;
+            function getReferringUser(url) {
+                return url.substring(url.indexOf('?referredby=')+12);
+            }
             if(self.loggedIn()===false) {
                 
                 if (href.indexOf('?referredby=') > 0) {
-                    var referrer = href.substring(href.indexOf('?referredby=')+12);
                     var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
+                    var referrer = getReferringUser(href);
                     pendingUsers.push(referrer);
                     localStorage.setItem("pending-users-to-add", JSON.stringify(pendingUsers));
                     
@@ -435,6 +438,11 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 if (href.indexOf('#access_token') > 0) {
                     window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
                     self.selectedTab("status");                
+                } else if (href.indexOf('?referredby=') > 0) {
+                    when(self.addFriend(getReferringUser(href)))
+                        .always(function() {
+                            self.selectedTab("myfriends");
+                        });
                 } else if (href.indexOf('#') > 0) {
                     self.selectedTab(self.getPageFromLocation());
                 } else {
@@ -442,6 +450,16 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                     self.selectedTab("welcome");
                 }
             }
+            var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
+            function addNext(arr) {
+                if(arr.length>0) {
+                    when(self.addFriend(arr.pop())).always(function(){addNext(arr);});
+                } else {
+                    localStorage.setItem("pending-users-to-add", JSON.stringify(arr));
+                }
+            } 
+            addNext(pendingUsers);
+
 
         }
 
@@ -467,15 +485,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                         });
                     }, logWarning)
                     .then(function() {
-                        var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
-                        function addNext(arr) {
-                            if(arr) {
-                                self.addFriend(arr.pop()).always(function(){addNext(arr);});
-                            } else {
-                                localStorage.setItem("pending-users-to-add", null);
-                            }
-                        } 
-                        addNext(pendingUsers);
                     });
 
             }, function(notLoggedInMsg) {
