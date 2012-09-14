@@ -332,7 +332,27 @@
         fu.referralMessage = function(text_cb) {
             return text('#referred-message', text_cb);
         };
+
+        fu.closeReferralMessage = function() {
+            return click('#referred-message .close');
+        };
+
+        fu.errorMessage = function(text_cb) {
+            return text(".bootbox .modal-body", text_cb);
+        };
         
+        fu.clickErrorOk = function() {
+            return click(".bootbox a[data-handler=0]");
+        };
+
+        fu.clickOkInConfirmWriteToEmptyStore = function() {
+            return clickButton(".bootbox .btn-primary");
+        };
+
+        fu.confirmBody = function(text_cb) {
+            return text(".bootbox .modal-body", text_cb);
+        };
+
         fu.loggedInUser = function(user_cb) {
             return userAndText('#logged-in-user', user_cb);
         };
@@ -435,21 +455,6 @@
             return click("#friend-" + nr + " .remove-friend");
         };
         
-        fu.errorMessage = function(text_cb) {
-            return text(".bootbox .modal-body", text_cb);
-        };
-        
-        fu.clickErrorOk = function() {
-            return click(".bootbox a[data-handler=0]");
-        };
-
-        fu.clickOkInConfirmWriteToEmptyStore = function() {
-            return clickButton(".bootbox .btn-primary");
-        };
-
-        fu.confirmBody = function(text_cb) {
-            return text(".bootbox .modal-body", text_cb);
-        };
         
         fu.refresh = function() {
             var last = defPeek();

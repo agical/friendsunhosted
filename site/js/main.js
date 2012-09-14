@@ -47,7 +47,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
         self.username = ko.observable("");
         self.loggedIn = ko.observable(false);
-
+        
         self.loggedIn.subscribe(function(val) {
             $('.logged-in').addClass(val ? 'visible' : 'hidden').removeClass(val ? 'hidden' : 'visible');
             $('.not-logged-in').addClass(val ? 'hidden' : 'visible').removeClass(val ? 'visible' : 'hidden');
@@ -415,6 +415,9 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 
                 if (href.indexOf('?referredby=') > 0) {
                     var referrer = href.substring(href.indexOf('?referredby=')+12);
+                    var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
+                    pendingUsers.push(referrer);
+                    localStorage.setItem("pending-users-to-add", JSON.stringify(pendingUsers));
                     
                     $('#referred-message')
                     .html('<a class="close" data-dismiss="alert">×</a>' +
@@ -461,8 +464,19 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                             .then(friend.updateStatuses, logWarning)
                             .then(friend.setAutoUpdateFriends, logWarning)
                             .then(friend.setAutoUpdateStatuses, logWarning);
+                        });
+                    }, logWarning)
+                    .then(function() {
+                        var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
+                        function addNext(arr) {
+                            if(arr) {
+                                self.addFriend(arr.pop()).always(function(){addNext(arr);});
+                            } else {
+                                localStorage.setItem("pending-users-to-add", null);
+                            }
+                        } 
+                        addNext(pendingUsers);
                     });
-                }, logWarning);
 
             }, function(notLoggedInMsg) {
                 self.loggedIn(false);

@@ -168,15 +168,13 @@ buster.testCase("Friends#Unhosted", {
         var NO_FRIENDS_MESSAGE = "How do I add friends";
         
         createRobot(done)
-            .pause(10000)
             .open('http://localhost:8000/#welcome?referredby=fetisov@localhost')
-            .pause(5000)
             .referralMessage(match('You have been recommended by fetisov@localhost to join Friends#Unhosted'))
-            .referralMessage(match('After you have logged in, fetisov@localhost will be automagically added to your friends.'))
+            .referralMessage(match('After you have logged in (in this browser), fetisov@localhost will be automagically added to your friends.'))
+            .closeReferralMessage()
             .loginNewUser()
-            .pause(5000)
+            .clickOkInConfirmWriteToEmptyStore()
             .selectFriendsInMenu()
-            .pause(500)
             .friend(1, eq('fetisov@localhost'))
        .end();
         

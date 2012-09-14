@@ -71,6 +71,7 @@ function(fuc, _, when, remoteAdapter, help) {
             
         },
 
+
         "- Rejects new friend for no friends in repo when confirm is NOT ok": function(done) {
             this.originalGetTimestamp = fu.getTimestamp;
             fu.getTimestamp = function() {return 123456789;};
