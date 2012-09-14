@@ -158,7 +158,7 @@
         };
     
         var defPeek = function() {
-            return fu.lastFn;
+            return fu.lastFn||defPush();
         };
         
         var text = function(css, cb) {
@@ -273,7 +273,18 @@
 
             return fu;
         };
-        
+
+        fu.open = function(url) {
+            var d = defPush();
+            fu.b.url(url);
+
+            fu.b.waitFor('#footer', 5000, function() {
+                d.resolve();
+            });
+
+            return fu;
+        };
+
         fu.loginNewUser = function() {
             var d = defPush();
             
@@ -285,7 +296,7 @@
             
             fu.user.promise.then(function(user)  {
                 fu.b
-                    .url("http://localhost:8000/")
+                    //.url("http://localhost:8000/")
                     .pause(200)
                     .waitFor("#username", 2000)
                     .setValue("#username", " ")
@@ -317,7 +328,11 @@
         fu.welcomeHeadline = function(text_cb) {
             return text('#info-what-is h3', text_cb);
         };
-    
+        
+        fu.referralMessage = function(text_cb) {
+            return text('#referred-message', text_cb);
+        };
+        
         fu.loggedInUser = function(user_cb) {
             return userAndText('#logged-in-user', user_cb);
         };
@@ -430,6 +445,10 @@
 
         fu.clickOkInConfirmWriteToEmptyStore = function() {
             return clickButton(".bootbox .btn-primary");
+        };
+
+        fu.confirmBody = function(text_cb) {
+            return text(".bootbox .modal-body", text_cb);
         };
         
         fu.refresh = function() {

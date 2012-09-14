@@ -57,8 +57,8 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         self.addFriendsUsername = ko.observable("");
         self.inviteFriendEmail = ko.observable("");
         
-        self.me = ko.observable({});
-
+        self.me = ko.observable({allFriends:function(){return [];}});
+        
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
         var GET_MORE_INCREMENT = ONE_DAY_MS * 3;
         self.timeLimitForData = ko.observable(new Date().getTime() - GET_MORE_INCREMENT);
@@ -410,36 +410,65 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
 
         function setPageFromUrl() {
-            if (window.location.href.indexOf('#access_token') > 0) {
-                window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
-                self.selectedTab("status");
-            } else if (window.location.href.indexOf('#') > 0) {
-                self.selectedTab(self.getPageFromLocation());
+            var href = window.location.href;
+            if(self.loggedIn()===false) {
+                
+                if (href.indexOf('?referredby=') > 0) {
+                    var referrer = href.substring(href.indexOf('?referredby=')+12);
+                    
+                    $('#referred-message')
+                    .html('<a class="close" data-dismiss="alert">×</a>' +
+                        'You have been recommended by <b>' + referrer + '</b> to join Friends#Unhosted.<br/><br/>' +
+                        'If you don\'t have an unhosted account yet, you can follow on of the link on the next side to get one<br/><br/>' +
+                        'If you have an unhosted account already, just sign in.<br/><br/>' +
+                        'After you have logged in (in this browser), ' + referrer + ' will be automagically added to your friends.')
+                    .show()    
+                    .alert();
+                    self.selectedTab("welcome");
+                } else {
+                    self.selectedTab("welcome");
+                }
             } else {
-                window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
-                self.selectedTab("welcome");
+                if (href.indexOf('#access_token') > 0) {
+                    window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
+                    self.selectedTab("status");                
+                } else if (href.indexOf('#') > 0) {
+                    self.selectedTab(self.getPageFromLocation());
+                } else {
+                    window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
+                    self.selectedTab("welcome");
+                }
             }
+
         }
 
-        function init() {
+        self.init = function() {
             return fuapi.init().then(function(localUsername) {
                 self.username(localUsername);
                 self.loggedIn(true);
                 self.me(Friend({
                     username: localUsername
                 }));
-                self.me().updateFriends().then(self.me().updateStatuses, logWarning).then(self.me().setAutoUpdateFriends, logWarning).then(self.me().setAutoUpdateStatuses, logWarning).then(function() {
+                self.me()
+                    .updateFriends()
+                    .then(self.me().updateStatuses, logWarning)
+                    .then(self.me().setAutoUpdateFriends, logWarning)
+                    .then(self.me().setAutoUpdateStatuses, logWarning)
+                    .then(function() {
                     _.each(self.me().allFriends(), function(friend) {
-                        friend.updateFriends().then(friend.updateStatuses, logWarning).then(friend.setAutoUpdateFriends, logWarning).then(friend.setAutoUpdateStatuses, logWarning);
+                        friend
+                            .updateFriends()
+                            .then(friend.updateStatuses, logWarning)
+                            .then(friend.setAutoUpdateFriends, logWarning)
+                            .then(friend.setAutoUpdateStatuses, logWarning);
                     });
                 }, logWarning);
 
-                setPageFromUrl();
             }, function(notLoggedInMsg) {
-                console.log(notLoggedInMsg);
-                self.selectedTab("welcome");
                 self.loggedIn(false);
-            }).then(function() {});
+            }).then(function() {
+                setPageFromUrl();
+            });
 
         };
 
@@ -473,6 +502,16 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 bootbox.alert(message);
             };
 
+        var showInfo = function(message) {
+            bootbox.dialog(message, {
+                "label" : "Ok!",
+                "class" : "primary",   // or primary, or danger, or nothing at all
+                "callback": function() {
+                    console.log("great success");
+                }
+            });
+        };
+
         self.updateStatus = function() {
             var update = self.statusUpdate();
             if (!update || update.trim().length == 0) {
@@ -489,14 +528,17 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             });
         };
 
-        init();
 
     };
 
     $(function() {
-        ko.applyBindings(new FriendsViewModel());
-        $('#loading-screen').hide();
-        $('#all').slideDown('fast');
+        var viewModel = new FriendsViewModel();
+        ko.applyBindings(viewModel);
+        viewModel.init();
+        setTimeout(function() { 
+            $('#loading-screen').hide();
+            $('#all').slideDown('fast');
+        }, 0);
     });
 
 });
