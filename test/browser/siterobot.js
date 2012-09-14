@@ -296,7 +296,7 @@
             
             fu.user.promise.then(function(user)  {
                 fu.b
-                    //.url("http://localhost:8000/")
+                    .url("http://localhost:8000/")
                     .pause(200)
                     .waitFor("#username", 2000)
                     .setValue("#username", " ")
