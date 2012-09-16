@@ -561,10 +561,10 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
     
     $(function() {
         setTimeout(function() { 
-            initBindingHandlers();
             var viewModel = new FriendsViewModel();
-            ko.applyBindings(viewModel);
             viewModel.init();
+            initBindingHandlers();
+            ko.applyBindings(viewModel);
             $('#loading-screen').hide();
             $('#all').slideDown('fast');
         }, 0);
