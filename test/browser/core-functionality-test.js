@@ -168,7 +168,6 @@ buster.testCase("Friends#Unhosted", {
         
         createRobot(done) 
             .open('http://localhost:8000/#welcome?referredby=fetisov@localhost')
-            .pause(5000)
             .referralMessage(match('You have been recommended by fetisov@localhost to join Friends#Unhosted'))
             .referralMessage(match('After you have logged in (in this browser), fetisov@localhost will be automagically added to your friends.'))
             .closeReferralMessage()
