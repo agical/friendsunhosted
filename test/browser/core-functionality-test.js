@@ -174,8 +174,8 @@ buster.testCase("Friends#Unhosted", {
             .closeReferralMessage()
             .loginNewUser()
             .clickOkInConfirmWriteToEmptyStore()
-//            .selectFriendsInMenu()
-//            .friend(1, eq('fetisov@localhost'))
+            .selectFriendsInMenu()
+            .friend(1, eq('fetisov@localhost'))
        .end();
         
     },

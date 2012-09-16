@@ -562,12 +562,14 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
     $(function() {
         setTimeout(function() { 
             var viewModel = new FriendsViewModel();
-            viewModel.init();
             initBindingHandlers();
             ko.applyBindings(viewModel);
+            viewModel.init();
+        }, 0);
+        setTimeout(function() { 
             $('#loading-screen').hide();
             $('#all').slideDown('fast');
-        }, 0);
+        }, 100);
     });
 
 });
