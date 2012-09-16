@@ -132,23 +132,31 @@
     var createRobot = function(done) {
         var fu = {};
 
-        function doStep(fn) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise
-                .then(function() {return fn(d);}, onError);
-    
-            return fu;
-            
-        }
+        var browserReady = when.defer();
+        
+        fu.b = createTestBrowser(done).init(function(){
+            browserReady.resolve();
+        });
         
         var onError = function(err) {
             console.log("============ Error:\n", err);
             fu.end();
         };
-        
 
-        fu.b = createTestBrowser(done).init();
+
+        function doStep(fn) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                browserReady.promise.then( function() {
+                    return fn(d);
+                }, onError);
+            }, onError);
+    
+            return fu;
+        }
+        
+        
         fu.user = null;
         fu.lastFn = null;
         
@@ -158,7 +166,13 @@
         };
     
         var defPeek = function() {
-            return fu.lastFn||defPush();
+            if(fu.lastFn) {
+                return fu.lastFn;
+            } else {
+                var firstDef = defPush();
+                firstDef.resolve();
+                return firstDef;
+            }
         };
         
         var text = function(css, cb) {
@@ -275,44 +289,42 @@
         };
 
         fu.open = function(url) {
+            console.log("Opening ", url);
             return doStep(function(d) {
                 fu.b.url(url, function(data) {
                     console.log("Changed url to:", url);
-                });
-                fu.b.waitFor('#footer', 5000, function() {
                     d.resolve();
                 });
             });
         };
 
         fu.loginNewUser = function() {
-            var d = defPush();
-            
-            fu.user = when.defer();
-            
-            createTestUser().then(function(user) {
-                fu.user.resolve(user);                
-            }, throwErr);
-            
-            fu.user.promise.then(function(user)  {
-                fu.b
-                    .url("http://localhost:8000/")
-                    .pause(200)
-                    .waitFor("#username", 2000)
-                    .setValue("#username", " ")
-                    .clearElement("#username")
-                    .setValue("#username", user.username)
-                    .waitFor("#username", 2000)
-                    .click("#do-login")
-                    .pause(200)
-                    .waitFor('input[value="Allow"]', 500) 
-                    .click('input[value="Allow"]', function() {
-                        d.resolve(
-                                {browser: fu.b,
-                                loggedInUser: user});
-                    });
-            }, throwErr);
-            return fu;
+            return doStep(function(d) {
+                fu.user = when.defer();
+                
+                createTestUser().then(function(user) {
+                    fu.user.resolve(user);                
+                }, onError);
+                
+                fu.user.promise.then(function(user)  {
+                    fu.b
+                        .url("http://localhost:8000/")
+                        .pause(200)
+                        .waitFor("#username", 2000)
+                        .setValue("#username", " ")
+                        .clearElement("#username")
+                        .setValue("#username", user.username)
+                        .waitFor("#username", 2000)
+                        .click("#do-login")
+                        .pause(200)
+                        .waitFor('input[value="Allow"]', 500) 
+                        .click('input[value="Allow"]', function() {
+                            d.resolve(
+                                    {browser: fu.b,
+                                    loggedInUser: user});
+                        });
+                }, onError);
+            });
         };
 
         fu.title = function(title_cb) {
@@ -459,7 +471,7 @@
         fu.refresh = function() {
             var last = defPeek();
             var d = defPush();
-            last.promise.then(function() {
+            when.all([last.promise, browserReady.promise], function() {
                 fu.b.refresh(d.resolve);
             });
             return fu;
@@ -468,7 +480,7 @@
         fu.refreshStatuses = function() {
             var last = defPeek();
             var d = defPush();
-            last.promise.then(function() {
+            when.all([last.promise, browserReady.promise],function() {
                 fu.b.click("#refresh-link").pause(200).waitFor(2000, "#footer", d.resolve);
             });
             return fu;

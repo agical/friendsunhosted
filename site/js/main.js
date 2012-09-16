@@ -20,26 +20,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
     };
 
-    var CR = 13;
-    var LF = 10;
-
-    function isSubmit(keyEvent) {
-        var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
-        return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
-    };
-
-    ko.bindingHandlers.executeOnEnter = {
-        init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
-            var allBindings = allBindingsAccessor();
-            $(element).keypress(function(event) {
-                if (isSubmit(event)) {
-                    allBindings.executeOnEnter.call(viewModel);
-                    return false;
-                }
-                return true;
-            });
-        }
-    };
 
 
     function FriendsViewModel() {
@@ -409,6 +389,8 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             return su;
         };
 
+        var PENDING_USERS = "pending-users-to-add-1";
+
         function setPageFromUrl() {
             var href = window.location.href;
             function getReferringUser(url) {
@@ -417,10 +399,11 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             if(self.loggedIn()===false) {
                 
                 if (href.indexOf('?referredby=') > 0) {
-                    var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
+                    var pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS)||"[]");
                     var referrer = getReferringUser(href);
                     pendingUsers.push(referrer);
-                    localStorage.setItem("pending-users-to-add", JSON.stringify(pendingUsers));
+                    localStorage.removeItem(PENDING_USERS);
+                    localStorage.setItem(PENDING_USERS, JSON.stringify(pendingUsers));
                     
                     $('#referred-message')
                     .html('<a class="close" data-dismiss="alert">×</a>' +
@@ -449,20 +432,19 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                     window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
                     self.selectedTab("welcome");
                 }
+                var pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS)||"[]");
+                function addNext(arr) {
+                    if(arr.length>0) {
+                        when(self.addFriend(arr.pop())).then(function(){addNext(arr);});
+                    } else {
+                        localStorage.removeItem(PENDING_USERS);
+                    }
+                } 
+                addNext(pendingUsers);
             }
-            var pendingUsers = JSON.parse(localStorage.getItem("pending-users-to-add")||"[]");
-            function addNext(arr) {
-                if(arr.length>0) {
-                    when(self.addFriend(arr.pop())).always(function(){addNext(arr);});
-                } else {
-                    localStorage.setItem("pending-users-to-add", JSON.stringify(arr));
-                }
-            } 
-            addNext(pendingUsers);
-
 
         }
-
+                
         self.init = function() {
             return fuapi.init().then(function(localUsername) {
                 self.username(localUsername);
@@ -489,7 +471,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
             }, function(notLoggedInMsg) {
                 self.loggedIn(false);
-            }).then(function() {
+            }).always(function() {
                 setPageFromUrl();
             });
 
@@ -551,14 +533,38 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             });
         };
 
-
     };
 
+    function initBindingHandlers() {
+        var CR = 13;
+        var LF = 10;
+
+        function isSubmit(keyEvent) {
+            var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
+            return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
+        };
+
+        ko.bindingHandlers.executeOnEnter = {
+            init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+                var allBindings = allBindingsAccessor();
+                $(element).keypress(function(event) {
+                    if (isSubmit(event)) {
+                        allBindings.executeOnEnter.call(viewModel);
+                        return false;
+                    }
+                    return true;
+                });
+            }
+        };
+        
+    }
+    
     $(function() {
-        var viewModel = new FriendsViewModel();
-        ko.applyBindings(viewModel);
-        viewModel.init();
         setTimeout(function() { 
+            initBindingHandlers();
+            var viewModel = new FriendsViewModel();
+            ko.applyBindings(viewModel);
+            viewModel.init();
             $('#loading-screen').hide();
             $('#all').slideDown('fast');
         }, 0);
