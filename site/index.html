@@ -194,47 +194,50 @@
             </div>
             <div id="page-myfriends" class="page friends logged-in hidden"
             data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
-                <div id="add-a-friend" class="logged-in input-append span5" data-bind="visible:loggedIn()">
-                    <input type="text" id="add-friends-username" class="span3" placeholder="friendsname@storage.com"
+                <div id="add-a-friend" class="logged-in input-append span6" data-bind="visible:loggedIn()">
+                    <h3>Add friend with a remoteStorage account</h3>
+                    <input type="text" id="add-friends-username" class="span3" placeholder="friend@storageserver.domain"
                     data-bind="value:addFriendsUsername" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
-                    <p>
                 </div>
                 <div id="invite-a-friend-by-email" class="logged-in input-append span5" data-bind="visible:loggedIn()">
-                    <input type="text" id="add-friends-username" class="span3" placeholder="friendsname@storage.com"
+                    <h3>Invite a friend by email</h3>
+                    <input type="text" id="add-friends-username" class="span3" placeholder="email@server.domain"
                     data-bind="value:inviteFriendEmail" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}">Invite friend!</button>
+                    <p>Enter your friends email address and click invite. Your preset email client will start with a prefilled message. 
+                    Remember that you can add several friends in a single mail.</p>
                 </div>
                 <div id="friends" class="logged-in">
                     <div class="row">
                         <!-- ko foreach: me().allFriends -->
-                        <div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
-                            <span class="friend storage-id" data-bind="text:username"></span>
-                            <a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend"><i class="icon-remove-sign"></i></a>
-                            <!-- ko foreach: allFriends -->
-                            <div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
-                                <span class="storage-id" data-bind="text:username"></span>
-                                <a href="#" class="add-friends-friend" data-bind="click:function(){$root.addFriend(username);}"><i class="icon-plus-sign"></i></a>
+                            <div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
+                                <span class="friend storage-id" data-bind="text:username"></span>
+                                <a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend"><i class="icon-remove-sign"></i></a>
+                                <!-- ko foreach: allFriends -->
+                                    <div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
+                                        <span class="storage-id" data-bind="text:username"></span>
+                                        <a href="#" class="add-friends-friend" data-bind="click:function(){$root.addFriend(username);}"><i class="icon-plus-sign"></i></a>
+                                    </div>
+                                <!-- /ko -->
                             </div>
-                            <!-- /ko -->
-                        </div>
                         <!-- /ko -->
                         <!-- ko if: me().allFriends().length==0 -->
-                        <div id="no-friends-message" class="friend-details span6">
-                            <h3>How do I add friends?</h3>
-                            <p>To add a friend to your network, you need to get your friends storage
-                                address. That storage address looks like an email address:</p>
-                            <p>
-                                <strong>username@storageserver.com</strong>
-                            </p>
-                            <p>You add that address to your F#Un friends, and then you can see the updates
-                                of your friend.</p>
-                            <h3>How do I find my friends?</h3>
-                            <p>At the moment, there is no central server where you can find your friends,
-                                that would kind of defeat the purpose of the unhosted thing. Since there
-                                is no central server, you need to get in contact with your friends using
-                                email or some existing social media. Neat, huh?!</p>
-                        </div>
+                            <div id="no-friends-message" class="friend-details span6">
+                                <h3>How do I add friends?</h3>
+                                <p>To add a friend to your network, you need to get your friends storage
+                                    address. That storage address looks like an email address:</p>
+                                <p>
+                                    <strong>username@storageserver.com</strong>
+                                </p>
+                                <p>You add that address to your F#Un friends, and then you can see the updates
+                                    of your friend.</p>
+                                <h3>How do I find my friends?</h3>
+                                <p>At the moment, there is no central server where you can find your friends,
+                                    that would kind of defeat the purpose of the unhosted thing. Since there
+                                    is no central server, you need to get in contact with your friends using
+                                    email or some existing social media. Neat, huh?!</p>
+                            </div>
                         <!-- /ko -->
                     </div>
                 </div>

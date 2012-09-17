@@ -151,7 +151,7 @@ a {
     overflow:hidden;
 }
 /*.friend-details .close { display:none; position:absolute; right:0; top:.4em; }*/
- .friend-details .close {
+ .friend-details .close,  {
     display:inline;
 }
 .storage-id {
