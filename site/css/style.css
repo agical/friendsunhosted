@@ -221,6 +221,7 @@ a {
 .info-box {
     color:#000;
     background-color:#FD7A23;
+    margin-bottom: 20px;
 }
 .full-page-text {
     height:auto;
