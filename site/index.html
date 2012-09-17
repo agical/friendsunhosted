@@ -71,6 +71,7 @@
                 </div>
                 <br class="clearboth" />
             </div>
+            
             <div id="page-about" class="page about full-page-text hidden row" data-bind="visible: selectedTab() == 'about'">
                 <div class="span6">
                     <h3>About FRIENDS#UNHOSTED</h3>
@@ -191,43 +192,52 @@
                     <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
                 </div>
             </div>
-            <div id="page-myfriends" class="page friends logged-in hidden row span12"
+            <div id="page-myfriends" class="page friends logged-in hidden"
             data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
-                <div id="add-a-friend" class="logged-in input-append span5" data-bind="visible:loggedIn()">
-                    <input type="text" id="add-friends-username" class="span3" placeholder="friendsname@storage.com"
+                <div id="add-a-friend" class="logged-in input-append span6" data-bind="visible:loggedIn()">
+                    <h3>Add friend with a remoteStorage account</h3>
+                    <input type="text" id="add-friends-username" class="span3" placeholder="friend@storageserver.domain"
                     data-bind="value:addFriendsUsername" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
                 </div>
-                <div id="friends" class="logged-in span12">
+                <div id="invite-a-friend-by-email" class="logged-in input-append span5" data-bind="visible:loggedIn()">
+                    <h3>Invite a friend by email</h3>
+                    <input type="text" id="add-friends-username" class="span3" placeholder="email@server.domain"
+                    data-bind="value:inviteFriendEmail" />
+                    <button id="do-add-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}">Invite friend!</button>
+                    <p>Enter your friends email address and click invite. Your preset email client will start with a prefilled message. 
+                    Remember that you can add several friends in a single mail.</p>
+                </div>
+                <div id="friends" class="logged-in">
                     <div class="row">
                         <!-- ko foreach: me().allFriends -->
-                        <div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
-                            <span class="friend storage-id" data-bind="text:username"></span>
-                            <a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend">×</a>
-                            <!-- ko foreach: allFriends -->
-                            <div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
-                                <span class="storage-id" data-bind="text:username"></span>
-                                <a href="#" class="add-friends-friend btn btn-small" data-bind="click:function(){$root.addFriend(username);}">+</a>
+                            <div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
+                                <span class="friend storage-id" data-bind="text:username"></span>
+                                <a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend"><i class="icon-remove-sign"></i></a>
+                                <!-- ko foreach: allFriends -->
+                                    <div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
+                                        <span class="storage-id" data-bind="text:username"></span>
+                                        <a href="#" class="add-friends-friend" data-bind="click:function(){$root.addFriend(username);}"><i class="icon-plus-sign"></i></a>
+                                    </div>
+                                <!-- /ko -->
                             </div>
-                            <!-- /ko -->
-                        </div>
                         <!-- /ko -->
                         <!-- ko if: me().allFriends().length==0 -->
-                        <div id="no-friends-message" class="friend-details span4 offset4">
-                            <h3>How do I add friends?</h3>
-                            <p>To add a friend to your network, you need to get your friends storage
-                                address. That storage address looks like an email address:</p>
-                            <p>
-                                <strong>username@storageserver.com</strong>
-                            </p>
-                            <p>You add that address to your F#Un friends, and then you can see the updates
-                                of your friend.</p>
-                            <h3>How do I find my friends?</h3>
-                            <p>At the moment, there is no central server where you can find your friends,
-                                that would kind of defeat the purpose of the unhosted thing. Since there
-                                is no central server, you need to get in contact with your friends using
-                                email or some existing social media. Neat, huh?!</p>
-                        </div>
+                            <div id="no-friends-message" class="friend-details span6">
+                                <h3>How do I add friends?</h3>
+                                <p>To add a friend to your network, you need to get your friends storage
+                                    address. That storage address looks like an email address:</p>
+                                <p>
+                                    <strong>username@storageserver.com</strong>
+                                </p>
+                                <p>You add that address to your F#Un friends, and then you can see the updates
+                                    of your friend.</p>
+                                <h3>How do I find my friends?</h3>
+                                <p>At the moment, there is no central server where you can find your friends,
+                                    that would kind of defeat the purpose of the unhosted thing. Since there
+                                    is no central server, you need to get in contact with your friends using
+                                    email or some existing social media. Neat, huh?!</p>
+                            </div>
                         <!-- /ko -->
                     </div>
                 </div>
@@ -238,8 +248,10 @@
                 <br class="clearboth" />
             </div>
             <div id="page-welcome" class="hidden" data-bind="visible: selectedTab()=='welcome'">
+                <div id="referred-message" class="alert alert-info hidden">  
+                </div>                  
                 <div class="row">
-                    <div id="info-what-is" class="info-box span5">
+                    <div id="info-what-is" class="info-box span6">
                         <h3>What is FRIENDS#UNHOSTED?</h3>
                         <p>FRIENDS#UNHOSTED is an alternative social network for those of us who
                             want to own our social network data. With F#Un, your data is not stored
@@ -252,7 +264,7 @@
                             you own your data, you need to decide where to put it, we don't do that
                             for you. We don't own you, you do!</p>
                     </div>
-                    <div id="info-signup" class="info-box span5">
+                    <div id="info-signup" class="info-box span6">
                         <h3>How do I signup?</h3>
                         <p>The easiest is to get an account on one of the following storage providers:</p>
                         <ul>
@@ -285,7 +297,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="more-info-box span10">
+                    <div class="more-info-box span12">
                         <h3>Why should I care that it is #unhosted?</h3>
                         <p>The big social network sites, like Facebook, Twitter, Google and many
                             more, give you free storage for your stuff. But, there is no such thing

@@ -43,7 +43,7 @@ function(fuc, _, when, remoteAdapter, help) {
                 return ret.promise;
             };
 
-            fu.addFriend('some@user.com').always(eq("Cannot add the same user twice")).always(done);
+            fu.addFriend('some@user.com').always(eq(friends[0].username + " is already your friend!")).always(done);
         },
         
         "- Puts new friend for no friends in repo when confirm is ok": function(done) {
@@ -70,6 +70,7 @@ function(fuc, _, when, remoteAdapter, help) {
             fu.addFriend(friends[0].username).then(eq(friends[0]), eq('fail')).always(done);
             
         },
+
 
         "- Rejects new friend for no friends in repo when confirm is NOT ok": function(done) {
             this.originalGetTimestamp = fu.getTimestamp;

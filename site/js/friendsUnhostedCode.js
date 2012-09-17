@@ -33,8 +33,8 @@ define([], function() {
                 if (value && _.any(value, function(f) {
                     return f.username == friendsUsername;
                 })) {
-                    dialog.info('Cannot add the same user twice').then(function() {
-                        afterAdding.reject('Cannot add the same user twice');
+                    dialog.info(friendsUsername + " is already your friend!").then(function() {
+                        afterAdding.reject(friendsUsername + " is already your friend!");
                     }, afterAdding.reject);
                     return afterAdding.promise;
                 }
@@ -107,11 +107,11 @@ define([], function() {
 
         fuapi.fetchFriendsOfFriend = function(friend) {
             var def = when.defer();
-            rem.getPublicData(friend, FRIENDS_KEY).then(
-
-            function(data) {
-                def.resolve(data || []);
-            }, def.reject);
+            rem
+                .getPublicData(friend, FRIENDS_KEY)
+                .then(function(data) {
+                    def.resolve(data || []);
+                }, def.reject);
             return def.promise;
         };
 
@@ -125,20 +125,17 @@ define([], function() {
             return def.promise;
         };
 
-        var getVersionForUser = function(username) {
-                return rem.getPublicData(username, 'VERSION');
-            };
-
         fuapi.fetchStatusForUser = function(username) {
             var afterUserStatus = when.defer();
 
-            rem.getPublicData(username, STATUS_KEY_V3).then(
-
-            function(data) {
-                afterUserStatus.resolve(data || []);
-            }, function(error) {
-                afterUserStatus.reject(error);
-            });
+            rem
+                .getPublicData(username, STATUS_KEY_V3)
+                .then(  function(data) {
+                            afterUserStatus.resolve(data || []);
+                        }, 
+                        function(error) {
+                            afterUserStatus.reject(error);
+                        });
 
             return afterUserStatus.promise;
         };

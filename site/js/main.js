@@ -1,4 +1,5 @@
-require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment'], function($, ui, bb, _, ko, when, fuapi, moment) {
+require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment'], 
+        function($, ui, bb, _, ko, when, fuapi, moment) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -19,26 +20,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
     };
 
-    var CR = 13;
-    var LF = 10;
-
-    function isSubmit(keyEvent) {
-        var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
-        return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
-    };
-
-    ko.bindingHandlers.executeOnEnter = {
-        init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
-            var allBindings = allBindingsAccessor();
-            $(element).keypress(function(event) {
-                if (isSubmit(event)) {
-                    allBindings.executeOnEnter.call(viewModel);
-                    return false;
-                }
-                return true;
-            });
-        }
-    };
 
 
     function FriendsViewModel() {
@@ -46,7 +27,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
         self.username = ko.observable("");
         self.loggedIn = ko.observable(false);
-
+        
         self.loggedIn.subscribe(function(val) {
             $('.logged-in').addClass(val ? 'visible' : 'hidden').removeClass(val ? 'hidden' : 'visible');
             $('.not-logged-in').addClass(val ? 'hidden' : 'visible').removeClass(val ? 'visible' : 'hidden');
@@ -54,8 +35,10 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
 
         self.addFriendsUsername = ko.observable("");
-        self.me = ko.observable({});
-
+        self.inviteFriendEmail = ko.observable("");
+        
+        self.me = ko.observable({allFriends:function(){return [];}});
+        
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
         var GET_MORE_INCREMENT = ONE_DAY_MS * 3;
         self.timeLimitForData = ko.observable(new Date().getTime() - GET_MORE_INCREMENT);
@@ -223,9 +206,29 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
 
         self.addFriend = function(username) {
-            fuapi.addFriend(username).then(onFriendAdded, logWarning);
+            return fuapi.addFriend(username).then(onFriendAdded, logWarning);
+        };
+        
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) { 
+              return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+              ;
+            });
+          };
+        
+        self.inviteFriendByEmail = function(email) {
+            $.get('email-invitation.txt', function(data) {
+                var bodyEscaped = encodeURIComponent(data.format(self.username()));
+                var subjectEscaped = "Join me at Friends#Unhosted!";
+                window.open("mailto:{0}?subject={1}&body={2}".format(email, subjectEscaped, bodyEscaped), '_blank');
+                self.inviteFriendEmail("");
+            });
         };
 
+        
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
                 var newFriend = Friend(friendData);
@@ -386,39 +389,92 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             return su;
         };
 
-        function setPageFromUrl() {
-            if (window.location.href.indexOf('#access_token') > 0) {
-                window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
-                self.selectedTab("status");
-            } else if (window.location.href.indexOf('#') > 0) {
-                self.selectedTab(self.getPageFromLocation());
-            } else {
-                window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
-                self.selectedTab("welcome");
-            }
-        }
+        var PENDING_USERS = "pending-users-to-add-1";
 
-        function init() {
+        function setPageFromUrl() {
+            var href = window.location.href;
+            function getReferringUser(url) {
+                return url.substring(url.indexOf('?referredby=')+12);
+            }
+            if(self.loggedIn()===false) {
+                
+                if (href.indexOf('?referredby=') > 0) {
+                    var pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS)||"[]");
+                    var referrer = getReferringUser(href);
+                    pendingUsers.push(referrer);
+                    localStorage.removeItem(PENDING_USERS);
+                    localStorage.setItem(PENDING_USERS, JSON.stringify(pendingUsers));
+                    
+                    $('#referred-message')
+                    .html('<a class="close" data-dismiss="alert">×</a>' +
+                        'You have been invited by <b>' + referrer + '</b> to join Friends#Unhosted.<br/><br/>' +
+                        'To connect with your friends on Friends#Unhosted you need a remoteStorage account (read more below). ' +
+                        'If you don\'t have a remoteStorage account yet, you can follow one of the links below to register for one<br/><br/>' +
+                        'If you have a remoteStorage account already, just log in.<br/><br/>' +
+                        'After you have logged in (in this browser), ' + referrer + ' will be automagically added to your friends.')
+                    .show()    
+                    .alert();
+                    self.selectedTab("welcome");
+                } else {
+                    self.selectedTab("welcome");
+                }
+            } else {
+                if (href.indexOf('#access_token') > 0) {
+                    window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
+                    self.selectedTab("status");                
+                } else if (href.indexOf('?referredby=') > 0) {
+                    when(self.addFriend(getReferringUser(href)))
+                        .always(function() {
+                            self.selectedTab("myfriends");
+                        });
+                } else if (href.indexOf('#') > 0) {
+                    self.selectedTab(self.getPageFromLocation());
+                } else {
+                    window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
+                    self.selectedTab("welcome");
+                }
+                var pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS)||"[]");
+                function addNext(arr) {
+                    if(arr.length>0) {
+                        when(self.addFriend(arr.pop())).then(function(){addNext(arr);});
+                    } else {
+                        localStorage.removeItem(PENDING_USERS);
+                    }
+                } 
+                addNext(pendingUsers);
+            }
+
+        }
+                
+        self.init = function() {
             return fuapi.init().then(function(localUsername) {
                 self.username(localUsername);
                 self.loggedIn(true);
                 self.me(Friend({
                     username: localUsername
                 }));
-                self.me().updateFriends().then(self.me().updateStatuses, logWarning).then(self.me().setAutoUpdateFriends, logWarning).then(self.me().setAutoUpdateStatuses, logWarning).then(function() {
+                self.me()
+                    .updateFriends()
+                    .then(self.me().updateStatuses, logWarning)
+                    .then(self.me().setAutoUpdateFriends, logWarning)
+                    .then(self.me().setAutoUpdateStatuses, logWarning)
+                    .then(function() {
                     _.each(self.me().allFriends(), function(friend) {
-                        friend.updateFriends().then(friend.updateStatuses, logWarning).then(friend.setAutoUpdateFriends, logWarning).then(friend.setAutoUpdateStatuses, logWarning);
+                        friend
+                            .updateFriends()
+                            .then(friend.updateStatuses, logWarning)
+                            .then(friend.setAutoUpdateFriends, logWarning)
+                            .then(friend.setAutoUpdateStatuses, logWarning);
+                        });
+                    }, logWarning)
+                    .then(function() {
                     });
-                }, logWarning);
 
-
-
-                setPageFromUrl();
             }, function(notLoggedInMsg) {
-                console.log(notLoggedInMsg);
-                self.selectedTab("welcome");
                 self.loggedIn(false);
-            }).then(function() {});
+            }).always(function() {
+                setPageFromUrl();
+            });
 
         };
 
@@ -452,6 +508,16 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 bootbox.alert(message);
             };
 
+        var showInfo = function(message) {
+            bootbox.dialog(message, {
+                "label" : "Ok!",
+                "class" : "primary",   // or primary, or danger, or nothing at all
+                "callback": function() {
+                    console.log("great success");
+                }
+            });
+        };
+
         self.updateStatus = function() {
             var update = self.statusUpdate();
             if (!update || update.trim().length == 0) {
@@ -468,14 +534,43 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             });
         };
 
-        init();
-
     };
 
+    function initBindingHandlers() {
+        var CR = 13;
+        var LF = 10;
+
+        function isSubmit(keyEvent) {
+            var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
+            return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
+        };
+
+        ko.bindingHandlers.executeOnEnter = {
+            init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+                var allBindings = allBindingsAccessor();
+                $(element).keypress(function(event) {
+                    if (isSubmit(event)) {
+                        allBindings.executeOnEnter.call(viewModel);
+                        return false;
+                    }
+                    return true;
+                });
+            }
+        };
+        
+    }
+    
     $(function() {
-        ko.applyBindings(new FriendsViewModel());
-        $('#loading-screen').hide();
-        $('#all').slideDown('fast');
+        setTimeout(function() { 
+            var viewModel = new FriendsViewModel();
+            initBindingHandlers();
+            ko.applyBindings(viewModel);
+            viewModel.init();
+        }, 0);
+        setTimeout(function() { 
+            $('#loading-screen').hide();
+            $('#all').slideDown('fast');
+        }, 100);
     });
 
 });

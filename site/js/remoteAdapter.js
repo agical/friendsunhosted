@@ -112,9 +112,9 @@ define(['underscore', 'remoteStorage', 'when'], function(_, remoteStorage, when)
 
     val.logout = function() {
         var deferred = when.defer();
-        localStorage.clear('username');
-        localStorage.clear('userStorageInfo');
-        localStorage.clear('bearerToken');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userStorageInfo');
+        localStorage.removeItem('bearerToken');
         deferred.resolve();
         return deferred.promise;
     };
