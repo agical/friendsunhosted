@@ -5,6 +5,9 @@ html, body {
 body {
     padding-top:100px;
 }
+p, h3 {
+    padding: 10px;
+}
 
 .logged-in {
     display:none;
@@ -214,8 +217,6 @@ a {
     filter:progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=180, Color='#808080');
 }
 .rounded-box, .info-box, .more-info-box,.full-page-text {
-    padding:10px;
-    margin-bottom:20px;
 }
 .info-box {
     color:#000;

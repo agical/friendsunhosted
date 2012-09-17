@@ -407,9 +407,10 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                     
                     $('#referred-message')
                     .html('<a class="close" data-dismiss="alert">×</a>' +
-                        'You have been recommended by <b>' + referrer + '</b> to join Friends#Unhosted.<br/><br/>' +
-                        'If you don\'t have an unhosted account yet, you can follow on of the link on the next side to get one<br/><br/>' +
-                        'If you have an unhosted account already, just sign in.<br/><br/>' +
+                        'You have been invited by <b>' + referrer + '</b> to join Friends#Unhosted.<br/><br/>' +
+                        'To connect with your friends on Friends#Unhosted you need a remoteStorage account (read more below). ' +
+                        'If you don\'t have a remoteStorage account yet, you can follow one of the links below to register for one<br/><br/>' +
+                        'If you have a remoteStorage account already, just log in.<br/><br/>' +
                         'After you have logged in (in this browser), ' + referrer + ' will be automagically added to your friends.')
                     .show()    
                     .alert();

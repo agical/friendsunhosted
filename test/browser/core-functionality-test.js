@@ -152,7 +152,7 @@ buster.testCase("Friends#Unhosted", {
                .clickOkInConfirmWriteToEmptyStore()
                .friend(1, eq(username))
                .addFriend(username)
-               .errorMessage(eq("Cannot add the same user twice"))
+               .errorMessage(eq(username + " is already your friend!"))
                .clickErrorOk()
                .removeFriend(1)
                .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
@@ -168,7 +168,7 @@ buster.testCase("Friends#Unhosted", {
         
         createRobot(done) 
             .open('http://localhost:8000/#welcome?referredby=fetisov@localhost')
-            .referralMessage(match('You have been recommended by fetisov@localhost to join Friends#Unhosted'))
+            .referralMessage(match('You have been invited by fetisov@localhost to join Friends#Unhosted'))
             .referralMessage(match('After you have logged in (in this browser), fetisov@localhost will be automagically added to your friends.'))
             .closeReferralMessage()
             .loginNewUser()
