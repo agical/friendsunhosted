@@ -161,17 +161,6 @@ a {
 .friends-friend .storage-id {
     font-weight:normal;
 }
-/*.friends-friend .add-friends-friend { display:none; }*/
- .friends-friend .add-friends-friend {
-    display:inline;
-}
-.add-friends-friend {
-    padding:0 5px;
-    border-radius:50%;
-    background:#bbb;
-    color:#fff;
-    font-weight:bold;
-}
 .add-friends-friend:hover {
     background:#ccc;
     color:#fff;

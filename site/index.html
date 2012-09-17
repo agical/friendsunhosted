@@ -205,22 +205,22 @@
                     data-bind="value:inviteFriendEmail" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}">Invite friend!</button>
                 </div>
-                <div id="friends" class="logged-in span12">
+                <div id="friends" class="logged-in">
                     <div class="row">
                         <!-- ko foreach: me().allFriends -->
                         <div class="friend-details span6" data-bind="attr:{id:'friend-'+($index()+1)}">
                             <span class="friend storage-id" data-bind="text:username"></span>
-                            <a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend">×</a>
+                            <a href="#" class="remove-friend close" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend"><i class="icon-remove-sign"></i></a>
                             <!-- ko foreach: allFriends -->
                             <div class="friends-friend" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
                                 <span class="storage-id" data-bind="text:username"></span>
-                                <a href="#" class="add-friends-friend btn btn-small" data-bind="click:function(){$root.addFriend(username);}">+</a>
+                                <a href="#" class="add-friends-friend" data-bind="click:function(){$root.addFriend(username);}"><i class="icon-plus-sign"></i></a>
                             </div>
                             <!-- /ko -->
                         </div>
                         <!-- /ko -->
                         <!-- ko if: me().allFriends().length==0 -->
-                        <div id="no-friends-message" class="friend-details span4">
+                        <div id="no-friends-message" class="friend-details span6">
                             <h3>How do I add friends?</h3>
                             <p>To add a friend to your network, you need to get your friends storage
                                 address. That storage address looks like an email address:</p>
