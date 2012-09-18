@@ -105,7 +105,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
 
 
-            var handleCollapse = function() {
+            su.handleCollapse = function() {
                     if (su.collapsed()) {
                         _.each(
                         _.initial(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), function(item) {
@@ -122,30 +122,8 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                     };
                 };
 
-            var throttledSort = _.throttle(self.sortRootStatuses, 1000);
+            su.collapsed.subscribe(su.handleCollapse);
 
-            su.comments.subscribe(function() {
-                throttledSort();
-                handleCollapse();
-            });
-
-            su.collapsed.subscribe(handleCollapse);
-
-            su.doComment = function() {
-                var update = su.comment();
-                if (!update || update.trim().length == 0) {
-                    return; // short-circuit
-                }
-
-                su.comment('');
-
-                fuapi.addReply(update, su.id(), self.username()).then(function(updates) {
-                    self.me().updateStatuses();
-                }, function(err) {
-                    su.comment(update);
-                    logWarning(err);
-                });
-            };
             return su;
         };
 
@@ -252,6 +230,27 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                     friend.allRootStatuses().push.apply(friend.allRootStatuses(), addThese);
                     self.allRootStatuses().push.apply(self.allRootStatuses(), addThese);
                     _.each(addThese, function(su) {
+                        var throttledSort = _.throttle(self.sortRootStatuses, 1000);
+                        su.comments.subscribe(function() {
+                            throttledSort();
+                            su.handleCollapse();
+                        });
+
+                        su.doComment = function() {
+                            var update = su.comment();
+                            if (!update || update.trim().length == 0) {
+                                return; // short-circuit
+                            }
+
+                            su.comment('');
+
+                            fuapi.addReply(update, su.id(), self.username()).then(function(updates) {
+                                self.me().updateStatuses();
+                            }, function(err) {
+                                su.comment(update);
+                                logWarning(err);
+                            });
+                        };                        
                         self.threadIdToRootStatus[su.id()] = su;
                     });
                     self.sortRootStatuses();
