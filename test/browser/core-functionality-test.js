@@ -167,6 +167,7 @@ buster.testCase("Friends#Unhosted", {
         this.timeout = 25000;
         
         createRobot(done) 
+            .open('http://localhost')
             .open('http://localhost:8000/#welcome?referredby=fetisov@localhost')
             .referralMessage(match('You have been invited by fetisov@localhost to join Friends#Unhosted'))
             .referralMessage(match('After you have logged in (in this browser), fetisov@localhost will be automagically added to your friends.'))
