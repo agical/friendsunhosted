@@ -39,7 +39,9 @@
                         <li>
                             <a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
                         </li>
-                        <!--<li><a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a></li>-->
+                        <li>
+                          <a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>
+                        </li>
                         <!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
                         <li>
                             <a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
@@ -241,6 +243,10 @@
                         <!-- /ko -->
                     </div>
                 </div>
+                <br class="clearboth" />
+            </div>
+            <div id="page-profile" class="page logged-in hidden" data-bind="visible: loggedIn() && selectedTab()=='profile'">
+                <div>Profile</div>
                 <br class="clearboth" />
             </div>
             <div id="page-settings" class="page logged-in hidden" data-bind="visible: loggedIn() && selectedTab()=='settings'">

@@ -53,6 +53,28 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
+    "- keeps login status on refresh": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .setStatus("Hello, #unhosted world!")
+            .clickOkInConfirmWriteToEmptyStore()
+            .refresh()
+            .statusUpdate(1, eq("Hello, #unhosted world!"))
+        .end();
+    },
+
+    "- can logout user": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .logout()
+            .visibleLoginBox(assert)
+            .refresh()
+            .visibleLoginBox(assert)
+        .end();
+    },
+
     "- can let user add status updates": function (done) {
         this.timeout = 25000;
 
@@ -269,28 +291,6 @@ buster.testCase("Friends#Unhosted", {
                 .end();
             });
         });
-    },
-
-    "- keeps login status on refresh": function (done) {
-        this.timeout = 25000;
-        
-        createRobot(done).loginNewUser()
-            .setStatus("Hello, #unhosted world!")
-            .clickOkInConfirmWriteToEmptyStore()
-            .refresh()
-            .statusUpdate(1, eq("Hello, #unhosted world!"))
-        .end();
-    },
-
-    "- can logout user": function (done) {
-        this.timeout = 25000;
-        
-        createRobot(done).loginNewUser()
-            .logout()
-            .visibleLoginBox(assert)
-            .refresh()
-            .visibleLoginBox(assert)
-        .end();
     },
 
     "- shows latest activity on top": function (done) {
