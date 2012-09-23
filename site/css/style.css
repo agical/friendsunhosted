@@ -6,7 +6,6 @@ body {
     padding-top:100px;
 }
 p, h3 {
-    padding: 10px;
 }
 
 .logged-in {
@@ -24,9 +23,6 @@ a {
     text-decoration:none;
     font-style:normal;
     outline:0;
-}
-#error-panel {
-    display:none;
 }
 .brand {
     margin:0 !important;
@@ -72,21 +68,13 @@ a {
     float:right;
     padding-top:27px;
 }
-.logged-in {
-    margin-top:7px;
-}
 .logged-in .storage-id {
     vertical-align:text-bottom;
 }
 #do-logout {
     cursor:pointer;
 }
-.status-update {
-    position:relative;
-    width:100%;
-    clear:both;
-    padding-bottom:2px;
-}
+
 #status-update {
     height:50px;
     margin-bottom: 0px
@@ -101,27 +89,18 @@ a {
 .status-stream {
 }
 .conversation {
-    padding:10px 0;
     border-top:1px #ccc dotted;
 }
 .status-update-timestamp, .comment-update-timestamp {
     float:right;
-    font-size: 12px;2
-    padding:5px 5px 5px 10px;
+    font-size: 12px;
     font-style:italic;
     color:#aaa;
 }
 .status-details {
-    padding:5px;
-    width:100%;
-    margin-bottom:2p;
-}
-.comments {
-    font-size:14px;
 }
 .comment {
-    width:100%;
-    margin-bottom:10px;
+    font-size:14px;
 }
 .comment-form {
     position:relative;
@@ -130,6 +109,10 @@ a {
     height:50px;
     margin-bottom: 0px;
 }
+.status-user-image, .comment-user-image {
+	  margin: 0px 10px 10px 0px;
+}
+
 .do-comment {
     float:right;
     margin-top: 0px;
@@ -192,6 +175,7 @@ a {
 #page-about form {
     margin:0;
 }
+/*
 .rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
@@ -200,13 +184,14 @@ a {
     -webkit-box-shadow:0 0 4px #888;
     -moz-box-shadow:0 0 4px #888;
     box-shadow:0 0 4px #888;
-    /* IE 8 */
+    / * IE 8 * /
     -ms-filter:"progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=180, Color='#808080')";
-    /* IE 5.5 - 7 */
+    / * IE 5.5 - 7 * /
     filter:progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=180, Color='#808080');
 }
 .rounded-box, .info-box, .more-info-box,.full-page-text {
 }
+*/
 .info-box {
     color:#000;
     background-color:#FD7A23;

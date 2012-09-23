@@ -63,18 +63,7 @@
         </div>
         <div class="container">
             <div id="loading-screen">Loading...</div>
-            <div class="" id="error-panel">
-                <div class="">
-                    <p>
-                        <span class=""></span>
-                        <strong>Alert:</strong>
-                        <span id="error-message"></span>
-                    </p>
-                </div>
-                <br class="clearboth" />
-            </div>
-            
-            <div id="page-about" class="page about full-page-text hidden row" data-bind="visible: selectedTab() == 'about'">
+            <div id="page-about" class="page about full-page-text hidden" data-bind="visible: selectedTab() == 'about'">
                 <div class="span6">
                     <h3>About FRIENDS#UNHOSTED</h3>
                     <p>FRIENDS#UNHOSTED is developed by the staff at
@@ -148,65 +137,67 @@
                 </div>
             </div>
             <div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
-                <div class="status-update span6">
+                <div class="container-fluid">
+                <div class="status-update span6 row">
                     <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
                     <textarea id="status-update" class="span6" placeholder="What'cha doin? (Ctrl+Enter to submit)"
-                    title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
+                      title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
                     <button id="do-update-status" title="Post: Ctrl+Enter" class="btn"
                     data-bind="click:updateStatus">Post!</button>
                 </div>
-                <div id="status-stream" class="span6" data-bind="foreach:allRootStatuses().reverse()">
-                    <div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
-                        <div class="status-details span6">
-                            <div class="row ">
-                                <div class="span1">
-                                  <img class="status-user-image" src="http://localhost:8001/question-bunny.png" />
-                                </div>
-                                <div class="span5">
-                                    <div class="row">
-                                        <span class="status-update-username storage-id span3" data-bind="text:username"></span>
-                                        <span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
-                                    </div>
-                                    <span class="status-update" data-bind="html:status"></span>
-                                    <span class="participants" data-bind="foreach: participants">
-                                        <a data-bind="{text: $data}"></a>
-                                    </span>
-                                </div>
+                <!--  ko foreach: allRootStatuses().reverse() --> 
+                <div class="conversation span6" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+                    <div class="status-details row-fluid">
+                        <div class="span2">
+                          <img class="status-user-image img-polaroid" src="http://localhost:8001/question-bunny.png" />
+                        </div>
+                        <div class="span10 status-text">
+                            <span class="status-update-username storage-id" data-bind="text:username"></span>
+                            <br/>
+                            <span class="status-update" data-bind="html:status"></span>
+                            <br/>
+                            <span class="participants" data-bind="foreach: participants">
+                                <a data-bind="{text: $data}"></a>
+                            </span>
+                            <br/>
+                            <span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
+                        </div>
+                    </div>
+                    <div class="comments row-fluid">
+                        <div class="comments-folding span12">
+                            <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
+                            <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
+                                View all <span data-bind="text:comments().length"></span>comments ▾
+                            </span>
+                        </div>
+                        <!--  ko foreach: comments -->
+                        <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+                            <div class="span2 offset2">
+                                <img class="comment-user-image" src="http://localhost:8001/question-mustasche.png" />
+                            </div>
+                            <div class="span8 status-text">
+                                <span class="comment-update-username storage-id" data-bind="text:username"></span>
+                                <br/>
+                                <span class="comment-update" data-bind="html:status"></span>
+                                <br/>
+                                <span class="comment-update-timestamp" data-bind="text:relativeTimestamp"></span>
                             </div>
                         </div>
-                        <div class="comments row">
-                            <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
-                            <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">view all
-                                <span data-bind="text:comments().length"></span>comments ▾</span>
-                            <!-- ko foreach: comments -->
-                            <div class="comment span5 offset1" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
-                                <div class="row">
-                                    <div class="span1">
-                                        <img class="" src="http://localhost:8001/question-mustasche.png" />
-                                    </div>
-                                    <div class="span4">
-                                        <div class="row">
-                                            <span class="comment-update-username storage-id span2" data-bind="text:username"></span>
-                                            <span class="comment-update-timestamp " data-bind="text:relativeTimestamp"></span>
-                                        </div>
-                                        <span class="comment-update" data-bind="html:status"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /ko -->
-                            <div class="comment-form span5 offset1">
-                                <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
-                                class="comment span5" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
-                                <button title="Comment: Ctrl+Enter" class="do-comment btn"
-                                data-bind="click:doComment">Comment</button>
-                            </div>
+                        <!-- /ko  -->
+                        <div class="comment-form span12 row">
+                            <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
+                            class="comment" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
+                            <button title="Comment: Ctrl+Enter" class="do-comment btn"
+                            data-bind="click:doComment">Comment</button>
                         </div>
                     </div>
                 </div>
+                <!-- /ko -->
                 <br class="clearboth" />
                 <div id="get-more-updates">
                     <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
                 </div>
+            </div>
             </div>
             <div id="page-myfriends" class="page friends logged-in hidden"
             data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
@@ -340,6 +331,7 @@
         <div class="push hidden-phone"></div> 
         <div id="footer" class="navbar-fixed-bottom hidden-phone">
             <div class="container">
+            <div class="container-fluid">
                 <div id="license" class="span5" >&copy; Agical AB 2012. This site is licensed under the
                     <a rel="license"
                     target="_blank" href="http://opensource.org/licenses/AGPL-3.0">
@@ -362,6 +354,7 @@
                         target="_blank"> <img src="img/bitcoin.png" alt="BitCoin donation" /> BitCoin
                     </a>
                 </div>
+            </div>
             </div>
         </div>
     </body>
