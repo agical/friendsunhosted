@@ -266,8 +266,8 @@
                 <div>
                     <h3>Profile</h3>
                     <label for="profile-image-url">Profile image url:</label>
-                    <input type="text" id="profile-image-url" />
-                    <button id="save-profile" >Save profile</button>
+                    <input type="text" id="profile-image-url" data-bind="value:profileImage"/>
+                    <button id="save-profile" data-bind="click:saveProfile">Save profile</button>
                 </div>
                 <br class="clearboth" />
             </div>

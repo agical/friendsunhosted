@@ -90,7 +90,8 @@ a {
 .status-stream {
 }
 .conversation {
-    border-top:1px #ccc dotted;
+    border-top: 1px #ccc solid;
+    margin-top: 5px
 }
 .status-update-timestamp, .comment-update-timestamp {
     float:right;
@@ -175,7 +176,7 @@ a {
 #page-about form {
     margin:0;
 }
-/*
+
 .rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
@@ -191,11 +192,9 @@ a {
 }
 .rounded-box, .info-box, .more-info-box,.full-page-text {
 }
-*/
 .info-box {
     color:#000;
     background-color:#FD7A23;
-    margin-bottom: 20px;
 }
 .full-page-text {
     height:auto;

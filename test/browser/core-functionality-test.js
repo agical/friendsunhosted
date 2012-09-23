@@ -195,10 +195,13 @@ buster.testCase("Friends#Unhosted", {
                .selectProfileInMenu()
                .pause(500)
                .setProfileImage('http://localhost:8001/question-bunny.png')
-               .selectStatusesInMenu()
-               .setStatus("Hey, is that me?")
-               .clickOkInConfirmWriteToEmptyStore()
-               .statusImage(eq('http://localhost:8001/question-bunny.png'))
+               .refresh()
+               .pause(2000)
+               .profileImage(eq('http://localhost:8001/question-bunny.png'))
+//               .selectStatusesInMenu()
+//               .setStatus("Hey, is that me?")
+//               .clickOkInConfirmWriteToEmptyStore()
+//               .statusImage(eq('http://localhost:8001/question-bunny.png'))
            .end();
         });
         

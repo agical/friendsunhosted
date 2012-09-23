@@ -4,11 +4,8 @@ define([], function() {
         var fuapi = {};
         var STATUS_KEY_V3 = 'friendsunhosted_status';
         var FRIENDS_KEY = 'friendsunhosted_friends';
+        var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
-
-        fuapi.beforeBackgroundTaskListeners = [];
-        fuapi.afterBackgroundTaskListeners = [];
-
 
         var verifyUpdatingEmptyFriends = function() {
                 return dialog.confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " + "If this really is the first friend you add, then all is fine and you may press the ok button.");
@@ -140,6 +137,31 @@ define([], function() {
             return afterUserStatus.promise;
         };
 
+        fuapi.saveProfile = function(profile) {
+            var afterSaveProfile = when.defer();
+            var writeProfile = function() {
+               rem.putUserData(PROFILE, profile).then(afterSaveProfile.resolve, afterSaveProfile.reject); 
+            };
+            when(rem.fetchUserData(PROFILE)).then(function(data) {
+                if (!data) {
+                    verifyUpdatingEmptyStatus().then(writeProfile, afterSaveProfile.reject);
+                } else {
+                    writeProfile();
+                }
+            }, function(err) {
+                if (err == 404) {
+                    verifyUpdatingEmptyStatus().then(writeProfile, afterStatusUpdate.reject);
+                } else {
+                    afterStatusUpdate.reject("Could not access status data: " + err);
+                }
+            }); 
+            return afterSaveProfile.promise;
+        };
+        
+        fuapi.getProfile = function(username) {
+            return rem.getPublicData(username, PROFILE);
+        };        
+        
         var cleanFromSeenInThread = function(updates) {
                 return _.reject(updates, function(item) {
                     return item.seen;
@@ -149,6 +171,8 @@ define([], function() {
         var verifyUpdatingEmptyStatus = function() {
                 return dialog.confirm("You seem to have no data in your store. Press Cancel if you have made previous updates! " + "If this really is your first update, then all is fine and you may press the ok button.");
             };
+            
+            
 
         var addStatusOrReply = function(statusData) {
                 var afterStatusUpdate = when.defer();
@@ -213,10 +237,6 @@ define([], function() {
               });
         };
         */
-        fuapi.addBackgroundTaskListeners = function(before, after) {
-            fuapi.beforeBackgroundTaskListeners.push(before);
-            fuapi.afterBackgroundTaskListeners.push(after);
-        };
 
         fuapi.init = function() {
             return rem.restoreLogin();

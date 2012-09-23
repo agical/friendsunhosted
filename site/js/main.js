@@ -38,6 +38,12 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         self.inviteFriendEmail = ko.observable("");
         
         self.me = ko.observable({allFriends:function(){return [];}});
+
+        self.profileImage = ko.observable("");
+        
+        self.saveProfile = function() {
+            fuapi.saveProfile({profileImage:self.profileImage()});
+        };
         
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
         var GET_MORE_INCREMENT = ONE_DAY_MS * 3;
@@ -57,7 +63,17 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             friend.allComments = ko.observableArray([]);
             friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
             friend.lastUpdated = ko.observable(0);
+            friend.profileImage = ko.observable("");
 
+            friend.updateProfileImage = function() {
+                var afterProfileUpdate = when.defer();
+                fuapi.getProfile(friend.username).then(function(profileData) {
+                    friend.profileImage(profileData.profileImage);
+                    afterProfileUpdate.resolve(profileData.profileImage);
+                }, afterProfileUpdate.reject);
+                return afterProfileUpdate.promise;
+            };
+            
             var rawUpdates = [];
 
             self.timeLimitForData.subscribe(function() {
@@ -225,6 +241,8 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 }, updateInterval);
             };
 
+            
+            
             return friend;
         };
 
@@ -375,11 +393,14 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 self.me(Friend({
                     username: localUsername
                 }));
+                self.profileImage(self.me().profileImage());
                 self.me()
                     .updateFriends()
                     .then(self.me().updateStatuses, logWarning)
                     .then(self.me().setAutoUpdateFriends, logWarning)
                     .then(self.me().setAutoUpdateStatuses, logWarning)
+                    .then(self.me().updateProfileImage, logWarning)
+                    .then(self.profileImage, logWarning)
                     .then(function() {
                     _.each(self.me().allFriends(), function(friend) {
                         friend
