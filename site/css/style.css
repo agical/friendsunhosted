@@ -6,6 +6,7 @@ body {
     padding-top:100px;
 }
 p, h3 {
+	  padding: 10px;
 }
 
 .logged-in {
@@ -112,7 +113,6 @@ a {
 .status-user-image, .comment-user-image {
 	  margin: 0px 10px 10px 0px;
 }
-
 .do-comment {
     float:right;
     margin-top: 0px;

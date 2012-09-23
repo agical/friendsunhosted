@@ -137,16 +137,20 @@
                 </div>
             </div>
             <div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
-                <div class="container-fluid">
-                <div class="status-update span6 row">
-                    <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
-                    <textarea id="status-update" class="span6" placeholder="What'cha doin? (Ctrl+Enter to submit)"
-                      title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
-                    <button id="do-update-status" title="Post: Ctrl+Enter" class="btn"
-                    data-bind="click:updateStatus">Post!</button>
+                <div class="row-fluid">
+                    <div class="status-update span12">
+                        <div class="row-fluid">
+                            <textarea id="status-update row" class="span12" placeholder="What'cha doin? (Ctrl+Enter to submit)"
+                                    title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
+                        </div>
+                        <div class="row-fluid">
+                            <a id="refresh-statuses span4" data-bind="click:refresh">Refresh statuses</a>
+                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span2 offset6"
+                                    data-bind="click:updateStatus">Post!</button>
+                        </div>
                 </div>
                 <!--  ko foreach: allRootStatuses().reverse() --> 
-                <div class="conversation span6" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+                <div class="conversation" data-bind="attr:{id:'status-nr-'+($index()+1)}">
                     <div class="status-details row-fluid">
                         <div class="span2">
                           <img class="status-user-image img-polaroid" src="http://localhost:8001/question-bunny.png" />
@@ -163,19 +167,24 @@
                             <span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
                         </div>
                     </div>
-                    <div class="comments row-fluid">
-                        <div class="comments-folding span12">
-                            <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
-                            <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
-                                View all <span data-bind="text:comments().length"></span>comments ▾
-                            </span>
+                    <div class="comments">
+                        <div class="row-fluid">
+                            <div class="span2"></div>
+                            <div class="comments-folding span10">
+                                <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
+                                <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
+                                    View all <span data-bind="text:comments().length"></span>comments ▾
+                                </span>
+                            </div>
                         </div>
+                      
                         <!--  ko foreach: comments -->
                         <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
-                            <div class="span2 offset2">
+                            <div class="span1"></div>
+                            <div class="span1">
                                 <img class="comment-user-image" src="http://localhost:8001/question-mustasche.png" />
                             </div>
-                            <div class="span8 status-text">
+                            <div class="span10 status-text">
                                 <span class="comment-update-username storage-id" data-bind="text:username"></span>
                                 <br/>
                                 <span class="comment-update" data-bind="html:status"></span>
@@ -184,20 +193,23 @@
                             </div>
                         </div>
                         <!-- /ko  -->
-                        <div class="comment-form span12 row">
-                            <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
-                            class="comment" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
-                            <button title="Comment: Ctrl+Enter" class="do-comment btn"
-                            data-bind="click:doComment">Comment</button>
+                        <div class="comment-form">
+                            <div class="row-fluid">
+                                <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
+                                class="comment span12" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
+                            </div>
+                            <div class="row-fluid">
+                                <button title="Comment: Ctrl+Enter" class="do-comment btn"
+                                data-bind="click:doComment">Comment</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- /ko -->
-                <br class="clearboth" />
-                <div id="get-more-updates">
+                <div class="get-more-updates row span6" >
                     <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
                 </div>
-            </div>
+              </div>
             </div>
             <div id="page-myfriends" class="page friends logged-in hidden"
             data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
