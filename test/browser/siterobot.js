@@ -401,6 +401,14 @@
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
 
+        fu.statusImage = function(statusNr, text_cb) {
+            return property('#status-nr-' + nr + ' .status-image[src]', text_cb);
+        };
+        
+        fu.setProfileImage = function(imageUrl) {
+            return setAndClick('#profile-image-url', imageUrl, '#save-profile');
+        };
+
         fu.threadParticipants = function(nr, array_cb) {
             return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split(' '));});
         };
@@ -432,6 +440,7 @@
         fu.commentVisible = function(statusNr, commentNr, visible_cb) {
             return isVisible('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', visible_cb);
         };
+
         
         fu.selectFriendsInMenu = function() {
             var r = click("#menu-myfriends");
@@ -440,6 +449,10 @@
 
         fu.selectStatusesInMenu = function() {
             return click("#menu-status");
+        };
+        
+        fu.selectProfileInMenu = function() {
+            return click("#menu-profile");
         };
         
         fu.noFriendsMessage = function(text_cb) {
