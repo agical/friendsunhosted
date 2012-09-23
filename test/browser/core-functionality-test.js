@@ -195,6 +195,8 @@ buster.testCase("Friends#Unhosted", {
                .selectProfileInMenu()
                .pause(500)
                .setProfileImage('http://localhost:8001/question-bunny.png')
+               .clickOkInConfirmWriteToEmptyStore()
+               .pause(1000)
                .refresh()
                .pause(2000)
                .profileImage(eq('http://localhost:8001/question-bunny.png'))
