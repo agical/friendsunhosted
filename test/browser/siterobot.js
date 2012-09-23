@@ -192,7 +192,22 @@
                     });
             });
         };
-
+        
+        var attribute = function(css, attributeName, cb) {
+            return doStep(function(d) {
+                fu.b
+                    .getAttribute(css, attributeName, function(v) {
+                        if(v) {
+                            cb(v);
+                            d.resolve();
+                        } else {
+                            console.log("Value is undefined for ", css, "Was", v);
+                            d.reject("Value is undefined for " + css);
+                        }
+                    });
+            });
+        };
+        
         var source = function(cb) {
             return doStep(function(d) {
                 fu.b.getSource(function(v) {
@@ -410,7 +425,7 @@
         };
           
         fu.profileImage = function(text_cb) {
-            return text('#profile-image-url', text_cb);
+            return attribute('#profile-image-url', 'value', text_cb);
         };
         
         fu.threadParticipants = function(nr, array_cb) {
