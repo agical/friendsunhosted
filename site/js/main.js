@@ -79,8 +79,12 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             friend.updateProfileImage = function() {
                 var afterProfileUpdate = when.defer();
                 fuapi.getProfile(friend.username).then(function(profileData) {
-                    friend.profileImage(profileData.profileImage);
-                    afterProfileUpdate.resolve(profileData.profileImage);
+                    if(profileData && profileData.profileImage) {
+                        friend.profileImage(profileData.profileImage);
+                        afterProfileUpdate.resolve(profileData.profileImage);
+                    } else {
+                        afterProfileUpdate.reject();
+                    }
                 }, afterProfileUpdate.reject);
                 return afterProfileUpdate.promise;
             };
@@ -400,7 +404,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                     username: localUsername
                 }));
                 self.me().updateProfileImage().then(function(image) {
-                    self.profileImage(image);
+                    if(image) {self.profileImage(image);}
                 }, logWarning);
                 self.me()
                     .updateFriends()
@@ -515,7 +519,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             initBindingHandlers();
             ko.applyBindings(viewModel);
             viewModel.init();
-        }, 0);
+        }, 10);
         setTimeout(function() { 
             $('#loading-screen').hide();
             $('#all').slideDown('fast');

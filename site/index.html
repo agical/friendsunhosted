@@ -245,12 +245,16 @@
                 </div>
                 <br class="clearboth" />
             </div>
-            <div id="page-profile" class="page logged-in hidden" data-bind="visible: loggedIn() && selectedTab()=='profile'">
-                <div>
-                    <h3>Profile</h3>
-                    <label for="profile-image-url">Profile image url:</label>
-                    <input type="text" id="profile-image-url" data-bind="value:profileImage"/>
-                    <button id="save-profile" data-bind="click:saveProfile">Save profile</button>
+ 
+            <div id="page-profile" class="page logged-in hidden span8" data-bind="visible: loggedIn() && selectedTab()=='profile'">
+                <h3>Edit you profile</h3>
+                <div class="row-fluid">
+                    <label class="span2" for="profile-image-url">Profile image url:</label>
+                    <input type="text" class="span8" id="profile-image-url" data-bind="value:profileImage"/>
+                </div>
+                <div class="row-fluid">
+                    <div class="span8"></div>
+                    <button id="save-profile" class="span2" data-bind="click:saveProfile">Save</button>
                 </div>
                 <br class="clearboth" />
             </div>
