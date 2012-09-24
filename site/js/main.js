@@ -1,5 +1,5 @@
-require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
-        function($, ui, bb, _, ko, when, fuapi, moment, StatusUpdate) {
+require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
+        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -393,13 +393,14 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 self.me(Friend({
                     username: localUsername
                 }));
-                self.me().updateProfileImage().then(self.profileImage, logWarning);
+                self.me().updateProfileImage().then(function(image) {
+                    self.profileImage(image);
+                }, logWarning);
                 self.me()
                     .updateFriends()
                     .then(self.me().updateStatuses, logWarning)
                     .then(self.me().setAutoUpdateFriends, logWarning)
                     .then(self.me().setAutoUpdateStatuses, logWarning)
-                    .then(self.profileImage, logWarning)
                     .then(function() {
                     _.each(self.me().allFriends(), function(friend) {
                         friend

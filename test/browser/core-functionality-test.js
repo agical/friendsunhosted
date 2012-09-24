@@ -32,7 +32,7 @@ var assertVisible = function() {
 
 
 buster.testCase("Friends#Unhosted", {
-    "//- has a title and info on load": function (done) {
+    "- has a title and info on load": function (done) {
         this.timeout = 5000;
         
         createRobot(done)   
@@ -42,7 +42,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- can login a user": function (done) {
+    "- can login a user": function (done) {
         this.timeout = 25000;
             
         createRobot(done)  
@@ -53,7 +53,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- keeps login status on refresh": function (done) {
+    "- keeps login status on refresh": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -64,7 +64,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can logout user": function (done) {
+    "- can logout user": function (done) {
         this.timeout = 25000;
         
         createRobot(done).loginNewUser()
@@ -75,7 +75,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can let user add status updates": function (done) {
+    "- can let user add status updates": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -92,7 +92,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can comment on status updates": function (done) {
+    "- can comment on status updates": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -104,7 +104,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- can collapse and expand conversations": function (done) {
+    "- can collapse and expand conversations": function (done) {
         this.timeout = 25000;
         createRobot(done)  
             .loginNewUser()
@@ -129,7 +129,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
 
-    "//- emails and links are clickables": function (done) {
+    "- emails and links are clickables": function (done) {
         this.timeout = 25000;
 
         createRobot(done)  
@@ -159,7 +159,7 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
-    "//- can let user add, list and remove friends": function (done) {
+    "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
         var NO_FRIENDS_MESSAGE = "How do I add friends";
         
@@ -185,7 +185,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "//- can add a profile image": function (done) {
+    "- can add a profile image": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -210,7 +210,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "//- add user from referring link when not logged in": function (done) {
+    "- add user from referring link when not logged in": function (done) {
         this.timeout = 25000;
         
         createRobot(done) 
@@ -227,7 +227,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "//- add user from referring link when logged in": function (done) {
+    "- add user from referring link when logged in": function (done) {
         this.timeout = 25000;
         
         createRobot(done)
@@ -287,7 +287,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "//- can let user see friends messages": function (done) {
+    "- can let user see friends messages": function (done) {
         this.timeout = 35000;
 
         var waitForUserAddingStatus = when.defer();
@@ -319,7 +319,7 @@ buster.testCase("Friends#Unhosted", {
         });
     },
 
-    "//- shows latest activity on top": function (done) {
+    "- shows latest activity on top": function (done) {
         this.timeout = 25000;
          
         createRobot(done).loginNewUser()
@@ -334,7 +334,7 @@ buster.testCase("Friends#Unhosted", {
         .end();               
     },
 
-    "//- can write to directly to store": function (done) {
+    "- can write to directly to store": function (done) {
         this.timeout = 25000;
 
         var _username = 'mongo@localhost';
@@ -359,7 +359,7 @@ buster.testCase("Friends#Unhosted", {
             });
     },
 
-    "//- can see other participants in threads": function (done) {
+    "- can see other participants in threads": function (done) {
         this.timeout = 25000;
 
         var _category = 'public';
@@ -398,7 +398,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "//- display 3 days at a time with a fetch more button": function (done) {
+    "- display 3 days at a time with a fetch more button": function (done) {
         this.timeout = 25000;
 
         var _username = 'mongo@localhost';
