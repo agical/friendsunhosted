@@ -393,13 +393,12 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 self.me(Friend({
                     username: localUsername
                 }));
-                self.profileImage(self.me().profileImage());
+                self.me().updateProfileImage().then(self.profileImage, logWarning);
                 self.me()
                     .updateFriends()
                     .then(self.me().updateStatuses, logWarning)
                     .then(self.me().setAutoUpdateFriends, logWarning)
                     .then(self.me().setAutoUpdateStatuses, logWarning)
-                    .then(self.me().updateProfileImage, logWarning)
                     .then(self.profileImage, logWarning)
                     .then(function() {
                     _.each(self.me().allFriends(), function(friend) {

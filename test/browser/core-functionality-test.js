@@ -185,7 +185,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "- can add a profile image": function (done) {
+    "//- can add a profile image": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -241,7 +241,7 @@ buster.testCase("Friends#Unhosted", {
     },
 
     
-    "//- user can see friends of friends and add them": function (done) {
+    "- user can see friends of friends and add them": function (done) {
         this.timeout = 25000;
 
         function createFriendWithFriend() {
@@ -272,6 +272,7 @@ buster.testCase("Friends#Unhosted", {
                 createRobot(done)
                    .loginNewUser()
                    .selectFriendsInMenu()
+                   .pause(2000)
                    .addFriend(friend)
                    .clickOkInConfirmWriteToEmptyStore()
                    .friend(1, eq(friend))
