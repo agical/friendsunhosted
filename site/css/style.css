@@ -84,14 +84,12 @@ a {
     float:right;
     margin-top: 0px;
 }
-#refresh-statuses {
-    float:right;
-}
 .status-stream {
 }
 .conversation {
     border-top: 1px #ccc solid;
-    margin-top: 5px
+    padding-top: 10px;
+    margin-top: 10px;
 }
 .status-update-timestamp, .comment-update-timestamp {
     float:right;
