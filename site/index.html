@@ -136,7 +136,7 @@
                 <div class="conversation" data-bind="attr:{id:'status-nr-'+($index()+1)}">
                     <div class="status-details row-fluid">
                         <div class="span2">
-                          <img class="status-user-image img-polaroid" src="http://localhost:8001/question-bunny.png" />
+                          <img class="status-user-image img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profileImage()}" src="http://localhost:8001/question-bunny.png" />
                         </div>
                         <div class="span10 status-text">
                             <span class="status-update-username storage-id" data-bind="text:username"></span>
@@ -165,7 +165,7 @@
                         <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
                             <div class="span1"></div>
                             <div class="span1">
-                                <img class="comment-user-image" src="http://localhost:8001/question-mustasche.png" />
+                                <img class="comment-user-image" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profileImage()}" src="http://localhost:8001/question-mustasche.png" />
                             </div>
                             <div class="span10 status-text">
                                 <span class="comment-update-username storage-id" data-bind="text:username"></span>

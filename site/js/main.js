@@ -64,6 +64,17 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
             friend.lastUpdated = ko.observable(0);
             friend.profileImage = ko.observable("");
+            friend.friendsByUsername = {};
+            
+            friend.addFriend = function(friendObject) {
+                friend.allFriends.push(friendObject);
+                friend.friendsByUsername[friendObject.username] = friendObject;
+            };
+            
+            friend.friendByUsername = function(username) {
+                if(username === friend.username) return friend;
+                return friend.friendsByUsername[username];
+            };
 
             friend.updateProfileImage = function() {
                 var afterProfileUpdate = when.defer();
@@ -122,11 +133,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                             return oldFriend.username == newFriend.username;
                         });
                     });
-                    if (friend.allFriends().length == 0) {
-                        friend.allFriends(_.map(newFriendsRaw, Friend));
-                    } else {
-                        friend.allFriends().push.apply(friend.allFriends(), _.map(newFriendsRaw, Friend));
-                    }
+                    _.map(_.map(newFriendsRaw, Friend), friend.addFriend);
                     updateFriendsDone.resolve(friend);
                 }, updateFriendsDone.reject);
                 return updateFriendsDone.promise;
@@ -269,11 +276,10 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             });
         };
 
-        
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
                 var newFriend = Friend(friendData);
-                self.me().allFriends.push(newFriend);
+                self.me().addFriend(newFriend);
                 newFriend.updateFriends().then(newFriend.updateStatuses, logWarning).then(newFriend.setAutoUpdateFriends, logWarning).then(newFriend.setAutoUpdateStatuses, logWarning);
             };
 
