@@ -185,7 +185,7 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
-    "- can add a profile image": function (done) {
+    "- can add a profile picture": function (done) {
         this.timeout = 25000;
         
         createTestUser().then(function(userToBeAdded) {
@@ -194,16 +194,16 @@ buster.testCase("Friends#Unhosted", {
                .loginNewUser()
                .selectProfileInMenu()
                .pause(500)
-               .setProfileImage('http://localhost:8001/question-bunny.png')
+               .setProfilePicture('http://localhost:8001/question-bunny.png')
                .clickOkInConfirmWriteToEmptyStore()
                .pause(1000)
                .refresh()
                .pause(2000)
-               .profileImage(eq('http://localhost:8001/question-bunny.png'))
+               .profilePicture(eq('http://localhost:8001/question-bunny.png'))
 //               .selectStatusesInMenu()
 //               .setStatus("Hey, is that me?")
 //               .clickOkInConfirmWriteToEmptyStore()
-//               .statusImage(eq('http://localhost:8001/question-bunny.png'))
+//               .statusPicture(eq('http://localhost:8001/question-bunny.png'))
            .end();
         });
         

@@ -136,7 +136,7 @@
                 <div class="conversation" data-bind="attr:{id:'status-nr-'+($index()+1)}">
                     <div class="status-details row-fluid">
                         <div class="span2">
-                          <img class="status-user-image img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profileImage()}" src="http://localhost:8001/question-bunny.png" />
+                          <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
                         </div>
                         <div class="span10 status-text">
                             <span class="status-update-username storage-id" data-bind="text:username"></span>
@@ -165,7 +165,7 @@
                         <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
                             <div class="span1"></div>
                             <div class="span1">
-                                <img class="comment-user-image" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profileImage()}" src="http://localhost:8001/question-mustasche.png" />
+                                <img class="comment-user-picture" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
                             </div>
                             <div class="span10 status-text">
                                 <span class="comment-update-username storage-id" data-bind="text:username"></span>
@@ -246,15 +246,16 @@
                 <br class="clearboth" />
             </div>
  
-            <div id="page-profile" class="page logged-in hidden span8" data-bind="visible: loggedIn() && selectedTab()=='profile'">
+            <div id="page-profile" class="page logged-in hidden span12" data-bind="visible: loggedIn() && selectedTab()=='profile'">
                 <h3>Edit you profile</h3>
                 <div class="row-fluid">
-                    <label class="span2" for="profile-image-url">Profile image url:</label>
-                    <input type="text" class="span8" id="profile-image-url" data-bind="value:profileImage"/>
+                    <label class="span2" for="profile-picture-url">Profile picture:</label>
+                    <input type="text" class="span8" id="profile-picture-url" data-bind="value:profilePicture" placeholder="URL to a profile picture on the internet"/>
                 </div>
                 <div class="row-fluid">
-                    <div class="span8"></div>
-                    <button id="save-profile" class="span2" data-bind="click:saveProfile">Save</button>
+                    <img class="status-user-picture img-polaroid span1" data-bind="attr: {src: profilePicture() || 'img/nopicture.png'}" src="img/nopicture.png" />
+                    <div class="span6"></div>
+                    <button id="save-profile" class="span1" data-bind="click:saveProfile">Save</button>
                 </div>
                 <br class="clearboth" />
             </div>

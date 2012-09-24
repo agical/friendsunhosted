@@ -39,10 +39,14 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
         
         self.me = ko.observable({allFriends:function(){return [];}});
 
-        self.profileImage = ko.observable("");
+        self.profilePicture = ko.observable("");
+        
+        self.profilePicture.subscribe(function() {
+            self.me().profilePicture(self.profilePicture());
+        })
         
         self.saveProfile = function() {
-            fuapi.saveProfile({profileImage:self.profileImage()});
+            fuapi.saveProfile({profilePicture:self.profilePicture()});
         };
         
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
@@ -52,8 +56,6 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
         self.getMoreUpdates = function() {
             self.timeLimitForData(self.timeLimitForData() - GET_MORE_INCREMENT);
         };
-
-
         
         function Friend(friendData) {
             var friend = friendData;
@@ -63,7 +65,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             friend.allComments = ko.observableArray([]);
             friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
             friend.lastUpdated = ko.observable(0);
-            friend.profileImage = ko.observable("");
+            friend.profilePicture = ko.observable("img/nopicture.png");
             friend.friendsByUsername = {};
             
             friend.addFriend = function(friendObject) {
@@ -76,12 +78,12 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 return friend.friendsByUsername[username];
             };
 
-            friend.updateProfileImage = function() {
+            friend.updateProfilePicture = function() {
                 var afterProfileUpdate = when.defer();
                 fuapi.getProfile(friend.username).then(function(profileData) {
-                    if(profileData && profileData.profileImage) {
-                        friend.profileImage(profileData.profileImage);
-                        afterProfileUpdate.resolve(profileData.profileImage);
+                    if(profileData && profileData.profilePicture) {
+                        friend.profilePicture(profileData.profilePicture);
+                        afterProfileUpdate.resolve(profileData.profilePicture);
                     } else {
                         afterProfileUpdate.reject();
                     }
@@ -403,8 +405,8 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 self.me(Friend({
                     username: localUsername
                 }));
-                self.me().updateProfileImage().then(function(image) {
-                    if(image) {self.profileImage(image);}
+                self.me().updateProfilePicture().then(function(picture) {
+                    if(picture) {self.profilePicture(picture);}
                 }, logWarning);
                 self.me()
                     .updateFriends()

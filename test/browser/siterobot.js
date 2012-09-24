@@ -416,16 +416,16 @@
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
 
-        fu.statusImage = function(statusNr, text_cb) {
-            return property('#status-nr-' + nr + ' .status-image[src]', text_cb);
+        fu.statusPicture = function(statusNr, text_cb) {
+            return property('#status-nr-' + nr + ' .status-picture[src]', text_cb);
         };
         
-        fu.setProfileImage = function(imageUrl) {
-            return setAndClick('#profile-image-url', imageUrl, '#save-profile');
+        fu.setProfilePicture = function(pictureUrl) {
+            return setAndClick('#profile-picture-url', pictureUrl, '#save-profile');
         };
           
-        fu.profileImage = function(text_cb) {
-            return attribute('#profile-image-url', 'value', text_cb);
+        fu.profilePicture = function(text_cb) {
+            return attribute('#profile-picture-url', 'value', text_cb);
         };
         
         fu.threadParticipants = function(nr, array_cb) {
