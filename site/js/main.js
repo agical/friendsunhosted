@@ -71,7 +71,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             friend.addFriend = function(friendObject) {
                 friend.allFriends.push(friendObject);
                 friend.friendsByUsername[friendObject.username] = friendObject;
-                friend.updateProfilePicture();
+                friendObject.updateProfilePicture();
             };
             
             friend.friendByUsername = function(username) {
