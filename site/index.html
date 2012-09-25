@@ -119,18 +119,20 @@
                         That is so open source!!</p>
                 </div>
             </div>
-            <div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+            <div id="page-status" class="page status logged-in hidden span12" data-bind="visible:(loggedIn() && selectedTab()=='status')">
                 <div class="row-fluid">
                     <div class="status-update span12">
                         <div class="row-fluid">
-                            <textarea id="status-update" class="span12" placeholder="What'cha doin? (Ctrl+Enter to submit)"
+                            <textarea id="status-update" class="span6" placeholder="What'cha doin? (Ctrl+Enter to submit)"
                                     title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
+                            <div class="span6"></div>
+                        </div>
+                        <div class="row-fluid">
+                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span2"
+                                    data-bind="click:updateStatus">Post!</button>
                         </div>
                         <div class="row-fluid">
                             <a id="refresh-statuses" data-bind="click:refresh" class="span4">Refresh statuses</a>
-                            <div class="span6"></div>
-                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span2"
-                                    data-bind="click:updateStatus">Post!</button>
                         </div>
                     </div>
                     <!--  ko foreach: allRootStatuses().reverse() --> 
@@ -168,7 +170,7 @@
                                 <div class="span1">
                                     <img class="comment-user-picture" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
                                 </div>
-                                <div class="span10 status-text">
+                                <div class="span10 comment-text">
                                     <span class="comment-update-username storage-id" data-bind="text:username"></span>
                                     <br/>
                                     <span class="comment-update" data-bind="html:status"></span>
@@ -179,12 +181,12 @@
                             <!-- /ko  -->
                             <div class="comment-form">
                                 <div class="row-fluid">
-                                    <div class="span2"></div>
                                     <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
-                                    class="comment span10" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
+                                    class="comment offset2 span10" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
                                 </div>
-                                <div class="row-fluid">
-                                    <button title="Comment: Ctrl+Enter" class="do-comment btn"
+                                <div class="row">
+                                    <div class="span8"></div>
+                                    <button title="Comment: Ctrl+Enter" class="do-comment btn span2"
                                     data-bind="click:doComment">Comment</button>
                                 </div>
                             </div>

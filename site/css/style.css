@@ -81,7 +81,6 @@ a {
     margin-bottom: 0px
 }
 #do-update-status {
-    float:right;
     margin-top: 0px;
 }
 .status-stream {
@@ -99,6 +98,14 @@ a {
 }
 .status-details {
 }
+.status-text {
+    background-color: white;
+    padding: 5px; 
+}
+.comment-text {
+    background-color: white;
+    padding: 5px; 
+}
 .comment {
     font-size:14px;
 }
@@ -109,15 +116,28 @@ a {
     height:50px;
     margin-bottom: 0px;
 }
-.status-user-image, .comment-user-image {
+.status-user-picture, .comment-user-picture {
 	  margin: 0px 10px 10px 0px;
 }
+
+@media (max-width: 767px) {
+	.status-user-picture, .comment-user-picture {
+	    width: 40px;
+	}
+	#status-update {
+	    width:100%;
+	}
+	.comment-form textarea {
+	    width: 100%;
+	}
+
+}
+
+
 .do-comment {
-    float:right;
     margin-top: 0px;
 }
 .do-collapse-status, .do-expand-status {
-    float:right;
     font-size:12px;
     color:#333;
     cursor:pointer;
