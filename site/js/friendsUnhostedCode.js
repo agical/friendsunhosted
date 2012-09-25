@@ -150,7 +150,11 @@ define([], function() {
                 }
             }, function(err) {
                 if (err == 404) {
-                    verifyUpdatingEmptyStatus().then(writeProfile, afterStatusUpdate.reject);
+                    if(verifyUpdatingEmptyStatus()) {
+                        writeProfile();
+                    } else {
+                        afterStatusUpdate.reject();
+                    }
                 } else {
                     afterStatusUpdate.reject("Could not access status data: " + err);
                 }
