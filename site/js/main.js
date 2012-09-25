@@ -1,5 +1,5 @@
-require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
-        function($, ui, bb, _, ko, when, fuapi, moment, StatusUpdate) {
+require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
+        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -38,6 +38,16 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         self.inviteFriendEmail = ko.observable("");
         
         self.me = ko.observable({allFriends:function(){return [];}});
+
+        self.profilePicture = ko.observable("");
+        
+        self.profilePicture.subscribe(function() {
+            self.me().profilePicture(self.profilePicture());
+        })
+        
+        self.saveProfile = function() {
+            fuapi.saveProfile({profilePicture:self.profilePicture()});
+        };
         
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
         var GET_MORE_INCREMENT = ONE_DAY_MS * 3;
@@ -46,8 +56,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         self.getMoreUpdates = function() {
             self.timeLimitForData(self.timeLimitForData() - GET_MORE_INCREMENT);
         };
-
-
         
         function Friend(friendData) {
             var friend = friendData;
@@ -57,7 +65,32 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             friend.allComments = ko.observableArray([]);
             friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
             friend.lastUpdated = ko.observable(0);
+            friend.profilePicture = ko.observable("img/nopicture.png");
+            friend.friendsByUsername = {};
+            
+            friend.addFriend = function(friendObject) {
+                friend.allFriends.push(friendObject);
+                friend.friendsByUsername[friendObject.username] = friendObject;
+            };
+            
+            friend.friendByUsername = function(username) {
+                if(username === friend.username) return friend;
+                return friend.friendsByUsername[username];
+            };
 
+            friend.updateProfilePicture = function() {
+                var afterProfileUpdate = when.defer();
+                fuapi.getProfile(friend.username).then(function(profileData) {
+                    if(profileData && profileData.profilePicture) {
+                        friend.profilePicture(profileData.profilePicture);
+                        afterProfileUpdate.resolve(profileData.profilePicture);
+                    } else {
+                        afterProfileUpdate.reject();
+                    }
+                }, afterProfileUpdate.reject);
+                return afterProfileUpdate.promise;
+            };
+            
             var rawUpdates = [];
 
             self.timeLimitForData.subscribe(function() {
@@ -106,11 +139,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                             return oldFriend.username == newFriend.username;
                         });
                     });
-                    if (friend.allFriends().length == 0) {
-                        friend.allFriends(_.map(newFriendsRaw, Friend));
-                    } else {
-                        friend.allFriends().push.apply(friend.allFriends(), _.map(newFriendsRaw, Friend));
-                    }
+                    _.map(_.map(newFriendsRaw, Friend), friend.addFriend);
                     updateFriendsDone.resolve(friend);
                 }, updateFriendsDone.reject);
                 return updateFriendsDone.promise;
@@ -225,6 +254,8 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 }, updateInterval);
             };
 
+            
+            
             return friend;
         };
 
@@ -251,11 +282,10 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             });
         };
 
-        
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
                 var newFriend = Friend(friendData);
-                self.me().allFriends.push(newFriend);
+                self.me().addFriend(newFriend);
                 newFriend.updateFriends().then(newFriend.updateStatuses, logWarning).then(newFriend.setAutoUpdateFriends, logWarning).then(newFriend.setAutoUpdateStatuses, logWarning);
             };
 
@@ -375,6 +405,9 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 self.me(Friend({
                     username: localUsername
                 }));
+                self.me().updateProfilePicture().then(function(picture) {
+                    if(picture) {self.profilePicture(picture);}
+                }, logWarning);
                 self.me()
                     .updateFriends()
                     .then(self.me().updateStatuses, logWarning)
@@ -488,7 +521,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             initBindingHandlers();
             ko.applyBindings(viewModel);
             viewModel.init();
-        }, 0);
+        }, 10);
         setTimeout(function() { 
             $('#loading-screen').hide();
             $('#all').slideDown('fast');

@@ -4,4 +4,6 @@ buster server &
 cd site/
 http-server -p 8000 > ../logs/httpserver.log &
 cd -
-
+cd test/resource-server-root
+http-server -p 8001 > ../../logs/resource-server.log &
+cd -

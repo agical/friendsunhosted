@@ -192,7 +192,22 @@
                     });
             });
         };
-
+        
+        var attribute = function(css, attributeName, cb) {
+            return doStep(function(d) {
+                fu.b
+                    .getAttribute(css, attributeName, function(v) {
+                        if(v) {
+                            cb(v);
+                            d.resolve();
+                        } else {
+                            console.log("Value is undefined for ", css, "Was", v);
+                            d.reject("Value is undefined for " + css);
+                        }
+                    });
+            });
+        };
+        
         var source = function(cb) {
             return doStep(function(d) {
                 fu.b.getSource(function(v) {
@@ -401,6 +416,18 @@
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
 
+        fu.statusPicture = function(statusNr, text_cb) {
+            return property('#status-nr-' + nr + ' .status-picture[src]', text_cb);
+        };
+        
+        fu.setProfilePicture = function(pictureUrl) {
+            return setAndClick('#profile-picture-url', pictureUrl, '#save-profile');
+        };
+          
+        fu.profilePicture = function(text_cb) {
+            return attribute('#profile-picture-url', 'value', text_cb);
+        };
+        
         fu.threadParticipants = function(nr, array_cb) {
             return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split(' '));});
         };
@@ -432,6 +459,7 @@
         fu.commentVisible = function(statusNr, commentNr, visible_cb) {
             return isVisible('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', visible_cb);
         };
+
         
         fu.selectFriendsInMenu = function() {
             var r = click("#menu-myfriends");
@@ -440,6 +468,10 @@
 
         fu.selectStatusesInMenu = function() {
             return click("#menu-status");
+        };
+        
+        fu.selectProfileInMenu = function() {
+            return click("#menu-profile");
         };
         
         fu.noFriendsMessage = function(text_cb) {

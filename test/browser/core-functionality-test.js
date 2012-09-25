@@ -53,6 +53,28 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
+    "- keeps login status on refresh": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .setStatus("Hello, #unhosted world!")
+            .clickOkInConfirmWriteToEmptyStore()
+            .refresh()
+            .statusUpdate(1, eq("Hello, #unhosted world!"))
+        .end();
+    },
+
+    "- can logout user": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .logout()
+            .visibleLoginBox(assert)
+            .refresh()
+            .visibleLoginBox(assert)
+        .end();
+    },
+
     "- can let user add status updates": function (done) {
         this.timeout = 25000;
 
@@ -163,6 +185,31 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
+    "- can add a profile picture": function (done) {
+        this.timeout = 25000;
+        
+        createTestUser().then(function(userToBeAdded) {
+            var username = userToBeAdded.username;
+            createRobot(done)
+               .loginNewUser()
+               .selectProfileInMenu()
+               .pause(500)
+               .setProfilePicture('http://localhost:8001/question-bunny.png')
+               .clickOkInConfirmWriteToEmptyStore()
+               .pause(1000)
+               .refresh()
+               .pause(2000)
+               .profilePicture(eq('http://localhost:8001/question-bunny.png'))
+//               .selectStatusesInMenu()
+//               .setStatus("Hey, is that me?")
+//               .clickOkInConfirmWriteToEmptyStore()
+//               .statusPicture(eq('http://localhost:8001/question-bunny.png'))
+           .end();
+        });
+        
+    },
+
+    
     "- add user from referring link when not logged in": function (done) {
         this.timeout = 25000;
         
@@ -225,6 +272,7 @@ buster.testCase("Friends#Unhosted", {
                 createRobot(done)
                    .loginNewUser()
                    .selectFriendsInMenu()
+                   .pause(2000)
                    .addFriend(friend)
                    .clickOkInConfirmWriteToEmptyStore()
                    .friend(1, eq(friend))
@@ -269,28 +317,6 @@ buster.testCase("Friends#Unhosted", {
                 .end();
             });
         });
-    },
-
-    "- keeps login status on refresh": function (done) {
-        this.timeout = 25000;
-        
-        createRobot(done).loginNewUser()
-            .setStatus("Hello, #unhosted world!")
-            .clickOkInConfirmWriteToEmptyStore()
-            .refresh()
-            .statusUpdate(1, eq("Hello, #unhosted world!"))
-        .end();
-    },
-
-    "- can logout user": function (done) {
-        this.timeout = 25000;
-        
-        createRobot(done).loginNewUser()
-            .logout()
-            .visibleLoginBox(assert)
-            .refresh()
-            .visibleLoginBox(assert)
-        .end();
     },
 
     "- shows latest activity on top": function (done) {

@@ -8,52 +8,39 @@
         <link href="css/style.css" rel="stylesheet" />
         <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
         <title>FRIENDS#UNHOSTED - Own your network!</title>
-        <script type="text/javascript"
-        data-main="js/main" src="js/vendor/require.js"></script>
-        <script type="text/javascript">
-            // Configuring the RequireJS paths to have versions in one place
-            require.config({
-                paths : {
-                    "jquery" : "vendor/jquery-1.7.2.min",
-                    "ui" : "vendor/bootstrap.min",
-                    "bootbox" : "vendor/bootbox",
-                    "ko" : "vendor/knockout-2.1.0.debug",
-                    "moment" : "vendor/moment",
-                    "underscore" : "vendor/underscore",
-                    "when" : "vendor/when",
-                    "remoteStorage": "vendor/remoteStorage"
-                }
-            });
-        </script>
     </head>
     
     <body>
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" alt="FRIENDS#UNHOSTED" /></a>
-                    <ul id="menubar" class="nav">
-                        <li>
-                            <a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
-                        </li>
-                        <li>
-                            <a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
-                        </li>
-                        <!--<li><a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a></li>-->
-                        <!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
-                        <li>
-                            <a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
-                        </li>
-                    </ul>
-                    <div class="login-area">
-                        <div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
-                            <input type="text" class="span2" placeholder="username@storage.com" id="username"
-                            data-bind="value: username" />
-                            <button id="do-login" class="btn" data-bind="click: login">Login</button>
-                        </div>
-                        <div class="logged-in" data-bind="visible: loggedIn()">
-                            <span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
-                            <a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
+                    <div class="row">
+                        <a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" alt="FRIENDS#UNHOSTED" /></a>
+                        <ul id="menubar" class="nav">
+                            <li>
+                                <a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
+                            </li>
+                            <li>
+                                <a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
+                            </li>
+                            <li>
+                              <a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>
+                            </li>
+                            <!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
+                            <li>
+                                <a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
+                            </li>
+                        </ul>
+                        <div class="login-area">
+                            <div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
+                                <input type="text" class="span2" placeholder="username@storage.com" id="username"
+                                data-bind="value: username" />
+                                <button id="do-login" class="btn" data-bind="click: login">Login</button>
+                            </div>
+                            <div class="logged-in" data-bind="visible: loggedIn()">
+                                <span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
+                                <a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -61,18 +48,7 @@
         </div>
         <div class="container">
             <div id="loading-screen">Loading...</div>
-            <div class="" id="error-panel">
-                <div class="">
-                    <p>
-                        <span class=""></span>
-                        <strong>Alert:</strong>
-                        <span id="error-message"></span>
-                    </p>
-                </div>
-                <br class="clearboth" />
-            </div>
-            
-            <div id="page-about" class="page about full-page-text hidden row" data-bind="visible: selectedTab() == 'about'">
+            <div id="page-about" class="page about full-page-text hidden" data-bind="visible: selectedTab() == 'about'">
                 <div class="span6">
                     <h3>About FRIENDS#UNHOSTED</h3>
                     <p>FRIENDS#UNHOSTED is developed by the staff at
@@ -145,63 +121,93 @@
                         That is so open source!!</p>
                 </div>
             </div>
-            <div id="page-status" class="page status logged-in hidden span6" data-bind="visible:(loggedIn() && selectedTab()=='status')">
-                <div class="status-update span6">
-                    <a id="refresh-statuses" data-bind="click:refresh">Refresh statuses</a>
-                    <textarea id="status-update" class="span6" placeholder="What'cha doin? (Ctrl+Enter to submit)"
-                    title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
-                    <button id="do-update-status" title="Post: Ctrl+Enter" class="btn"
-                    data-bind="click:updateStatus">Post!</button>
-                </div>
-                <div id="status-stream" class="span6" data-bind="foreach:allRootStatuses().reverse()">
-                    <div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
-                        <div class="status-details span6">
-                            <div class="row">
-                                <span class="status-update-username storage-id span2" data-bind="text:username"></span>
+            <div id="page-status" class="page status logged-in hidden span8" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+                <div class="row">
+                    <div class="status-update span8">
+                        <div class="row">
+                            <textarea id="status-update" class="span8 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
+                                    title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
+                        </div>
+                        <div class="row">
+                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span8 pull-right"
+                                    data-bind="click:updateStatus">Post!</button>
+                        </div>
+                        <div class="row">
+                            <a id="refresh-statuses" data-bind="click:refresh" class="pull-right">Refresh statuses</a>
+                        </div>
+                    </div>
+                    <!--  ko foreach: allRootStatuses().reverse() --> 
+                    <div class="conversation" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+                        <div class="status-details row">
+                            <div class="span2">
+                              <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
+                            </div>
+                            <div class="span6 status-text">
+                                <span class="status-update-username storage-id" data-bind="text:username"></span>
+                                <br/>
+                                <span class="status-update" data-bind="html:status"></span>
+                                <br/>
+                                <span class="participants" data-bind="foreach: participants">
+                                    <a data-bind="{text: $data}"></a>
+                                </span>
+                                <br/>
                                 <span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
                             </div>
-                            <span class="status-update" data-bind="html:status"></span>
-                            <span class="participants" data-bind="foreach: participants">
-                                <a data-bind="{text: $data}"></a>
-                            </span>
                         </div>
-                        <div class="comments row">
-                            <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
-                            <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">view all
-                                <span data-bind="text:comments().length"></span>comments ▾</span>
-                            <!-- ko foreach: comments -->
-                            <div class="comment span5 offset1" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
-                                <div class="row">
-                                    <span class="comment-update-username storage-id span2" data-bind="text:username"></span>
+                        <div class="comments">
+                            <div class="row">
+                                <div class="comments-folding offset2 span6">
+                                    <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
+                                    <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
+                                        View all <span data-bind="text:comments().length"></span>comments ▾
+                                    </span>
+                                </div>
+                            </div>
+                          
+                            <!--  ko foreach: comments -->
+                            <div class="comment row" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+                                <div class="offset1 span1">
+                                    <img class="comment-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
+                                </div>
+                                <div class="span6 comment-text">
+                                    <span class="comment-update-username storage-id" data-bind="text:username"></span>
+                                    <br/>
+                                    <span class="comment-update" data-bind="html:status"></span>
+                                    <br/>
                                     <span class="comment-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
                                 </div>
-                                <span class="comment-update" data-bind="html:status"></span>
                             </div>
-                            <!-- /ko -->
-                            <div class="comment-form span5 offset1">
-                                <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
-                                class="comment span5" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
-                                <button title="Comment: Ctrl+Enter" class="do-comment btn"
-                                data-bind="click:doComment">Comment</button>
+                            <!-- /ko  -->
+                            <div class="row">
+                                <div class="comment-form span8">
+                                    <div class="row">
+                                        <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
+                                        class="comment offset2 span6 pull-right" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <button title="Comment: Ctrl+Enter" class="do-comment btn offset2 span6 pull-right"
+                                        data-bind="click:doComment">Comment</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <br class="clearboth" />
-                <div id="get-more-updates">
-                    <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
+                    <!-- /ko -->
+                    <div class="get-more-updates row span3 offset5" >
+                        <a id="do-get-more-updates" data-bind="click:getMoreUpdates">Get more updates!</a>
+                    </div>
                 </div>
             </div>
             <div id="page-myfriends" class="page friends logged-in hidden"
             data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
                 <div id="add-a-friend" class="logged-in input-append span6" data-bind="visible:loggedIn()">
-                    <h3>Add friend with a remoteStorage account</h3>
+                    <h4>Add a remoteStorage friend</h4>
                     <input type="text" id="add-friends-username" class="span3" placeholder="friend@storageserver.domain"
                     data-bind="value:addFriendsUsername" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
                 </div>
                 <div id="invite-a-friend-by-email" class="logged-in input-append span5" data-bind="visible:loggedIn()">
-                    <h3>Invite a friend by email</h3>
+                    <h4>Invite a friend by email</h4>
                     <input type="text" id="add-friends-username" class="span3" placeholder="email@server.domain"
                     data-bind="value:inviteFriendEmail" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}">Invite friend!</button>
@@ -240,6 +246,20 @@
                             </div>
                         <!-- /ko -->
                     </div>
+                </div>
+                <br class="clearboth" />
+            </div>
+ 
+            <div id="page-profile" class="page logged-in hidden span12" data-bind="visible: loggedIn() && selectedTab()=='profile'">
+                <h3>Edit you profile</h3>
+                <div class="row">
+                    <label class="span2" for="profile-picture-url">Profile picture:</label>
+                    <input type="text" class="span8" id="profile-picture-url" data-bind="value:profilePicture" placeholder="URL to a profile picture on the internet"/>
+                </div>
+                <div class="row">
+                    <img class="status-user-picture img-polaroid span1" data-bind="attr: {src: profilePicture() || 'img/nopicture.png'}" src="img/nopicture.png" />
+                    <div class="span6"></div>
+                    <button id="save-profile" class="span1" data-bind="click:saveProfile">Save</button>
                 </div>
                 <br class="clearboth" />
             </div>
@@ -315,6 +335,7 @@
         <div class="push hidden-phone"></div> 
         <div id="footer" class="navbar-fixed-bottom hidden-phone">
             <div class="container">
+            <div class="container-fluid">
                 <div id="license" class="span5" >&copy; Agical AB 2012. This site is licensed under the
                     <a rel="license"
                     target="_blank" href="http://opensource.org/licenses/AGPL-3.0">
@@ -338,7 +359,27 @@
                     </a>
                 </div>
             </div>
+            </div>
         </div>
+
+        <script type="text/javascript"
+        data-main="js/main" src="js/vendor/require.js"></script>
+        <script type="text/javascript">
+            // Configuring the RequireJS paths to have versions in one place
+            require.config({
+                paths : {
+                    "jquery" : "vendor/jquery-1.7.2.min",
+                    "ui" : "vendor/bootstrap.min",
+                    "bootbox" : "vendor/bootbox",
+                    "ko" : "vendor/knockout-2.1.0.debug",
+                    "moment" : "vendor/moment",
+                    "underscore" : "vendor/underscore",
+                    "when" : "vendor/when",
+                    "remoteStorage": "vendor/remoteStorage"
+                }
+            });
+        </script>
+
     </body>
 
 </html>

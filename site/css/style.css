@@ -6,7 +6,7 @@ body {
     padding-top:100px;
 }
 p, h3 {
-    padding: 10px;
+	  padding: 10px;
 }
 
 .logged-in {
@@ -23,11 +23,14 @@ p, h3 {
 a {
     text-decoration:none;
     font-style:normal;
+    font-weight: bolder;
     outline:0;
+    color:#000000;
 }
-#error-panel {
-    display:none;
-}
+a:visited {color:#222222;}  /* visited link */
+a:hover {color:#444444;}  /* mouse over link */
+a:active {color:#666666;}  /* selected link */
+
 .brand {
     margin:0 !important;
     padding:0 !important;
@@ -72,56 +75,47 @@ a {
     float:right;
     padding-top:27px;
 }
-.logged-in {
-    margin-top:7px;
-}
 .logged-in .storage-id {
-    vertical-align:text-bottom;
 }
 #do-logout {
-    cursor:pointer;
+
 }
-.status-update {
-    position:relative;
-    width:100%;
-    clear:both;
-    padding-bottom:2px;
-}
+
 #status-update {
     height:50px;
     margin-bottom: 0px
 }
 #do-update-status {
-    float:right;
     margin-top: 0px;
-}
-#refresh-statuses {
-    float:right;
 }
 .status-stream {
 }
 .conversation {
-    padding:10px 0;
-    border-top:1px #ccc dotted;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+#refresh-statuses {
+	  padding: 10px;
 }
 .status-update-timestamp, .comment-update-timestamp {
-    float:right;
-    font-size: 12px;2
-    padding:5px 5px 5px 10px;
+    font-size: 12px;
     font-style:italic;
     color:#aaa;
 }
 .status-details {
-    padding:5px;
-    width:100%;
-    margin-bottom:2p;
 }
-.comments {
-    font-size:14px;
+.status-text {
+    background-color: #dddddd;
+    padding: 5px; 
+    margin-bottom: 10px
+}
+.comment-text {
+    background-color: #eeeeee;
+    padding: 5px; 
+    margin-bottom: 5px
 }
 .comment {
-    width:100%;
-    margin-bottom:10px;
+    font-size:14px;
 }
 .comment-form {
     position:relative;
@@ -130,23 +124,41 @@ a {
     height:50px;
     margin-bottom: 0px;
 }
+.status-user-picture, .comment-user-picture {
+	  margin: 0px 10px 10px 0px;
+}
+
+@media (max-width: 767px) {
+	.status-user-picture, .comment-user-picture {
+	    width: 40px;
+	}
+	#status-update {
+	    width:100%;
+	}
+	.comment-form textarea {
+	    width: 100%;
+	}
+
+}
+
+
 .do-comment {
-    float:right;
     margin-top: 0px;
 }
+
 .do-collapse-status, .do-expand-status {
-    float:right;
     font-size:12px;
     color:#333;
-    cursor:pointer;
+
 }
+
 #page-myfriends {
-    margin:0;
 }
+
 .friend-details {
     position:relative;
     padding:5px 0;
-    cursor:pointer;
+
     text-overflow:ellipsis;
     overflow:hidden;
 }
@@ -190,8 +202,8 @@ a {
     width:74px;
 }
 #page-about form {
-    margin:0;
 }
+
 .rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
@@ -200,9 +212,9 @@ a {
     -webkit-box-shadow:0 0 4px #888;
     -moz-box-shadow:0 0 4px #888;
     box-shadow:0 0 4px #888;
-    /* IE 8 */
+    / * IE 8 * /
     -ms-filter:"progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=180, Color='#808080')";
-    /* IE 5.5 - 7 */
+    / * IE 5.5 - 7 * /
     filter:progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=180, Color='#808080');
 }
 .rounded-box, .info-box, .more-info-box,.full-page-text {
@@ -210,7 +222,6 @@ a {
 .info-box {
     color:#000;
     background-color:#FD7A23;
-    margin-bottom: 20px;
 }
 .full-page-text {
     height:auto;
