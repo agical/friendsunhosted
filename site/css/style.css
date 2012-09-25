@@ -155,17 +155,20 @@ a:active {color:#666666;}  /* selected link */
 #page-myfriends {
 }
 
-.friend-details {
-    position:relative;
-    padding:5px 0;
+.friend-details { 
+    background-color: #dddddd;
+    padding: 5px;
+    margin: 5px;
+}
 
-    text-overflow:ellipsis;
-    overflow:hidden;
+.friend-details  .status-user-picture {
+      width: 40px;
 }
-/*.friend-details .close { display:none; position:absolute; right:0; top:.4em; }*/
- .friend-details .close,  {
-    display:inline;
+
+.friends-friend .status-user-picture {
+      width: 30px;
 }
+
 .storage-id {
     font-weight:bold;
     white-space:nowrap;
