@@ -207,6 +207,11 @@ a:active {color:#666666;}  /* selected link */
 #page-about form {
 }
 
+.get-more-updates {
+	  background-color: #dddddd;
+    padding: 10px;
+    margin: 10px 0 0 0;
+}
 .rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
