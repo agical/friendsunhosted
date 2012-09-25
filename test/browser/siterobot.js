@@ -193,15 +193,21 @@
             });
         };
         
-        var attribute = function(css, attributeName, cb) {
+        var getAttr = function(css, attributeName, cb) {
+            console.log("===========================================================", css, attributeName, cb);
             return doStep(function(d) {
                 fu.b
+                    .pause(500)
+                    .waitFor(css, 2000) 
+                    .isVisible(css)
                     .getAttribute(css, attributeName, function(v) {
+                        console.log("===========================================================", v);
+                        console.log(arguments);
                         if(v) {
                             cb(v);
                             d.resolve();
                         } else {
-                            console.log("Value is undefined for ", css, "Was", v);
+                            console.log("Value is undefined for '", css, "' attribute '", attributeName, "'");
                             d.reject("Value is undefined for " + css);
                         }
                     });
@@ -417,15 +423,15 @@
         };
 
         fu.statusPicture = function(statusNr, text_cb) {
-            return property('#status-nr-' + nr + ' .status-picture[src]', text_cb);
+            return getAttr('#status-picture-nr-' + nr, 'src', text_cb);
         };
-        
+
         fu.setProfilePicture = function(pictureUrl) {
             return setAndClick('#profile-picture-url', pictureUrl, '#save-profile');
         };
           
         fu.profilePicture = function(text_cb) {
-            return attribute('#profile-picture-url', 'value', text_cb);
+            return getAttr('#profile-picture-url', 'value', text_cb);
         };
         
         fu.threadParticipants = function(nr, array_cb) {
@@ -447,7 +453,12 @@
         fu.comment = function(statusNr, commentNr, text_cb) {
             return text('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', text_cb);
         };
-    
+
+        fu.commentPicture = function(statusNr, commentNr, text_cb) {
+            return getAttr('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-user-picture', 'src', text_cb);
+        };
+
+
         fu.collapseComment = function(statusNr, commentNr) {
             return click('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .do-collapse-comment');
         };

@@ -53,7 +53,7 @@ define([], function() {
                 }
 
             }, function(err) {
-                if (err == 404) {
+                if (err == 404 || err==204) {
                     verifyUpdatingEmptyFriends().then(function() {
                         rem.putUserData(FRIENDS_KEY, [friendData]).then(function(keyValCat) {
                             afterAdding.resolve(friendData);
@@ -149,7 +149,7 @@ define([], function() {
                     writeProfile();
                 }
             }, function(err) {
-                if (err == 404) {
+                if (err == 404 || err==204) {
                     if(verifyUpdatingEmptyStatus()) {
                         writeProfile();
                     } else {
@@ -197,7 +197,7 @@ define([], function() {
                         doUpdate();
                     }
                 }, function(err) {
-                    if (err == 404) {
+                    if (err == 404 || err==204) {
                         verifyUpdatingEmptyStatus().then(function() {
                             rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
                                 afterStatusUpdate.resolve([statusData]);

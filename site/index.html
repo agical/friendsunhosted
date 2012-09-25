@@ -4,9 +4,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/bootstrap.css" rel="stylesheet" />
         <link href="css/style.css" rel="stylesheet" />
-        <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+        <link href="css/bootstrap-responsive.css" rel="stylesheet" />
         <title>FRIENDS#UNHOSTED - Own your network!</title>
     </head>
     
@@ -140,7 +140,7 @@
                     <div class="conversation" data-bind="attr:{id:'status-nr-'+($index()+1)}">
                         <div class="status-details row">
                             <div class="span2">
-                              <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
+                              <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture(), attr:{id:'status-picture-nr-'+($index()+1)}}" src="img/nopicture.png" />
                             </div>
                             <div class="span6 status-text">
                                 <span class="status-update-username storage-id" data-bind="text:username"></span>
@@ -371,14 +371,19 @@
             require.config({
                 paths : {
                     "jquery" : "vendor/jquery-1.7.2.min",
-                    "ui" : "vendor/bootstrap.min",
+                    "ui" : "vendor/bootstrap",
                     "bootbox" : "vendor/bootbox",
                     "ko" : "vendor/knockout-2.1.0.debug",
                     "moment" : "vendor/moment",
                     "underscore" : "vendor/underscore",
                     "when" : "vendor/when",
                     "remoteStorage": "vendor/remoteStorage"
-                }
+                },
+                shim: {
+                    'ui': ['jquery'],
+                    'bootbox': ['ui'],
+                    'ko': ['bootbox']                  
+                } 
             });
         </script>
 
