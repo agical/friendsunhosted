@@ -226,7 +226,7 @@
                         <div class="friends-friend span6" data-bind="attr:{id:'friend-of-'+($parentContext.$index()+1)+'-nr-'+($index()+1)}">
                             <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername($root.username()).profilePicture()}" src="img/nopicture.png" />
                             <span class="storage-id" data-bind="text:username"></span>
-                            <button class="add-friends-friend" data-bind="click:function(){$root.addFriend(username);}, visible:!$root.me().friendByUsername($root.username())"><i class="icon-plus-sign"></i> Add friend</button>
+                            <button class="add-friends-friend" data-bind="click:function(){$root.addFriend(username);}, visible:!$root.me().friendByUsername(username)"><i class="icon-plus-sign"></i> Add friend</button>
                         </div>
                         <!-- /ko -->
                     </div>
