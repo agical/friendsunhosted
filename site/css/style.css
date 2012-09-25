@@ -73,7 +73,7 @@ a {
     vertical-align:text-bottom;
 }
 #do-logout {
-    cursor:pointer;
+
 }
 
 #status-update {
@@ -97,12 +97,12 @@ a {
 .status-details {
 }
 .status-text {
-    background-color: #eeeeee;
+    background-color: #dddddd;
     padding: 5px; 
     margin-bottom: 10px
 }
 .comment-text {
-    background-color: #dddddd;
+    background-color: #eeeeee;
     padding: 5px; 
     margin-bottom: 5px
 }
@@ -141,7 +141,7 @@ a {
 .do-collapse-status, .do-expand-status {
     font-size:12px;
     color:#333;
-    cursor:pointer;
+
 }
 
 #page-myfriends {
@@ -150,7 +150,7 @@ a {
 .friend-details {
     position:relative;
     padding:5px 0;
-    cursor:pointer;
+
     text-overflow:ellipsis;
     overflow:hidden;
 }
