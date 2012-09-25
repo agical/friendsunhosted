@@ -23,8 +23,14 @@ p, h3 {
 a {
     text-decoration:none;
     font-style:normal;
+    font-weight: bolder;
     outline:0;
+    color:#000000;
 }
+a:visited {color:#222222;}  /* visited link */
+a:hover {color:#444444;}  /* mouse over link */
+a:active {color:#666666;}  /* selected link */
+
 .brand {
     margin:0 !important;
     padding:0 !important;
@@ -70,7 +76,6 @@ a {
     padding-top:27px;
 }
 .logged-in .storage-id {
-    vertical-align:text-bottom;
 }
 #do-logout {
 
@@ -86,8 +91,11 @@ a {
 .status-stream {
 }
 .conversation {
-    padding-top: 10px;
-    margin-top: 10px;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+#refresh-statuses {
+	  padding: 10px;
 }
 .status-update-timestamp, .comment-update-timestamp {
     font-size: 12px;

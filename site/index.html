@@ -14,31 +14,33 @@
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" alt="FRIENDS#UNHOSTED" /></a>
-                    <ul id="menubar" class="nav">
-                        <li>
-                            <a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
-                        </li>
-                        <li>
-                            <a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
-                        </li>
-                        <li>
-                          <a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>
-                        </li>
-                        <!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
-                        <li>
-                            <a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
-                        </li>
-                    </ul>
-                    <div class="login-area">
-                        <div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
-                            <input type="text" class="span2" placeholder="username@storage.com" id="username"
-                            data-bind="value: username" />
-                            <button id="do-login" class="btn" data-bind="click: login">Login</button>
-                        </div>
-                        <div class="logged-in" data-bind="visible: loggedIn()">
-                            <span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
-                            <a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
+                    <div class="row">
+                        <a id="menu-welcome" class="brand" href="#welcome" data-bind="click: function() { selectTab('welcome') }"><img id="logo-top" src="img/logo.png" alt="FRIENDS#UNHOSTED" /></a>
+                        <ul id="menubar" class="nav">
+                            <li>
+                                <a id="menu-status" href="#status" data-bind="click: function() { selectTab('status') }, visible: loggedIn()">Whazzup?</a>
+                            </li>
+                            <li>
+                                <a id="menu-myfriends" href="#myfriends" data-bind="click: function() { selectTab('myfriends') }, visible: loggedIn()">Friends</a>
+                            </li>
+                            <li>
+                              <a id="menu-profile" href="#profile" data-bind="click: function() { selectTab('profile') }, visible: loggedIn()">Profile</a>
+                            </li>
+                            <!--<li><a id="menu-settings" href="#settings" data-bind="click: function() { selectTab('settings') }, visible: loggedIn()">Settings</a></li>-->
+                            <li>
+                                <a id="menu-about" href="#about" data-bind="click: function() { selectTab('about') }">About</a>
+                            </li>
+                        </ul>
+                        <div class="login-area">
+                            <div class="not-logged-in input-append" data-bind="visible: !loggedIn()">
+                                <input type="text" class="span2" placeholder="username@storage.com" id="username"
+                                data-bind="value: username" />
+                                <button id="do-login" class="btn" data-bind="click: login">Login</button>
+                            </div>
+                            <div class="logged-in" data-bind="visible: loggedIn()">
+                                <span class="storage-id" id="logged-in-user" data-bind="text: username()"></span>
+                                <a id="do-logout" data-bind="click: logout"><i class="icon-off"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -199,13 +201,13 @@
             <div id="page-myfriends" class="page friends logged-in hidden"
             data-bind="visible:(loggedIn() && selectedTab()=='myfriends')">
                 <div id="add-a-friend" class="logged-in input-append span6" data-bind="visible:loggedIn()">
-                    <h3>Add friend with a remoteStorage account</h3>
+                    <h4>Add a remoteStorage friend</h4>
                     <input type="text" id="add-friends-username" class="span3" placeholder="friend@storageserver.domain"
                     data-bind="value:addFriendsUsername" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.addFriend($root.addFriendsUsername());}">Add friend!</button>
                 </div>
                 <div id="invite-a-friend-by-email" class="logged-in input-append span5" data-bind="visible:loggedIn()">
-                    <h3>Invite a friend by email</h3>
+                    <h4>Invite a friend by email</h4>
                     <input type="text" id="add-friends-username" class="span3" placeholder="email@server.domain"
                     data-bind="value:inviteFriendEmail" />
                     <button id="do-add-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}">Invite friend!</button>
