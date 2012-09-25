@@ -86,12 +86,10 @@ a {
 .status-stream {
 }
 .conversation {
-    border-top: 1px #ccc solid;
     padding-top: 10px;
     margin-top: 10px;
 }
 .status-update-timestamp, .comment-update-timestamp {
-    float:right;
     font-size: 12px;
     font-style:italic;
     color:#aaa;
@@ -99,12 +97,14 @@ a {
 .status-details {
 }
 .status-text {
-    background-color: white;
+    background-color: #eeeeee;
     padding: 5px; 
+    margin-bottom: 10px
 }
 .comment-text {
-    background-color: white;
+    background-color: #dddddd;
     padding: 5px; 
+    margin-bottom: 5px
 }
 .comment {
     font-size:14px;
@@ -137,14 +137,16 @@ a {
 .do-comment {
     margin-top: 0px;
 }
+
 .do-collapse-status, .do-expand-status {
     font-size:12px;
     color:#333;
     cursor:pointer;
 }
+
 #page-myfriends {
-    margin:0;
 }
+
 .friend-details {
     position:relative;
     padding:5px 0;
@@ -192,7 +194,6 @@ a {
     width:74px;
 }
 #page-about form {
-    margin:0;
 }
 
 .rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {
