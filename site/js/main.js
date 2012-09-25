@@ -41,12 +41,12 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
         self.profilePicture = ko.observable("");
         
-        self.profilePicture.subscribe(function() {
-            self.me().profilePicture(self.profilePicture());
-        })
-        
         self.saveProfile = function() {
-            fuapi.saveProfile({profilePicture:self.profilePicture()});
+            fuapi
+                .saveProfile({profilePicture:self.profilePicture()})
+                .then(function(){
+                        self.me().profilePicture(self.profilePicture());
+                    }, logWarning);
         };
         
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
@@ -71,6 +71,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             friend.addFriend = function(friendObject) {
                 friend.allFriends.push(friendObject);
                 friend.friendsByUsername[friendObject.username] = friendObject;
+                friend.updateProfilePicture();
             };
             
             friend.friendByUsername = function(username) {
