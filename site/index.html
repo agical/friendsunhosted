@@ -121,15 +121,15 @@
                         That is so open source!!</p>
                 </div>
             </div>
-            <div id="page-status" class="page status logged-in hidden span8" data-bind="visible:(loggedIn() && selectedTab()=='status')">
-                <div class="row">
-                    <div class="status-update span8">
+            <div id="page-status" class="page status logged-in hidden span7" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+                <div class="row-fluid">
+                    <div class="status-update span12">
                         <div class="row">
-                            <textarea id="status-update" class="span8 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
+                            <textarea id="status-update" class="span12 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
                                     title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
                         </div>
                         <div class="row">
-                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span8 pull-right"
+                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span12 pull-right"
                                     data-bind="click:updateStatus">Post!</button>
                         </div>
                         <div class="row">
@@ -137,12 +137,12 @@
                         </div>
                     </div>
                     <!--  ko foreach: allRootStatuses().reverse() --> 
-                    <div class="conversation" data-bind="attr:{id:'status-nr-'+($index()+1)}">
-                        <div class="status-details row">
+                    <div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+                        <div class="status-details row-fluid">
                             <div class="span2">
                               <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername(username).profilePicture(), attr:{id:'status-picture-nr-'+($index()+1)}}" src="img/nopicture.png" />
                             </div>
-                            <div class="span6 status-text">
+                            <div class="span10 status-text">
                                 <span class="status-update-username storage-id" data-bind="text:username"></span>
                                 <br/>
                                 <span class="status-update" data-bind="html:status"></span>
@@ -155,8 +155,8 @@
                             </div>
                         </div>
                         <div class="comments">
-                            <div class="row">
-                                <div class="comments-folding offset2 span6">
+                            <div class="row-fluid">
+                                <div class="comments-folding span12">
                                     <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
                                     <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
                                         View all <span data-bind="text:comments().length"></span>comments ▾
@@ -165,11 +165,11 @@
                             </div>
                           
                             <!--  ko foreach: comments -->
-                            <div class="comment row" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
-                                <div class="offset1 span1">
+                            <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+                                <div class="span1">
                                     <img class="comment-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername(username).profilePicture()}" src="img/nopicture.png" />
                                 </div>
-                                <div class="span6 comment-text">
+                                <div class="span11 comment-text">
                                     <span class="comment-update-username storage-id" data-bind="text:username"></span>
                                     <br/>
                                     <span class="comment-update" data-bind="html:status"></span>
@@ -178,14 +178,14 @@
                                 </div>
                             </div>
                             <!-- /ko  -->
-                            <div class="row">
-                                <div class="comment-form span8">
-                                    <div class="row">
+                            <div class="row-fluid">
+                                <div class="comment-form span12">
+                                    <div class="row-fluid">
                                         <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
-                                        class="comment offset2 span6 pull-right" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
+                                        class="comment span12" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
                                     </div>
-                                    <div class="row">
-                                        <button title="Comment: Ctrl+Enter" class="do-comment btn offset2 span6 pull-right"
+                                    <div class="row-fluid">
+                                        <button title="Comment: Ctrl+Enter" class="do-comment btn span12"
                                         data-bind="click:doComment">Comment</button>
                                     </div>
                                 </div>
@@ -193,9 +193,9 @@
                         </div>
                     </div>
                     <!-- /ko -->
-                    <div class="get-more-updates row" >
-                        <button id="do-get-more-updates" class="span4 offset2" data-bind="click:getMoreUpdates">Get more updates!</button>
-                    </div>
+                </div>
+                <div class="get-more-updates row-fluid" >
+                    <button id="do-get-more-updates" class="span12" data-bind="click:getMoreUpdates">Get more updates!</button>
                 </div>
             </div>
             <div id="page-myfriends" class="page friends logged-in hidden"
