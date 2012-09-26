@@ -79,10 +79,17 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 return friend.friendsByUsername[username];
             };
 
+            var checkUrl = function(url) { 
+                var regex = /^https?:\/\/[\w\.\-\/:\_]+$/;
+                var result = regex.test(url);
+                return result;
+            };
             friend.updateProfilePicture = function() {
                 var afterProfileUpdate = when.defer();
                 fuapi.getProfile(friend.username).then(function(profileData) {
-                    if(profileData && profileData.profilePicture) {
+                    if(profileData 
+                            && profileData.profilePicture 
+                            && checkUrl(profileData.profilePicture)) {
                         friend.profilePicture(profileData.profilePicture);
                         afterProfileUpdate.resolve(profileData.profilePicture);
                     } else {
