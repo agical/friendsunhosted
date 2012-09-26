@@ -132,23 +132,31 @@
     var createRobot = function(done) {
         var fu = {};
 
-        function doStep(fn) {
-            var last = defPeek();
-            var d = defPush();
-            last.promise
-                .then(function() {return fn(d);}, onError);
-    
-            return fu;
-            
-        }
+        var browserReady = when.defer();
+        
+        fu.b = createTestBrowser(done).init(function(){
+            browserReady.resolve();
+        });
         
         var onError = function(err) {
             console.log("============ Error:\n", err);
             fu.end();
         };
-        
 
-        fu.b = createTestBrowser(done).init();
+
+        function doStep(fn) {
+            var last = defPeek();
+            var d = defPush();
+            last.promise.then(function() {
+                browserReady.promise.then( function() {
+                    return fn(d);
+                }, onError);
+            }, onError);
+    
+            return fu;
+        }
+        
+        
         fu.user = null;
         fu.lastFn = null;
         
@@ -158,7 +166,13 @@
         };
     
         var defPeek = function() {
-            return fu.lastFn;
+            if(fu.lastFn) {
+                return fu.lastFn;
+            } else {
+                var firstDef = defPush();
+                firstDef.resolve();
+                return firstDef;
+            }
         };
         
         var text = function(css, cb) {
@@ -178,7 +192,28 @@
                     });
             });
         };
-
+        
+        var getAttr = function(css, attributeName, cb) {
+            console.log("===========================================================", css, attributeName, cb);
+            return doStep(function(d) {
+                fu.b
+                    .pause(500)
+                    .waitFor(css, 2000) 
+                    .isVisible(css)
+                    .getAttribute(css, attributeName, function(v) {
+                        console.log("===========================================================", v);
+                        console.log(arguments);
+                        if(v) {
+                            cb(v);
+                            d.resolve();
+                        } else {
+                            console.log("Value is undefined for '", css, "' attribute '", attributeName, "'");
+                            d.reject("Value is undefined for " + css);
+                        }
+                    });
+            });
+        };
+        
         var source = function(cb) {
             return doStep(function(d) {
                 fu.b.getSource(function(v) {
@@ -273,35 +308,44 @@
 
             return fu;
         };
-        
+
+        fu.open = function(url) {
+            console.log("Opening ", url);
+            return doStep(function(d) {
+                fu.b.url(url, function(data) {
+                    console.log("Changed url to:", url);
+                    d.resolve();
+                });
+            });
+        };
+
         fu.loginNewUser = function() {
-            var d = defPush();
-            
-            fu.user = when.defer();
-            
-            createTestUser().then(function(user) {
-                fu.user.resolve(user);                
-            }, throwErr);
-            
-            fu.user.promise.then(function(user)  {
-                fu.b
-                    .url("http://localhost:8000/")
-                    .pause(200)
-                    .waitFor("#username", 2000)
-                    .setValue("#username", " ")
-                    .clearElement("#username")
-                    .setValue("#username", user.username)
-                    .waitFor("#username", 2000)
-                    .click("#do-login")
-                    .pause(200)
-                    .waitFor('input[value="Allow"]', 500) 
-                    .click('input[value="Allow"]', function() {
-                        d.resolve(
-                                {browser: fu.b,
-                                loggedInUser: user});
-                    });
-            }, throwErr);
-            return fu;
+            return doStep(function(d) {
+                fu.user = when.defer();
+                
+                createTestUser().then(function(user) {
+                    fu.user.resolve(user);                
+                }, onError);
+                
+                fu.user.promise.then(function(user)  {
+                    fu.b
+                        .url("http://localhost:8000/")
+                        .pause(200)
+                        .waitFor("#username", 2000)
+                        .setValue("#username", " ")
+                        .clearElement("#username")
+                        .setValue("#username", user.username)
+                        .waitFor("#username", 2000)
+                        .click("#do-login")
+                        .pause(200)
+                        .waitFor('input[value="Allow"]', 500) 
+                        .click('input[value="Allow"]', function() {
+                            d.resolve(
+                                    {browser: fu.b,
+                                    loggedInUser: user});
+                        });
+                }, onError);
+            });
         };
 
         fu.title = function(title_cb) {
@@ -317,7 +361,31 @@
         fu.welcomeHeadline = function(text_cb) {
             return text('#info-what-is h3', text_cb);
         };
-    
+        
+        fu.referralMessage = function(text_cb) {
+            return text('#referred-message', text_cb);
+        };
+
+        fu.closeReferralMessage = function() {
+            return click('#referred-message .close');
+        };
+
+        fu.errorMessage = function(text_cb) {
+            return text(".bootbox .modal-body", text_cb);
+        };
+        
+        fu.clickErrorOk = function() {
+            return click(".bootbox a[data-handler=0]");
+        };
+
+        fu.clickOkInConfirmWriteToEmptyStore = function() {
+            return clickButton(".bootbox .btn-primary");
+        };
+
+        fu.confirmBody = function(text_cb) {
+            return text(".bootbox .modal-body", text_cb);
+        };
+
         fu.loggedInUser = function(user_cb) {
             return userAndText('#logged-in-user', user_cb);
         };
@@ -354,6 +422,18 @@
             return text('#status-nr-' + nr + ' .status-update-timestamp', text_cb);
         };
 
+        fu.statusPicture = function(statusNr, text_cb) {
+            return getAttr('#status-picture-nr-' + nr, 'src', text_cb);
+        };
+
+        fu.setProfilePicture = function(pictureUrl) {
+            return setAndClick('#profile-picture-url', pictureUrl, '#save-profile');
+        };
+          
+        fu.profilePicture = function(text_cb) {
+            return getAttr('#profile-picture-url', 'value', text_cb);
+        };
+        
         fu.threadParticipants = function(nr, array_cb) {
             return text('#status-nr-' + nr + ' .participants', function(text){array_cb(text.split(' '));});
         };
@@ -373,7 +453,12 @@
         fu.comment = function(statusNr, commentNr, text_cb) {
             return text('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', text_cb);
         };
-    
+
+        fu.commentPicture = function(statusNr, commentNr, text_cb) {
+            return getAttr('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-user-picture', 'src', text_cb);
+        };
+
+
         fu.collapseComment = function(statusNr, commentNr) {
             return click('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .do-collapse-comment');
         };
@@ -385,6 +470,7 @@
         fu.commentVisible = function(statusNr, commentNr, visible_cb) {
             return isVisible('#comment-nr-' + commentNr + '-on-status-' + statusNr + ' .comment-update', visible_cb);
         };
+
         
         fu.selectFriendsInMenu = function() {
             var r = click("#menu-myfriends");
@@ -393,6 +479,10 @@
 
         fu.selectStatusesInMenu = function() {
             return click("#menu-status");
+        };
+        
+        fu.selectProfileInMenu = function() {
+            return click("#menu-profile");
         };
         
         fu.noFriendsMessage = function(text_cb) {
@@ -420,22 +510,11 @@
             return click("#friend-" + nr + " .remove-friend");
         };
         
-        fu.errorMessage = function(text_cb) {
-            return text(".bootbox .modal-body", text_cb);
-        };
-        
-        fu.clickErrorOk = function() {
-            return click(".bootbox a[data-handler=0]");
-        };
-
-        fu.clickOkInConfirmWriteToEmptyStore = function() {
-            return clickButton(".bootbox .btn-primary");
-        };
         
         fu.refresh = function() {
             var last = defPeek();
             var d = defPush();
-            last.promise.then(function() {
+            when.all([last.promise, browserReady.promise], function() {
                 fu.b.refresh(d.resolve);
             });
             return fu;
@@ -444,7 +523,7 @@
         fu.refreshStatuses = function() {
             var last = defPeek();
             var d = defPush();
-            last.promise.then(function() {
+            when.all([last.promise, browserReady.promise],function() {
                 fu.b.click("#refresh-link").pause(200).waitFor(2000, "#footer", d.resolve);
             });
             return fu;

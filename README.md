@@ -64,11 +64,12 @@ you want to run the unit tests on, and register your browser.
 ## Start an http server for serving the F#U site
 (also in start_servers.sh)
 
-If you have python 2.x
+Install node http server:
+`sudo npm install -g http-server`
 
 ```
 cd site/
-python -m SimpleHTTPServer > ../logs/httpserver.log &
+http-server -p 8000 > ../logs/httpserver.log &
 cd -
 ```
 

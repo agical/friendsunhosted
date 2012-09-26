@@ -4,11 +4,8 @@ define([], function() {
         var fuapi = {};
         var STATUS_KEY_V3 = 'friendsunhosted_status';
         var FRIENDS_KEY = 'friendsunhosted_friends';
+        var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
-
-        fuapi.beforeBackgroundTaskListeners = [];
-        fuapi.afterBackgroundTaskListeners = [];
-
 
         var verifyUpdatingEmptyFriends = function() {
                 return dialog.confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " + "If this really is the first friend you add, then all is fine and you may press the ok button.");
@@ -33,8 +30,8 @@ define([], function() {
                 if (value && _.any(value, function(f) {
                     return f.username == friendsUsername;
                 })) {
-                    dialog.info('Cannot add the same user twice').then(function() {
-                        afterAdding.reject('Cannot add the same user twice');
+                    dialog.info(friendsUsername + " is already your friend!").then(function() {
+                        afterAdding.reject(friendsUsername + " is already your friend!");
                     }, afterAdding.reject);
                     return afterAdding.promise;
                 }
@@ -56,7 +53,7 @@ define([], function() {
                 }
 
             }, function(err) {
-                if (err == 404) {
+                if (err == 404 || err==204) {
                     verifyUpdatingEmptyFriends().then(function() {
                         rem.putUserData(FRIENDS_KEY, [friendData]).then(function(keyValCat) {
                             afterAdding.resolve(friendData);
@@ -107,11 +104,11 @@ define([], function() {
 
         fuapi.fetchFriendsOfFriend = function(friend) {
             var def = when.defer();
-            rem.getPublicData(friend, FRIENDS_KEY).then(
-
-            function(data) {
-                def.resolve(data || []);
-            }, def.reject);
+            rem
+                .getPublicData(friend, FRIENDS_KEY)
+                .then(function(data) {
+                    def.resolve(data || []);
+                }, def.reject);
             return def.promise;
         };
 
@@ -125,24 +122,50 @@ define([], function() {
             return def.promise;
         };
 
-        var getVersionForUser = function(username) {
-                return rem.getPublicData(username, 'VERSION');
-            };
-
         fuapi.fetchStatusForUser = function(username) {
             var afterUserStatus = when.defer();
 
-            rem.getPublicData(username, STATUS_KEY_V3).then(
-
-            function(data) {
-                afterUserStatus.resolve(data || []);
-            }, function(error) {
-                afterUserStatus.reject(error);
-            });
+            rem
+                .getPublicData(username, STATUS_KEY_V3)
+                .then(  function(data) {
+                            afterUserStatus.resolve(data || []);
+                        }, 
+                        function(error) {
+                            afterUserStatus.reject(error);
+                        });
 
             return afterUserStatus.promise;
         };
 
+        fuapi.saveProfile = function(profile) {
+            var afterSaveProfile = when.defer();
+            var writeProfile = function() {
+               rem.putUserData(PROFILE, profile).then(afterSaveProfile.resolve, afterSaveProfile.reject); 
+            };
+            when(rem.fetchUserData(PROFILE)).then(function(data) {
+                if (!data) {
+                    verifyUpdatingEmptyStatus().then(writeProfile, afterSaveProfile.reject);
+                } else {
+                    writeProfile();
+                }
+            }, function(err) {
+                if (err == 404 || err==204) {
+                    if(verifyUpdatingEmptyStatus()) {
+                        writeProfile();
+                    } else {
+                        afterStatusUpdate.reject();
+                    }
+                } else {
+                    afterStatusUpdate.reject("Could not access status data: " + err);
+                }
+            }); 
+            return afterSaveProfile.promise;
+        };
+        
+        fuapi.getProfile = function(username) {
+            return rem.getPublicData(username, PROFILE);
+        };        
+        
         var cleanFromSeenInThread = function(updates) {
                 return _.reject(updates, function(item) {
                     return item.seen;
@@ -152,6 +175,8 @@ define([], function() {
         var verifyUpdatingEmptyStatus = function() {
                 return dialog.confirm("You seem to have no data in your store. Press Cancel if you have made previous updates! " + "If this really is your first update, then all is fine and you may press the ok button.");
             };
+            
+            
 
         var addStatusOrReply = function(statusData) {
                 var afterStatusUpdate = when.defer();
@@ -172,7 +197,7 @@ define([], function() {
                         doUpdate();
                     }
                 }, function(err) {
-                    if (err == 404) {
+                    if (err == 404 || err==204) {
                         verifyUpdatingEmptyStatus().then(function() {
                             rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
                                 afterStatusUpdate.resolve([statusData]);
@@ -216,10 +241,6 @@ define([], function() {
               });
         };
         */
-        fuapi.addBackgroundTaskListeners = function(before, after) {
-            fuapi.beforeBackgroundTaskListeners.push(before);
-            fuapi.afterBackgroundTaskListeners.push(after);
-        };
 
         fuapi.init = function() {
             return rem.restoreLogin();

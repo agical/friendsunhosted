@@ -1,0 +1,9 @@
+Hey there,
+
+You should join me on Friends#Unhosted. It’s the first decentralized social network where you fully own your data. 
+Click the link below to get further instructions on how to join and add me to your network.
+
+Cheers
+{0}
+
+http://friendsunhosted.org/#welcome?referredby={0}

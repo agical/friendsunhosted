@@ -7,7 +7,6 @@ var createTestUser = siterobot.createTestUser;
 
 var assert = buster.assertions.assert;
 
-var NO_FRIENDS_MESSAGE = "How do I add friends";
 
 var eq = function(expected) {
     return (function(e) { 
@@ -54,6 +53,28 @@ buster.testCase("Friends#Unhosted", {
         .end();
     },
     
+    "- keeps login status on refresh": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .setStatus("Hello, #unhosted world!")
+            .clickOkInConfirmWriteToEmptyStore()
+            .refresh()
+            .statusUpdate(1, eq("Hello, #unhosted world!"))
+        .end();
+    },
+
+    "- can logout user": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done).loginNewUser()
+            .logout()
+            .visibleLoginBox(assert)
+            .refresh()
+            .visibleLoginBox(assert)
+        .end();
+    },
+
     "- can let user add status updates": function (done) {
         this.timeout = 25000;
 
@@ -140,6 +161,7 @@ buster.testCase("Friends#Unhosted", {
     
     "- can let user add, list and remove friends": function (done) {
         this.timeout = 25000;
+        var NO_FRIENDS_MESSAGE = "How do I add friends";
         
         createTestUser().then(function(userToBeAdded) {
             var username = userToBeAdded.username;
@@ -152,7 +174,7 @@ buster.testCase("Friends#Unhosted", {
                .clickOkInConfirmWriteToEmptyStore()
                .friend(1, eq(username))
                .addFriend(username)
-               .errorMessage(eq("Cannot add the same user twice"))
+               .errorMessage(eq(username + " is already your friend!"))
                .clickErrorOk()
                .removeFriend(1)
                .noFriendsMessage(match(NO_FRIENDS_MESSAGE))
@@ -163,6 +185,62 @@ buster.testCase("Friends#Unhosted", {
         
     },
 
+    "- can add a profile picture": function (done) {
+        this.timeout = 25000;
+        
+        createTestUser().then(function(userToBeAdded) {
+            var username = userToBeAdded.username;
+            createRobot(done)
+               .loginNewUser()
+               .selectProfileInMenu()
+               .setProfilePicture('http://localhost:8001/question-bunny.png')
+               .pause(500)
+               .clickOkInConfirmWriteToEmptyStore()
+               .refresh()
+               .profilePicture(eq('http://localhost:8001/question-bunny.png'))
+               .selectStatusesInMenu()
+               .setStatus("Hey, is that me?")
+               .pause(500)
+               .clickOkInConfirmWriteToEmptyStore()
+               .refresh()
+//               .statusPicture(1, match('http://localhost:8001/question-bunny.png'))
+           .end();
+        });
+        
+    },
+
+    
+    "- add user from referring link when not logged in": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done) 
+            .open('http://localhost')
+            .open('http://localhost:8000/#welcome?referredby=fetisov@localhost')
+            .referralMessage(match('You have been invited by fetisov@localhost to join Friends#Unhosted'))
+            .referralMessage(match('After you have logged in (in this browser), fetisov@localhost will be automagically added to your friends.'))
+            .closeReferralMessage()
+            .loginNewUser()
+            .clickOkInConfirmWriteToEmptyStore()
+            .selectFriendsInMenu()
+            .friend(1, eq('fetisov@localhost'))
+       .end();
+        
+    },
+
+    "- add user from referring link when logged in": function (done) {
+        this.timeout = 25000;
+        
+        createRobot(done)
+            .loginNewUser()
+            .open('http://localhost')
+            .open('http://localhost:8000/#welcome?referredby=fetisov@localhost')
+            .clickOkInConfirmWriteToEmptyStore()
+            .friend(1, eq('fetisov@localhost'))
+       .end();
+        
+    },
+
+    
     "- user can see friends of friends and add them": function (done) {
         this.timeout = 25000;
 
@@ -194,6 +272,7 @@ buster.testCase("Friends#Unhosted", {
                 createRobot(done)
                    .loginNewUser()
                    .selectFriendsInMenu()
+                   .pause(2000)
                    .addFriend(friend)
                    .clickOkInConfirmWriteToEmptyStore()
                    .friend(1, eq(friend))
@@ -238,28 +317,6 @@ buster.testCase("Friends#Unhosted", {
                 .end();
             });
         });
-    },
-
-    "- keeps login status on refresh": function (done) {
-        this.timeout = 25000;
-        
-        createRobot(done).loginNewUser()
-            .setStatus("Hello, #unhosted world!")
-            .clickOkInConfirmWriteToEmptyStore()
-            .refresh()
-            .statusUpdate(1, eq("Hello, #unhosted world!"))
-        .end();
-    },
-
-    "- can logout user": function (done) {
-        this.timeout = 25000;
-        
-        createRobot(done).loginNewUser()
-            .logout()
-            .visibleLoginBox(assert)
-            .refresh()
-            .visibleLoginBox(assert)
-        .end();
     },
 
     "- shows latest activity on top": function (done) {

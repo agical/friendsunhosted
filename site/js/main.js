@@ -1,4 +1,5 @@
-require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhostedApi', 'moment'], function($, ui, bb, _, ko, when, fuapi, moment) {
+require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
+        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -19,26 +20,6 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         };
     };
 
-    var CR = 13;
-    var LF = 10;
-
-    function isSubmit(keyEvent) {
-        var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
-        return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
-    };
-
-    ko.bindingHandlers.executeOnEnter = {
-        init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
-            var allBindings = allBindingsAccessor();
-            $(element).keypress(function(event) {
-                if (isSubmit(event)) {
-                    allBindings.executeOnEnter.call(viewModel);
-                    return false;
-                }
-                return true;
-            });
-        }
-    };
 
 
     function FriendsViewModel() {
@@ -46,7 +27,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
         self.username = ko.observable("");
         self.loggedIn = ko.observable(false);
-
+        
         self.loggedIn.subscribe(function(val) {
             $('.logged-in').addClass(val ? 'visible' : 'hidden').removeClass(val ? 'hidden' : 'visible');
             $('.not-logged-in').addClass(val ? 'hidden' : 'visible').removeClass(val ? 'visible' : 'hidden');
@@ -54,8 +35,20 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
 
 
         self.addFriendsUsername = ko.observable("");
-        self.me = ko.observable({});
+        self.inviteFriendEmail = ko.observable("");
+        
+        self.me = ko.observable({allFriends:function(){return [];}});
 
+        self.profilePicture = ko.observable("");
+        
+        self.saveProfile = function() {
+            fuapi
+                .saveProfile({profilePicture:self.profilePicture()})
+                .then(function(){
+                        self.me().profilePicture(self.profilePicture());
+                    }, logWarning);
+        };
+        
         var ONE_DAY_MS = 1000 * 60 * 60 * 24;
         var GET_MORE_INCREMENT = ONE_DAY_MS * 3;
         self.timeLimitForData = ko.observable(new Date().getTime() - GET_MORE_INCREMENT);
@@ -63,7 +56,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
         self.getMoreUpdates = function() {
             self.timeLimitForData(self.timeLimitForData() - GET_MORE_INCREMENT);
         };
-
+        
         function Friend(friendData) {
             var friend = friendData;
 
@@ -72,7 +65,40 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             friend.allComments = ko.observableArray([]);
             friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
             friend.lastUpdated = ko.observable(0);
+            friend.profilePicture = ko.observable("img/nopicture.png");
+            friend.friendsByUsername = {};
+            
+            friend.addFriend = function(friendObject) {
+                friend.allFriends.push(friendObject);
+                friend.friendsByUsername[friendObject.username] = friendObject;
+                friendObject.updateProfilePicture();
+            };
+            
+            friend.friendByUsername = function(username) {
+                if(username === friend.username) return friend;
+                return friend.friendsByUsername[username];
+            };
 
+            var checkUrl = function(url) { 
+                var regex = /^https?:\/\/[\w\.\-\/:\_]+$/;
+                var result = regex.test(url);
+                return result;
+            };
+            friend.updateProfilePicture = function() {
+                var afterProfileUpdate = when.defer();
+                fuapi.getProfile(friend.username).then(function(profileData) {
+                    if(profileData 
+                            && profileData.profilePicture 
+                            && checkUrl(profileData.profilePicture)) {
+                        friend.profilePicture(profileData.profilePicture);
+                        afterProfileUpdate.resolve(profileData.profilePicture);
+                    } else {
+                        afterProfileUpdate.reject();
+                    }
+                }, afterProfileUpdate.reject);
+                return afterProfileUpdate.promise;
+            };
+            
             var rawUpdates = [];
 
             self.timeLimitForData.subscribe(function() {
@@ -121,11 +147,7 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                             return oldFriend.username == newFriend.username;
                         });
                     });
-                    if (friend.allFriends().length == 0) {
-                        friend.allFriends(_.map(newFriendsRaw, Friend));
-                    } else {
-                        friend.allFriends().push.apply(friend.allFriends(), _.map(newFriendsRaw, Friend));
-                    }
+                    _.map(_.map(newFriendsRaw, Friend), friend.addFriend);
                     updateFriendsDone.resolve(friend);
                 }, updateFriendsDone.reject);
                 return updateFriendsDone.promise;
@@ -162,17 +184,38 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 });
 
                 if (newRoots.length > 0) {
-                    var addThese = _.map(newRoots, self.StatusUpdate);
+                    var addThese = _.map(newRoots, StatusUpdate);
                     friend.allRootStatuses().push.apply(friend.allRootStatuses(), addThese);
                     self.allRootStatuses().push.apply(self.allRootStatuses(), addThese);
                     _.each(addThese, function(su) {
+                        var throttledSort = _.throttle(self.sortRootStatuses, 1000);
+                        su.comments.subscribe(function() {
+                            throttledSort();
+                            su.handleCollapse();
+                        });
+
+                        su.doComment = function() {
+                            var update = su.comment();
+                            if (!update || update.trim().length == 0) {
+                                return; // short-circuit
+                            }
+
+                            su.comment('');
+
+                            fuapi.addReply(update, su.id(), self.username()).then(function(updates) {
+                                self.me().updateStatuses();
+                            }, function(err) {
+                                su.comment(update);
+                                logWarning(err);
+                            });
+                        };                        
                         self.threadIdToRootStatus[su.id()] = su;
                     });
                     self.sortRootStatuses();
                 }
                 if (newComments.length > 0) {
                     _.each(newComments, function(r) {
-                        var c = self.StatusUpdate(r);
+                        var c = StatusUpdate(r);
                         c.tries = 0;
                         addCommentToRootLater(c, r.inReplyTo);
                     });
@@ -219,17 +262,38 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 }, updateInterval);
             };
 
+            
+            
             return friend;
         };
 
         self.addFriend = function(username) {
-            fuapi.addFriend(username).then(onFriendAdded, logWarning);
+            return fuapi.addFriend(username).then(onFriendAdded, logWarning);
+        };
+        
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) { 
+              return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+              ;
+            });
+          };
+        
+        self.inviteFriendByEmail = function(email) {
+            $.get('email-invitation.txt', function(data) {
+                var bodyEscaped = encodeURIComponent(data.format(self.username()));
+                var subjectEscaped = "Join me at Friends#Unhosted!";
+                window.open("mailto:{0}?subject={1}&body={2}".format(email, subjectEscaped, bodyEscaped), '_blank');
+                self.inviteFriendEmail("");
+            });
         };
 
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
                 var newFriend = Friend(friendData);
-                self.me().allFriends.push(newFriend);
+                self.me().addFriend(newFriend);
                 newFriend.updateFriends().then(newFriend.updateStatuses, logWarning).then(newFriend.setAutoUpdateFriends, logWarning).then(newFriend.setAutoUpdateStatuses, logWarning);
             };
 
@@ -284,141 +348,96 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             return true;
         };
 
-        self.StatusUpdate = function(suData) {
-            var VISIBLE_COMMENTS_IN_COLLAPSED_MODE = 2;
-            var EMAIL_REGEX = /((([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))/gm;
-            var URL_REGEX = /(\(?\b(http|https|ftp|ssh|sftp):\/\/[-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])/gm;
-            var NEWLINE_REGEX = /\n/gm;
-            var GT_REGEX = />/gm;
-            var LT_REGEX = /</gm;
-            var su = {};
 
-            function escapeAndFormatStatusText(text) {
-                return text.replace(LT_REGEX, '&lt;').replace(GT_REGEX, '&gt;').replace(NEWLINE_REGEX, '<br/>').replace(EMAIL_REGEX, '<a href="mailto:$1" target="_blank">$1</a>').replace(URL_REGEX, '<a href="$1" target="_blank">$1</a>');
-            }
-            su.timestamp = suData.timestamp;
-            su.username = suData.username;
-            su.inReplyTo = suData.inReplyTo;
-
-            su.status = escapeAndFormatStatusText(suData.status);
-
-            su.participants = ko.observableArray([]);
-            su.mySeenParticipants = ko.observableArray([]);
-            //su.collapsed = ko.observable(false);
-            su.collapsed = ko.observable(true);
-            su.comments = ko.observableArray([]);
-            su.comment = ko.observable("");
-
-            su.id = ko.computed(function() {
-                return su.timestamp + ":" + su.username;
-            });
-
-            su.relativeTimestamp = ko.observable("");
-
-            var updateRelativeTimestamp = function() {
-                    var time = new Date(su.timestamp);
-                    su.relativeTimestamp(moment(time).fromNow());
-                    setTimeout(updateRelativeTimestamp, Math.min((new Date().getTime() - su.timestamp) / 2, 1000 * 10 * (120 - Math.floor(Math.random() * 60))));
-                };
-
-            updateRelativeTimestamp();
-
-
-            su.addParticipant = function(usernameToAdd) {
-                //          if(su.mySeenParticipants.indexOf(usernameToAdd)<0 && usernameToAdd!=su.username) {
-                //              fuapi.addThreadParticipant(self.username(), su.id(), usernameToAdd).then(
-                //                  function() {su.mySeenParticipants.push(usernameToAdd);}
-                //              );
-                //          }
-            };
-
-            su.collapse = function() {
-                su.collapsed(true);
-            };
-
-            su.expand = function() {
-                su.collapsed(false);
-            };
-
-
-
-            var handleCollapse = function() {
-                    if (su.collapsed()) {
-                        _.each(
-                        _.initial(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), function(item) {
-                            item.collapse();
-                        });
-                        _.each(
-                        _.last(su.comments(), VISIBLE_COMMENTS_IN_COLLAPSED_MODE), function(item) {
-                            item.expand();
-                        });
-                    } else {
-                        _.each(su.comments(), function(item) {
-                            item.expand();
-                        });
-                    };
-                };
-
-            var throttledSort = _.throttle(self.sortRootStatuses, 1000);
-
-            su.comments.subscribe(function() {
-                throttledSort();
-                handleCollapse();
-            });
-
-            su.collapsed.subscribe(handleCollapse);
-
-            su.doComment = function() {
-                var update = su.comment();
-                if (!update || update.trim().length == 0) {
-                    return; // short-circuit
-                }
-
-                su.comment('');
-
-                fuapi.addReply(update, su.id(), self.username()).then(function(updates) {
-                    self.me().updateStatuses();
-                }, function(err) {
-                    su.comment(update);
-                    logWarning(err);
-                });
-            };
-            return su;
-        };
+        var PENDING_USERS = "pending-users-to-add-1";
 
         function setPageFromUrl() {
-            if (window.location.href.indexOf('#access_token') > 0) {
-                window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
-                self.selectedTab("status");
-            } else if (window.location.href.indexOf('#') > 0) {
-                self.selectedTab(self.getPageFromLocation());
-            } else {
-                window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
-                self.selectedTab("welcome");
+            var href = window.location.href;
+            function getReferringUser(url) {
+                return url.substring(url.indexOf('?referredby=')+12);
             }
-        }
+            if(self.loggedIn()===false) {
+                
+                if (href.indexOf('?referredby=') > 0) {
+                    var pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS)||"[]");
+                    var referrer = getReferringUser(href);
+                    pendingUsers.push(referrer);
+                    localStorage.removeItem(PENDING_USERS);
+                    localStorage.setItem(PENDING_USERS, JSON.stringify(pendingUsers));
+                    
+                    $('#referred-message')
+                    .html('<a class="close" data-dismiss="alert">×</a>' +
+                        'You have been invited by <b>' + referrer + '</b> to join Friends#Unhosted.<br/><br/>' +
+                        'To connect with your friends on Friends#Unhosted you need a remoteStorage account (read more below). ' +
+                        'If you don\'t have a remoteStorage account yet, you can follow one of the links below to register for one<br/><br/>' +
+                        'If you have a remoteStorage account already, just log in.<br/><br/>' +
+                        'After you have logged in (in this browser), ' + referrer + ' will be automagically added to your friends.')
+                    .show()    
+                    .alert();
+                    self.selectedTab("welcome");
+                } else {
+                    self.selectedTab("welcome");
+                }
+            } else {
+                if (href.indexOf('#access_token') > 0) {
+                    window.location.replace(location.protocol + '//' + location.host + location.pathname + '#status');
+                    self.selectedTab("status");                
+                } else if (href.indexOf('?referredby=') > 0) {
+                    when(self.addFriend(getReferringUser(href)))
+                        .always(function() {
+                            self.selectedTab("myfriends");
+                        });
+                } else if (href.indexOf('#') > 0) {
+                    self.selectedTab(self.getPageFromLocation());
+                } else {
+                    window.location.replace(location.protocol + '//' + location.host + location.pathname + '#welcome');
+                    self.selectedTab("welcome");
+                }
+                var pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS)||"[]");
+                function addNext(arr) {
+                    if(arr.length>0) {
+                        when(self.addFriend(arr.pop())).then(function(){addNext(arr);});
+                    } else {
+                        localStorage.removeItem(PENDING_USERS);
+                    }
+                } 
+                addNext(pendingUsers);
+            }
 
-        function init() {
+        }
+                
+        self.init = function() {
             return fuapi.init().then(function(localUsername) {
                 self.username(localUsername);
                 self.loggedIn(true);
                 self.me(Friend({
                     username: localUsername
                 }));
-                self.me().updateFriends().then(self.me().updateStatuses, logWarning).then(self.me().setAutoUpdateFriends, logWarning).then(self.me().setAutoUpdateStatuses, logWarning).then(function() {
-                    _.each(self.me().allFriends(), function(friend) {
-                        friend.updateFriends().then(friend.updateStatuses, logWarning).then(friend.setAutoUpdateFriends, logWarning).then(friend.setAutoUpdateStatuses, logWarning);
-                    });
+                self.me().updateProfilePicture().then(function(picture) {
+                    if(picture) {self.profilePicture(picture);}
                 }, logWarning);
+                self.me()
+                    .updateFriends()
+                    .then(self.me().updateStatuses, logWarning)
+                    .then(self.me().setAutoUpdateFriends, logWarning)
+                    .then(self.me().setAutoUpdateStatuses, logWarning)
+                    .then(function() {
+                    _.each(self.me().allFriends(), function(friend) {
+                        friend
+                            .updateFriends()
+                            .then(friend.updateStatuses, logWarning)
+                            .then(friend.setAutoUpdateFriends, logWarning)
+                            .then(friend.setAutoUpdateStatuses, logWarning);
+                        });
+                    }, logWarning)
+                    .then(function() {
+                    });
 
-
-
-                setPageFromUrl();
             }, function(notLoggedInMsg) {
-                console.log(notLoggedInMsg);
-                self.selectedTab("welcome");
                 self.loggedIn(false);
-            }).then(function() {});
+            }).always(function() {
+                setPageFromUrl();
+            });
 
         };
 
@@ -452,6 +471,16 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
                 bootbox.alert(message);
             };
 
+        var showInfo = function(message) {
+            bootbox.dialog(message, {
+                "label" : "Ok!",
+                "class" : "primary",   // or primary, or danger, or nothing at all
+                "callback": function() {
+                    console.log("great success");
+                }
+            });
+        };
+
         self.updateStatus = function() {
             var update = self.statusUpdate();
             if (!update || update.trim().length == 0) {
@@ -468,14 +497,43 @@ require(['jquery', 'ui', 'bootbox', 'underscore', 'ko', 'when', 'friendsUnhosted
             });
         };
 
-        init();
-
     };
 
+    function initBindingHandlers() {
+        var CR = 13;
+        var LF = 10;
+
+        function isSubmit(keyEvent) {
+            var keyCode = (keyEvent.which ? keyEvent.which : keyEvent.keyCode);
+            return (keyCode === CR || keyCode === LF)  && keyEvent.ctrlKey;
+        };
+
+        ko.bindingHandlers.executeOnEnter = {
+            init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+                var allBindings = allBindingsAccessor();
+                $(element).keypress(function(event) {
+                    if (isSubmit(event)) {
+                        allBindings.executeOnEnter.call(viewModel);
+                        return false;
+                    }
+                    return true;
+                });
+            }
+        };
+        
+    }
+    
     $(function() {
-        ko.applyBindings(new FriendsViewModel());
-        $('#loading-screen').hide();
-        $('#all').slideDown('fast');
+        setTimeout(function() { 
+            var viewModel = new FriendsViewModel();
+            initBindingHandlers();
+            ko.applyBindings(viewModel);
+            viewModel.init();
+        }, 10);
+        setTimeout(function() { 
+            $('#loading-screen').hide();
+            $('#all').slideDown('fast');
+        }, 100);
     });
 
 });
