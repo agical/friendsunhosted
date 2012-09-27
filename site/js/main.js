@@ -1,5 +1,5 @@
-require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
-        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate) {
+require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate', 'friend'], 
+        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate, Friend2) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
@@ -57,6 +57,11 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             self.timeLimitForData(self.timeLimitForData() - GET_MORE_INCREMENT);
         };
         
+        self.timeLimitForData.subscribe(function() {
+            setTimeout(function() {_.invoke(self.me().allFriends(), 'showMoreStatuses');}, 0);
+        });
+
+        
         function Friend(friendData) {
             var friend = friendData;
 
@@ -100,10 +105,6 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             };
             
             var rawUpdates = [];
-
-            self.timeLimitForData.subscribe(function() {
-                setTimeout(friend.showMoreStatuses, 0);
-            });
 
             var addCommentToRootLater = function(comment, rootId) {
                     setTimeout(function() {
