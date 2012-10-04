@@ -62,7 +62,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
         });
 
         
-        function Friend(friendData) {
+        function Friend(friendData, threadIdToRootStatus) {
             var friend = friendData;
 
             friend.allFriends = ko.observableArray([]);
@@ -108,7 +108,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
             var addCommentToRootLater = function(comment, rootId) {
                     setTimeout(function() {
-                        var r = self.threadIdToRootStatus[rootId];
+                        var r = threadIdToRootStatus[rootId];
 
                         if (r) {
                             r.addParticipant(comment.username);
@@ -128,7 +128,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
             var addParticipantsToRootLater = function(seen, rootId) {
                     setTimeout(function() {
-                        var r = self.threadIdToRootStatus[rootId];
+                        var r = threadIdToRootStatus[rootId];
                         if (r && !_.any(r.participants(), function(c) {
                             return c == seen.seen;
                         })) {
@@ -148,7 +148,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                             return oldFriend.username == newFriend.username;
                         });
                     });
-                    _.map(_.map(newFriendsRaw, Friend), friend.addFriend);
+                    _.map(_.map(newFriendsRaw, function(data) { return Friend(data, threadIdToRootStatus);}), friend.addFriend);
                     updateFriendsDone.resolve(friend);
                 }, updateFriendsDone.reject);
                 return updateFriendsDone.promise;
@@ -177,7 +177,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                         newComments.push(update);
                     } else if (update.seen) {
                         newSeen.push(update);
-                    } else if (!update.inReplyTo && !self.threadIdToRootStatus[update.timestamp + update.username] && !_.any(friend.allRootStatuses(), function(oldRoot) {
+                    } else if (!update.inReplyTo && !threadIdToRootStatus[update.timestamp + update.username] && !_.any(friend.allRootStatuses(), function(oldRoot) {
                         return update.timestamp == oldRoot.timestamp;
                     })) {
                         newRoots.push(update);
@@ -210,7 +210,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                                 logWarning(err);
                             });
                         };                        
-                        self.threadIdToRootStatus[su.id()] = su;
+                        threadIdToRootStatus[su.id()] = su;
                     });
                     self.sortRootStatuses();
                 }
@@ -293,9 +293,13 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
-                var newFriend = Friend(friendData);
+                var newFriend = Friend(friendData, self.threadIdToRootStatus);
                 self.me().addFriend(newFriend);
-                newFriend.updateFriends().then(newFriend.updateStatuses, logWarning).then(newFriend.setAutoUpdateFriends, logWarning).then(newFriend.setAutoUpdateStatuses, logWarning);
+                newFriend
+                    .updateFriends()
+                    .then(newFriend.updateStatuses, logWarning)
+                    .then(newFriend.setAutoUpdateFriends, logWarning)
+                    .then(newFriend.setAutoUpdateStatuses, logWarning);
             };
 
         self.removeFriend = function(friendToRemove) {
@@ -413,7 +417,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 self.loggedIn(true);
                 self.me(Friend({
                     username: localUsername
-                }));
+                }, self.threadIdToRootStatus));
                 self.me().updateProfilePicture().then(function(picture) {
                     if(picture) {self.profilePicture(picture);}
                 }, logWarning);
