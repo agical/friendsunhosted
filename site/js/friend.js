@@ -1,7 +1,7 @@
 define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'],
         function(ko, _, when, fuapi, moment, StatusUpdate) {
     
-    function Friend(friendData) {
+    function Friend(friendData, threadIdToRootStatus) {
         var friend = friendData;
 
         friend.allFriends = ko.observableArray([]);
@@ -45,13 +45,9 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdat
         
         var rawUpdates = [];
 
-        self.timeLimitForData.subscribe(function() {
-            setTimeout(friend.showMoreStatuses, 0);
-        });
-
         var addCommentToRootLater = function(comment, rootId) {
                 setTimeout(function() {
-                    var r = self.threadIdToRootStatus[rootId];
+                    var r = threadIdToRootStatus[rootId];
 
                     if (r) {
                         r.addParticipant(comment.username);
@@ -71,7 +67,7 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdat
 
         var addParticipantsToRootLater = function(seen, rootId) {
                 setTimeout(function() {
-                    var r = self.threadIdToRootStatus[rootId];
+                    var r = threadIdToRootStatus[rootId];
                     if (r && !_.any(r.participants(), function(c) {
                         return c == seen.seen;
                     })) {
@@ -91,7 +87,7 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdat
                         return oldFriend.username == newFriend.username;
                     });
                 });
-                _.map(_.map(newFriendsRaw, Friend), friend.addFriend);
+                _.map(_.map(newFriendsRaw, function(data) { return Friend(data, threadIdToRootStatus);}), friend.addFriend);
                 updateFriendsDone.resolve(friend);
             }, updateFriendsDone.reject);
             return updateFriendsDone.promise;
@@ -120,7 +116,7 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdat
                     newComments.push(update);
                 } else if (update.seen) {
                     newSeen.push(update);
-                } else if (!update.inReplyTo && !self.threadIdToRootStatus[update.timestamp + update.username] && !_.any(friend.allRootStatuses(), function(oldRoot) {
+                } else if (!update.inReplyTo && !threadIdToRootStatus[update.timestamp + update.username] && !_.any(friend.allRootStatuses(), function(oldRoot) {
                     return update.timestamp == oldRoot.timestamp;
                 })) {
                     newRoots.push(update);
@@ -153,7 +149,7 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdat
                             logWarning(err);
                         });
                     };                        
-                    self.threadIdToRootStatus[su.id()] = su;
+                    threadIdToRootStatus[su.id()] = su;
                 });
                 self.sortRootStatuses();
             }
