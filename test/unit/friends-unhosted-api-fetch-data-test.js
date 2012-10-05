@@ -88,7 +88,7 @@ function(fuc, _, when, remoteAdapter, help) {
             
             ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_status')
-                .returns(rejected(404));
+                .returns(resolved(null));
             
             ra.expects('putUserData')
                 .withArgs('friendsunhosted_status', data)
@@ -130,7 +130,7 @@ function(fuc, _, when, remoteAdapter, help) {
             
         },
 
-        "- Rejects update for other than 404s": function(done) {
+        "- Rejects update for error": function(done) {
             
             var status = 'status';
             var username = 'some@user.com';
@@ -147,7 +147,7 @@ function(fuc, _, when, remoteAdapter, help) {
             fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666")).always(done);
         },
         
-        "- rejects new data for 404 when confirm is NOT ok": function(done) {
+        "- rejects new data for error when confirm is NOT ok": function(done) {
             var status = 'status';
             var username = 'some@user.com';
             this.originalGetTimestamp = fu.getTimestamp;
@@ -167,7 +167,7 @@ function(fuc, _, when, remoteAdapter, help) {
             
             ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_status')
-                .returns(rejected(404));
+                .returns(rejected(666));
                         
             fu
                 .addStatus(status, 'some@user.com')

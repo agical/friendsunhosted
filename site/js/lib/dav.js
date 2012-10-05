@@ -6,13 +6,17 @@ define(
         url: url,
         method: method,
         error: function(err) {
-          cb(err, null);
+            if(err == 404) {
+                cb(null, undefined);
+            } else {
+                cb(err, null);
+            }
         },
         success: function(data) {
           cb(null, data);
         },
         timeout: 3000
-      }
+      };
 
       platformObj.headers = {
         'Authorization': 'Bearer ' + token,
