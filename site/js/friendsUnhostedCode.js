@@ -6,7 +6,7 @@ define([], function() {
         var FRIENDS_KEY = 'friendsunhosted_friends';
         var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
-        var listeners = {'status':[]};
+        var listeners = {'status':[], 'error':[]};
         
         var verifyUpdatingEmptyFriends = function() {
                 return dialog.confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " + "If this really is the first friend you add, then all is fine and you may press the ok button.");
@@ -137,6 +137,7 @@ define([], function() {
                             afterUserStatus.resolve(data || []);
                         }, 
                         function(error) {
+                            _.each(listeners['error'], function(listener){listener(error);});
                             afterUserStatus.reject(error);
                         });
 

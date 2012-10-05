@@ -50,13 +50,17 @@ function(fuc, _, when, remoteAdapter, help) {
         },
 
 
-        "- rejects no updates": function(done) {
+        "- rejects no updates and calls error listener": function(done) {
             
             ra.expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(rejected(404));
             
-            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404)).always(done);
+            fu.on('error', function(err) {
+                assert.equals(err, 404);
+                done();
+            });
+            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404));
         },
     });
 
