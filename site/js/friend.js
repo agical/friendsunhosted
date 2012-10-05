@@ -9,9 +9,9 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'statusUpdate'],
         return new Date(timestamp);
     }
    
-    var Friend = function(friendData, threadIdToRootStatus, rootModel) {
-       var friend = friendData;
-
+    var Friend = function(friendData, rootModel) {
+       var friend = friendData; 
+       var threadIdToRootStatus = rootModel.threadIdToRootStatus;
        friend.allFriends = ko.observableArray([]);
        friend.allRootStatuses = ko.observableArray([]);
        friend.allComments = ko.observableArray([]);
@@ -95,7 +95,7 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'statusUpdate'],
                        return oldFriend.username == newFriend.username;
                    });
                });
-               _.map(_.map(newFriendsRaw, function(data) { return Friend(data, threadIdToRootStatus, rootModel);}), friend.addFriend);
+               _.map(_.map(newFriendsRaw, function(data) { return Friend(data, rootModel);}), friend.addFriend);
                updateFriendsDone.resolve(friend);
            }, updateFriendsDone.reject);
            return updateFriendsDone.promise;

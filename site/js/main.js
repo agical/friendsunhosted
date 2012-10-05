@@ -80,7 +80,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
-                var newFriend = Friend(friendData, self.threadIdToRootStatus, self);
+                var newFriend = Friend(friendData, self);
                 self.me().addFriend(newFriend);
                 newFriend
                     .updateFriends()
@@ -204,7 +204,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 self.loggedIn(true);
                 self.me(Friend({
                     username: localUsername
-                }, self.threadIdToRootStatus, self));
+                }, self));
                 self.me().updateProfilePicture().then(function(picture) {
                     if(picture) {self.profilePicture(picture);}
                 }, logWarning);
