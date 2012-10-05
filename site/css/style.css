@@ -208,7 +208,8 @@ a:active {color:#666666;}  /* selected link */
 }
 
 .get-more-updates {
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin: 10px 0 0 0;
 }
 .rounded-box, .menu-bar-item, .info-box, .more-info-box, .full-page-text {

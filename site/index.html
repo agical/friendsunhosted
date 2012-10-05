@@ -121,9 +121,9 @@
                         That is so open source!!</p>
                 </div>
             </div>
-            <div id="page-status" class="page status logged-in hidden span7" data-bind="visible:(loggedIn() && selectedTab()=='status')">
-                <div class="row-fluid">
-                    <div class="status-update span12">
+            <div id="page-status" class="page status logged-in hidden span12" data-bind="visible:(loggedIn() && selectedTab()=='status')">
+                <div class="span7">
+                    <div class="status-update row-fluid">
                         <div class="row">
                             <textarea id="status-update" class="span12 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
                                     title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
@@ -193,11 +193,13 @@
                         </div>
                     </div>
                     <!-- /ko -->
-                    <div class="get-more-updates row" >
-                        <button id="do-get-more-updates" class="span12" data-bind="click:getMoreUpdates">Get more updates!</button>
+                    <div class="get-more-updates row-fluid" >
+		      <div class="row">
+                        <button id="do-get-more-updates" class="btn span12" data-bind="click:getMoreUpdates">Get more updates!</button>
+		      </div>
                     </div>
                 </div>
-                <div id="friends-short-list" class="logged-in span12">
+                <div id="friends-short-list" class="logged-in span4 pull-right">
                     <!-- ko foreach: me().allFriends -->
                     <div class="friend-details row" data-bind="attr:{id:'friend-short-list-'+($index()+1)}">
                         <img class="status-user-picture img-polaroid" data-bind="attr: {src: profilePicture}" src="img/nopicture.png" />
