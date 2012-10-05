@@ -19,16 +19,37 @@ function(fuc, _, when, remoteAdapter, help) {
     buster.testCase("F#U API read public data", {
         setUp: setUpRemoteAdapterAndFuApi,
         
-        "- reads updates": function(done) {
+        "- reads updates and calls listener": function(done) {
             var newData = [{'status2': 'new data'}];
-
+            
             ra.expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
                 .returns(resolved(newData));
-
-            fu.fetchStatusForUser('some@user.com').always(eq(newData)).always(done);
+            fu.on('status', function(data) {
+                assert.equals(data, newData);
+                done();
+            });
+            fu.fetchStatusForUser('some@user.com').always(eq(newData));
         },
-        
+
+        "- reads updates and calls several listeners": function(done) {
+            var newData = [{'status2': 'new data'}];
+            var listenersCalled = 0;
+            var listener = function(data) {
+                assert.equals(data, newData);
+                listenersCalled++;
+                if(listenersCalled == 2) done();
+            };
+            
+            ra.expects('getPublicData')
+                .withArgs('some@user.com', 'friendsunhosted_status')
+                .returns(resolved(newData));
+            fu.on('status', listener);
+            fu.on('status', listener);
+            fu.fetchStatusForUser('some@user.com').always(eq(newData));
+        },
+
+
         "- rejects no updates": function(done) {
             
             ra.expects('getPublicData')

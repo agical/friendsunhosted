@@ -6,11 +6,16 @@ define([], function() {
         var FRIENDS_KEY = 'friendsunhosted_friends';
         var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
-
+        var listeners = {'status':[]};
+        
         var verifyUpdatingEmptyFriends = function() {
                 return dialog.confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " + "If this really is the first friend you add, then all is fine and you may press the ok button.");
             };
 
+        fuapi.on = function(event, callback) {
+            listeners[event].push(callback);
+        };    
+            
         fuapi.addFriend = function(friendsUsername) {
             var afterAdding = when.defer();
 
@@ -128,6 +133,7 @@ define([], function() {
             rem
                 .getPublicData(username, STATUS_KEY_V3)
                 .then(  function(data) {
+                            _.each(listeners['status'], function(listener){listener(data);});
                             afterUserStatus.resolve(data || []);
                         }, 
                         function(error) {
