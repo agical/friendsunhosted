@@ -156,9 +156,9 @@
                               View all <span data-bind="text:comments().length"></span> comments ▾
                             </span>
                         </div>
-                        <div class="comments">
+
                             <!--  ko foreach: comments -->
-                            <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
+                            <div class="comment" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
                                 <div class="span1">
                                     <img class="comment-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername(username).profilePicture()}" src="img/nopicture.png" />
                                 </div>
@@ -183,7 +183,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                     <!-- /ko -->
                     <div class="get-more-updates row-fluid" >
