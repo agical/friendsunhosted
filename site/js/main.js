@@ -62,7 +62,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
         });
 
         
-        function Friend(friendData, threadIdToRootStatus) {
+        function Friend(friendData, threadIdToRootStatus, rootModel) {
             var friend = friendData;
 
             friend.allFriends = ko.observableArray([]);
@@ -148,7 +148,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                             return oldFriend.username == newFriend.username;
                         });
                     });
-                    _.map(_.map(newFriendsRaw, function(data) { return Friend(data, threadIdToRootStatus);}), friend.addFriend);
+                    _.map(_.map(newFriendsRaw, function(data) { return Friend(data, threadIdToRootStatus, rootModel);}), friend.addFriend);
                     updateFriendsDone.resolve(friend);
                 }, updateFriendsDone.reject);
                 return updateFriendsDone.promise;
@@ -162,7 +162,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 var newSeen = [];
                 var newLastUpdate = 0;
                 var onlyRecentUpdates = _.reject(rawUpdates, function(u) {
-                    return u.timestamp < self.timeLimitForData(); //|| u.timestamp<friend.lastUpdated(); 
+                    return u.timestamp < rootModel.timeLimitForData(); //|| u.timestamp<friend.lastUpdated(); 
                 });
 
                 _.each(onlyRecentUpdates, function(update) {
@@ -186,9 +186,9 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 if (newRoots.length > 0) {
                     var addThese = _.map(newRoots, StatusUpdate);
                     friend.allRootStatuses().push.apply(friend.allRootStatuses(), addThese);
-                    self.allRootStatuses().push.apply(self.allRootStatuses(), addThese);
+                    rootModel.allRootStatuses().push.apply(rootModel.allRootStatuses(), addThese);
                     _.each(addThese, function(su) {
-                        var throttledSort = _.throttle(self.sortRootStatuses, 1000);
+                        var throttledSort = _.throttle(rootModel.sortRootStatuses, 1000);
                         su.comments.subscribe(function() {
                             throttledSort();
                             su.handleCollapse();
@@ -207,12 +207,12 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                                 logWarning(err);
                             };
                             fuapi
-                                .addReply(updateText, su.id(), self.username())
-                                .then(self.me().updateStatuses, resetFormAndLogWarning);
+                                .addReply(updateText, su.id(), rootModel.username())
+                                .then(rootModel.me().updateStatuses, resetFormAndLogWarning);
                         };                        
                         threadIdToRootStatus[su.id()] = su;
                     });
-                    self.sortRootStatuses();
+                    rootModel.sortRootStatuses();
                 }
                 if (newComments.length > 0) {
                     _.each(newComments, function(r) {
@@ -293,7 +293,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
         var onFriendAdded = function(friendData) {
                 self.addFriendsUsername("");
-                var newFriend = Friend(friendData, self.threadIdToRootStatus);
+                var newFriend = Friend(friendData, self.threadIdToRootStatus, self);
                 self.me().addFriend(newFriend);
                 newFriend
                     .updateFriends()
@@ -417,7 +417,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 self.loggedIn(true);
                 self.me(Friend({
                     username: localUsername
-                }, self.threadIdToRootStatus));
+                }, self.threadIdToRootStatus, self));
                 self.me().updateProfilePicture().then(function(picture) {
                     if(picture) {self.profilePicture(picture);}
                 }, logWarning);
