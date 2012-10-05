@@ -148,16 +148,15 @@
                                 <span class="status-update-timestamp pull-right" data-bind="text:relativeTimestamp"></span>
                             </div>
                         </div>
+                        <div class="comments-folding span12">
+                            <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">
+			        hide old comments ▾
+			    </span>
+                            <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
+                              View all <span data-bind="text:comments().length"></span> comments ▾
+                            </span>
+                        </div>
                         <div class="comments">
-                            <div class="row-fluid">
-                                <div class="comments-folding span12">
-                                    <span class="do-collapse-status" data-bind="visible:!collapsed()&&comments().length>2, click:collapse">hide old comments ▾</span>
-                                    <span class="do-expand-status" data-bind="visible:collapsed()&&comments().length>2, click:expand">
-                                        View all <span data-bind="text:comments().length"></span>comments ▾
-                                    </span>
-                                </div>
-                            </div>
-                          
                             <!--  ko foreach: comments -->
                             <div class="comment row-fluid" data-bind="visible:!collapsed(), attr:{id:'comment-nr-'+($index()+1)+'-on-status-'+($parentContext.$index()+1)}">
                                 <div class="span1">
