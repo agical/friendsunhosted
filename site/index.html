@@ -124,15 +124,15 @@
             <div id="page-status" class="page status logged-in hidden span12" data-bind="visible:(loggedIn() && selectedTab()=='status')">
                 <div class="span7">
                     <div class="status-update row-fluid">
-                            <textarea id="status-update" class="span12 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
-                                    title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
-                            <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span12 pull-right"
-                                    data-bind="click:updateStatus">Post!</button>
-                            <a id="refresh-statuses" data-bind="click:refresh" class="pull-right">Refresh statuses</a>
+                      <textarea id="status-update" class="span12 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
+                                title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
+                      <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span12 pull-right"
+                              data-bind="click:updateStatus">Post!</button>
+                      <a id="refresh-statuses" data-bind="click:refresh" class="pull-right">Refresh statuses</a>
                     </div>
                     <!--  ko foreach: allRootStatuses().reverse() --> 
-                    <div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
-                        <div class="status-details row-fluid">
+                    <div class="conversation row-fluid" data-bind="attr:{id:'status-nr-'+($index()+1)}">
+                        <div class="status-details">
                             <div class="span2">
                               <img class="status-user-picture img-polaroid" data-bind="attr: {src: $root.me().friendByUsername(username).profilePicture(), attr:{id:'status-picture-nr-'+($index()+1)}}" src="img/nopicture.png" />
                             </div>
