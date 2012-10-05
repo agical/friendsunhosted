@@ -68,7 +68,7 @@ function(fuc, _, when, remoteAdapter, help) {
         setUp: setUpRemoteAdapterAndFuApi,
         tearDown: function() {fu.getTimestamp = this.originalGetTimestamp||fu.getTimestamp;},
         
-        "- Puts new data for no data in repo when confirm is ok": function(done) {
+        "- Puts new data for empty store": function(done) {
             var status = 'status';
             var username = 'some@user.com';
             this.originalGetTimestamp = fu.getTimestamp;
@@ -78,13 +78,6 @@ function(fuc, _, when, remoteAdapter, help) {
                     "timestamp": fu.getTimestamp(),
                     "username": username,
                 }];
-            
-            fakeDialog.confirm = function(message) {
-                assert.defined(message);
-                var ret = when.defer();
-                ret.resolve();
-                return ret.promise;
-            };
             
             ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_status')
@@ -147,63 +140,6 @@ function(fuc, _, when, remoteAdapter, help) {
             fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666")).always(done);
         },
         
-        "- rejects new data for error when confirm is NOT ok": function(done) {
-            var status = 'status';
-            var username = 'some@user.com';
-            this.originalGetTimestamp = fu.getTimestamp;
-            fu.getTimestamp = function() {return 123456789;};
-            var data = [{
-                    "status": status,
-                    "timestamp": fu.getTimestamp(),
-                    "username": username,
-                }];
-            
-            fakeDialog.confirm = function(message) {
-                assert.defined(message);
-                var ret = when.defer();
-                ret.reject("User cancelled on '" + message + "'");
-                return ret.promise;
-            };
-            
-            ra.expects('fetchUserData')
-                .withExactArgs('friendsunhosted_status')
-                .returns(rejected(666));
-                        
-            fu
-                .addStatus(status, 'some@user.com')
-                .then(eq('failure expected'), match("User cancelled on "))
-                .always(done);
-            
-        },
-
-        "- rejects new data for no data when confirm is NOT ok": function(done) {
-            var status = 'status';
-            var username = 'some@user.com';
-            this.originalGetTimestamp = fu.getTimestamp;
-            fu.getTimestamp = function() {return 123456789;};
-            var data = [{
-                    "status": status,
-                    "timestamp": fu.getTimestamp(),
-                    "username": username,
-                }];
-            
-            fakeDialog.confirm = function(message) {
-                assert.defined(message);
-                var ret = when.defer();
-                ret.reject("User cancelled on '" + message + "'");
-                return ret.promise;
-            };
-            
-            ra.expects('fetchUserData')
-                .withExactArgs('friendsunhosted_status')
-                .returns(resolved());
-
-            fu
-                .addStatus(status, 'some@user.com')
-                .then(eq('failure expected'), match("User cancelled on "))
-                .always(done);
-            
-        },
 
     });
 });

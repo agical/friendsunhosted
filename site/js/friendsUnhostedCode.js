@@ -198,21 +198,9 @@ define([], function() {
                                 afterStatusUpdate.reject("Could set status data: " + err);
                             });
                         };
-                    if (!statusUpdates) {
-                        verifyUpdatingEmptyStatus().then(doUpdate, afterStatusUpdate.reject);
-                    } else {
-                        doUpdate();
-                    }
+                    doUpdate();
                 }, function(err) {
-                    if (err == 404 || err==204) {
-                        verifyUpdatingEmptyStatus().then(function() {
-                            rem.putUserData(STATUS_KEY_V3, [statusData]).then(function(data) {
-                                afterStatusUpdate.resolve([statusData]);
-                            }, afterStatusUpdate.reject);
-                        }, afterStatusUpdate.reject);
-                    } else {
-                        afterStatusUpdate.reject("Could not access status data: " + err);
-                    }
+                    afterStatusUpdate.reject("Could not access status data: " + err);
                 });
 
                 return afterStatusUpdate.promise;
