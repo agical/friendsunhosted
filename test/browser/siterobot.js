@@ -499,7 +499,7 @@
         };
         
         fu.friendShortList = function(nr, text_cb) {
-            return text("#friend-short-list-" + nr + " .friend", text_cb);
+            return text("#friend-short-list-" + nr + " .short-list-friend", text_cb);
         };
         
         fu.friendsFriend = function(friendNr, friendsFriendNr, text_cb) {

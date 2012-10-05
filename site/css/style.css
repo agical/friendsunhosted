@@ -127,9 +127,12 @@ a:active {color:#666666;}  /* selected link */
 .status-user-picture, .comment-user-picture {
 	  margin: 0px 10px 10px 0px;
 }
+.short-list-user-picture {
+	  margin: 0px 10px 0px 0px;
+}
 
 @media (max-width: 767px) {
-	.status-user-picture, .comment-user-picture {
+	.status-user-picture, .comment-user-picture, .short-list-user-picture {
 	    width: 40px;
 	}
 	#status-update {
@@ -153,6 +156,14 @@ a:active {color:#666666;}  /* selected link */
 }
 
 #page-myfriends {
+}
+
+.short-list-friend-details { 
+    margin: 5px;
+}
+
+.short-list-friend { 
+    padding-top: 10px;
 }
 
 .friend-details { 
