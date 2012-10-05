@@ -171,17 +171,15 @@
                                 </div>
                             </div>
                             <!-- /ko  -->
-                            <div class="row-fluid">
-                                <div class="comment-form span12">
-                                    <div class="row-fluid">
-                                        <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
-                                        class="comment span12" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
-                                    </div>
-                                    <div class="row-fluid">
-                                        <button title="Comment: Ctrl+Enter" class="do-comment btn span12"
+                            <div class="comment-form">
+                              <div class="row-fluid">
+                                <textarea title="Ctrl+Enter to submit" placeholder="Your reply (Ctrl+Enter to submit)"
+                                          class="comment span12" data-bind="value:comment, valueUpdate: 'afterkeydown', attr:{'id':id}, executeOnEnter: doComment"></textarea>
+                              </div>
+                              <div class="row-fluid">
+                                <button title="Comment: Ctrl+Enter" class="do-comment btn span12"
                                         data-bind="click:doComment">Comment</button>
-                                    </div>
-                                </div>
+                              </div>
                             </div>
 
                     </div>
