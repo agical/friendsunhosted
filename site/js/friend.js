@@ -10,15 +10,20 @@ define(['ko', 'underscore', 'when', 'friendsUnhostedApi', 'statusUpdate'],
     }
    
     var Friend = function(friendData, rootModel) {
-       var friend = friendData; 
-       var threadIdToRootStatus = rootModel.threadIdToRootStatus;
-       friend.allFriends = ko.observableArray([]);
-       friend.allRootStatuses = ko.observableArray([]);
-       friend.allComments = ko.observableArray([]);
-       friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
-       friend.lastUpdated = ko.observable(0);
-       friend.profilePicture = ko.observable("img/nopicture.png");
-       friend.friendsByUsername = {};
+	var friend = friendData; 
+	var threadIdToRootStatus = rootModel.threadIdToRootStatus;
+	friend.allFriends = ko.observableArray([]);
+	friend.allRootStatuses = ko.observableArray([]);
+	friend.allComments = ko.observableArray([]);
+	friend.allSeenParticipants = ko.observableArray([]); // [{thread:'123:a@be.se', seen:['u@a.se',...]}, ...]
+	friend.lastUpdated = ko.observable(0);
+	friend.profilePicture = ko.observable("img/nopicture.png");
+	friend.friendsByUsername = {};
+	friend.latestStatus = ko.computed(function() {
+	    rootModel.allRootStatuses();
+	    var status = friend.allRootStatuses();
+	    return friend.allRootStatuses().length == 0 ? 'Is acting quiet ... ' : 'says;  ' + friend.allRootStatuses()[status.length -1].status;
+	}, friend);
        
        friend.addFriend = function(friendObject) {
            friend.allFriends.push(friendObject);

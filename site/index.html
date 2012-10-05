@@ -197,7 +197,10 @@
                     <!-- ko foreach: me().allFriends -->
                     <div class="short-list-friend-details row-fluid" data-bind="attr:{id:'friend-short-list-'+($index()+1)}">
                         <img class="short-list-user-picture img-polaroid span2" data-bind="attr: {src: profilePicture}" src="img/nopicture.png" />
-                        <span class="short-list-friend storage-id span9" data-bind="text:username"></span>
+			<div class="span9">  
+                          <span class="short-list-friend storage-id" data-bind="text:username"></span><br />
+                          <span data-bind="text:latestStatus"></span>
+			</div>
                     </div>
                     <!-- /ko -->
 		</div>
