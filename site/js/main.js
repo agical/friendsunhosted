@@ -157,13 +157,11 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
             friend.showMoreStatuses = function() {
                 var updateDone = when.defer();
 
-                var updates = rawUpdates;
-
                 var newRoots = [];
                 var newComments = [];
                 var newSeen = [];
                 var newLastUpdate = 0;
-                var onlyRecentUpdates = _.reject(updates, function(u) {
+                var onlyRecentUpdates = _.reject(rawUpdates, function(u) {
                     return u.timestamp < self.timeLimitForData(); //|| u.timestamp<friend.lastUpdated(); 
                 });
 
