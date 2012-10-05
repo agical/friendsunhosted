@@ -124,17 +124,11 @@
             <div id="page-status" class="page status logged-in hidden span12" data-bind="visible:(loggedIn() && selectedTab()=='status')">
                 <div class="span7">
                     <div class="status-update row-fluid">
-                        <div class="row">
                             <textarea id="status-update" class="span12 pull-right" placeholder="What'cha doin? (Ctrl+Enter to submit)"
                                     title="Ctrl+Enter to submit" data-bind="value:statusUpdate, valueUpdate: 'afterkeydown', executeOnEnter: updateStatus"></textarea>
-                        </div>
-                        <div class="row">
                             <button id="do-update-status" title="Post: Ctrl+Enter" class="btn span12 pull-right"
                                     data-bind="click:updateStatus">Post!</button>
-                        </div>
-                        <div class="row">
                             <a id="refresh-statuses" data-bind="click:refresh" class="pull-right">Refresh statuses</a>
-                        </div>
                     </div>
                     <!--  ko foreach: allRootStatuses().reverse() --> 
                     <div class="conversation row" data-bind="attr:{id:'status-nr-'+($index()+1)}">
@@ -194,14 +188,12 @@
                     </div>
                     <!-- /ko -->
                     <div class="get-more-updates row-fluid" >
-		      <div class="row">
                         <button id="do-get-more-updates" class="btn span12" data-bind="click:getMoreUpdates">Get more updates!</button>
-		      </div>
                     </div>
                 </div>
-                <div id="friends-short-list" class="logged-in span4 pull-right">
+                <div id="friends-short-list" class="logged-in span4">
                     <!-- ko foreach: me().allFriends -->
-                    <div class="friend-details row" data-bind="attr:{id:'friend-short-list-'+($index()+1)}">
+                    <div class="friend-details" data-bind="attr:{id:'friend-short-list-'+($index()+1)}">
                         <img class="status-user-picture img-polaroid" data-bind="attr: {src: profilePicture}" src="img/nopicture.png" />
                         <span class="friend storage-id" data-bind="text:username"></span>
                         <button class="remove-friend" data-bind="attr:{alt:'Delete ' + username}, click: $parent.removeFriend"><i class="icon-remove-sign"></i> Remove friend</button>
