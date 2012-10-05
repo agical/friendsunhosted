@@ -28,6 +28,7 @@ define(['underscore', 'remoteStorage', 'when'], function(_, remoteStorage, when)
 
                 var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
                 window.location.replace(oauthPage);
+                deferred.resolve();
             }
         });
         return deferred.promise;
