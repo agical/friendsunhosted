@@ -1,5 +1,5 @@
-require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate', 'friend'], 
-        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate, Friend2) {
+require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate'], 
+        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate) {
 
     function presentTimestamp(timestamp) {
         return new Date(timestamp);
