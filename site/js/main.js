@@ -168,16 +168,17 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                 _.each(onlyRecentUpdates, function(update) {
                     update.username = friend.username;
                     newLastUpdate = Math.max(newLastUpdate, update.timestamp);
-
-                    if (update.inReplyTo && !_.any(friend.allComments(), function(oldComment) {
-                        return update.timestamp == oldComment.timestamp;
-                    })) {
+                    
+                    var isThisUpdate = function(anUpdate) {
+                        return update.timestamp == anUpdate.timestamp;
+                    };
+                    if (update.inReplyTo && !_.any(friend.allComments(), isThisUpdate)) {
                         newComments.push(update);
                     } else if (update.seen) {
                         newSeen.push(update);
-                    } else if (!update.inReplyTo && !threadIdToRootStatus[update.timestamp + update.username] && !_.any(friend.allRootStatuses(), function(oldRoot) {
-                        return update.timestamp == oldRoot.timestamp;
-                    })) {
+                    } else if (!update.inReplyTo 
+                            && !threadIdToRootStatus[update.timestamp + update.username] 
+                            && !_.any(friend.allRootStatuses(), isThisUpdate)) {
                         newRoots.push(update);
                     }
                 });
@@ -194,19 +195,20 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                         });
 
                         su.doComment = function() {
-                            var update = su.comment();
-                            if (!update || update.trim().length == 0) {
+                            var updateText = su.comment();
+                            if (!updateText || updateText.trim().length == 0) {
                                 return; // short-circuit
                             }
 
                             su.comment('');
 
-                            fuapi.addReply(update, su.id(), self.username()).then(function(updates) {
-                                self.me().updateStatuses();
-                            }, function(err) {
-                                su.comment(update);
+                            var resetFormAndLogWarning = function(err) {
+                                su.comment(updateText);
                                 logWarning(err);
-                            });
+                            };
+                            fuapi
+                                .addReply(updateText, su.id(), self.username())
+                                .then(self.me().updateStatuses, resetFormAndLogWarning);
                         };                        
                         threadIdToRootStatus[su.id()] = su;
                     });
