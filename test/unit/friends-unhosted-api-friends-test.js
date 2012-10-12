@@ -46,7 +46,7 @@ function(fuc, _, when, remoteAdapter, help) {
             fu.addFriend('some@user.com').always(eq(friends[0].username + " is already your friend!")).always(done);
         },
         
-        "- Puts new friend for no friends in repo when confirm is ok": function(done) {
+        "- Puts new friend for no friends in repo": function(done) {
             this.originalGetTimestamp = fu.getTimestamp;
             fu.getTimestamp = function() {return 123456789;};
 
@@ -54,14 +54,7 @@ function(fuc, _, when, remoteAdapter, help) {
 
             ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_friends')
-                .returns(resolved());
-            
-            fakeDialog.confirm = function(message) {
-                assert.defined(message);
-                var ret = when.defer();
-                ret.resolve();
-                return ret.promise;
-            };
+                .returns(resolved(null));
             
             ra.expects('putUserData')
                 .withArgs('friendsunhosted_friends', friends)
@@ -72,7 +65,7 @@ function(fuc, _, when, remoteAdapter, help) {
         },
 
 
-        "- Rejects new friend for no friends in repo when confirm is NOT ok": function(done) {
+        "- Rejects new friend on error": function(done) {
             this.originalGetTimestamp = fu.getTimestamp;
             fu.getTimestamp = function() {return 123456789;};
 
@@ -80,37 +73,9 @@ function(fuc, _, when, remoteAdapter, help) {
 
             ra.expects('fetchUserData')
                 .withExactArgs('friendsunhosted_friends')
-                .returns(resolved());
+                .returns(rejected(666));
             
-            fakeDialog.confirm = function(message) {
-                assert.defined(message);
-                var ret = when.defer();
-                ret.reject("User rejected '" + message + "'");
-                return ret.promise;
-            };
-            
-            fu.addFriend(friends[0].username).then(eq("Should fail"), match("User rejected ")).always(done);
-            
-        },
-
-        "- Rejects new friend for 404 in repo when confirm is NOT ok": function(done) {
-            this.originalGetTimestamp = fu.getTimestamp;
-            fu.getTimestamp = function() {return 123456789;};
-
-            var friends = [{'username': 'test@agical.com', 'timestamp':123456789}];
-
-            ra.expects('fetchUserData')
-                .withExactArgs('friendsunhosted_friends')
-                .returns(rejected(404));
-            
-            fakeDialog.confirm = function(message) {
-                assert.defined(message);
-                var ret = when.defer();
-                ret.reject("User rejected '" + message + "'");
-                return ret.promise;
-            };
-            
-            fu.addFriend(friends[0].username).then(eq("Should fail"), match("User rejected ")).always(done);
+            fu.addFriend(friends[0].username).then(eq("Should fail"), match("666")).always(done);
             
         },
 

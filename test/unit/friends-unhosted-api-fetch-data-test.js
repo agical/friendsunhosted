@@ -16,7 +16,7 @@ function(fuc, _, when, remoteAdapter, help) {
         fu = fuc(_, when, ra.object, fakeDialog);
     }
     
-    buster.testCase("F#U API read public data", {
+    buster.testCase("F#U API read public statuses", {
         setUp: setUpRemoteAdapterAndFuApi,
         
         "- reads updates and calls listener": function(done) {
@@ -54,17 +54,17 @@ function(fuc, _, when, remoteAdapter, help) {
             
             ra.expects('getPublicData')
                 .withArgs('some@user.com', 'friendsunhosted_status')
-                .returns(rejected(404));
+                .returns(rejected(666));
             
             fu.on('error', function(err) {
-                assert.equals(err, 404);
+                assert.equals(err, 666);
                 done();
             });
-            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(404));
+            fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(666));
         },
     });
 
-    buster.testCase("F#U API puts data", {
+    buster.testCase("F#U API puts status", {
         setUp: setUpRemoteAdapterAndFuApi,
         tearDown: function() {fu.getTimestamp = this.originalGetTimestamp||fu.getTimestamp;},
         
@@ -87,7 +87,12 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('friendsunhosted_status', data)
                 .returns(resolved(data));
             
-            fu.addStatus(status, 'some@user.com').then(eq(data), eq('fail')).always(done);
+            fu.on('status', function(actualData) {
+                assert.equals(actualData, data);
+                done();
+            });
+
+            fu.addStatus(status, 'some@user.com').then(eq(data), eq('fail'));
             
         },
 

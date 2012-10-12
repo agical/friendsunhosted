@@ -15,6 +15,10 @@ define([], function() {
         fuapi.on = function(event, callback) {
             listeners[event].push(callback);
         };    
+        
+        var updateStatusListeners = function(data, username) {
+            _.each(listeners['status'], function(listener){listener(data, username);});
+        };
             
         fuapi.addFriend = function(friendsUsername) {
             var afterAdding = when.defer();
@@ -41,34 +45,16 @@ define([], function() {
                     return afterAdding.promise;
                 }
 
-                function doAddFriend() {
-                    value = value || [];
-                    value.push(friendData);
-                    rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
-                        afterAdding.resolve(friendData);
-                    }, function(err) {
-                        afterAdding.reject("Could not put friend in storage: " + err);
-                    });
-                }
-
-                if (!value) {
-                    verifyUpdatingEmptyFriends().then(doAddFriend, afterAdding.reject);
-                } else {
-                    doAddFriend();
-                }
+                value = value || [];
+                value.push(friendData);
+                rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+                    afterAdding.resolve(friendData);
+                }, function(err) {
+                    afterAdding.reject("Could not put friend in storage: " + err);
+                });
 
             }, function(err) {
-                if (err == 404 || err==204) {
-                    verifyUpdatingEmptyFriends().then(function() {
-                        rem.putUserData(FRIENDS_KEY, [friendData]).then(function(keyValCat) {
-                            afterAdding.resolve(friendData);
-                        }, function(err) {
-                            afterAdding.reject("Could not put friend in storage: " + err);
-                        });
-                    }, afterAdding.reject);
-                } else {
-                    afterAdding.reject("Could not fetch friend data from storage: " + err);
-                }
+                afterAdding.reject("Could not fetch friend data from storage: " + err);
             });
 
             return afterAdding.promise;
@@ -188,17 +174,15 @@ define([], function() {
         var addStatusOrReply = function(statusData) {
                 var afterStatusUpdate = when.defer();
                 rem.fetchUserData(STATUS_KEY_V3).then(function(statusUpdates) {
-                    var doUpdate = function() {
-                            statusUpdates = statusUpdates || [];
-                            statusUpdates = cleanFromSeenInThread(statusUpdates);
-                            statusUpdates.push(statusData);
-                            rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
-                                afterStatusUpdate.resolve(statusUpdates);
-                            }, function(err) {
-                                afterStatusUpdate.reject("Could set status data: " + err);
-                            });
-                        };
-                    doUpdate();
+                    statusUpdates = statusUpdates || [];
+                    statusUpdates = cleanFromSeenInThread(statusUpdates);
+                    statusUpdates.push(statusData);
+                    rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function() {
+                        updateStatusListeners(statusUpdates, null);
+                        afterStatusUpdate.resolve(statusUpdates);
+                    }, function(err) {
+                        afterStatusUpdate.reject("Could set status data: " + err);
+                    });
                 }, function(err) {
                     afterStatusUpdate.reject("Could not access status data: " + err);
                 });
