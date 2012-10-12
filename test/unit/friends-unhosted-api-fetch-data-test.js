@@ -124,7 +124,13 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withArgs('friendsunhosted_status', [data1, data2])
                 .returns(resolved([data1, data2]));
             
-            fu.addStatus(status, 'some@user.com').then(eq([data1, data2]), eq('fail')).always(done);
+            fu.on('status', function(actualData) {
+                assert.equals(actualData, [data1, data2]);
+                done();
+            });
+
+
+            fu.addStatus(status, 'some@user.com').then(eq([data1, data2]), eq('fail'));
             
         },
 
