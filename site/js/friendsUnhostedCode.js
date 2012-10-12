@@ -123,11 +123,11 @@ define([], function() {
             rem
                 .getPublicData(username, STATUS_KEY_V3)
                 .then(  function(data) {
-                            _.each(listeners['status'], function(listener){listener(data);});
+                            updateStatusListeners(data);
                             afterUserStatus.resolve(data || []);
                         }, 
                         function(error) {
-                            _.each(listeners['error'], function(listener){listener(error);});
+                            updateErrorListeners(error);
                             afterUserStatus.reject(error);
                         });
 
