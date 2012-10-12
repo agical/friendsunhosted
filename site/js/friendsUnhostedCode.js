@@ -19,6 +19,10 @@ define([], function() {
         var updateStatusListeners = function(data, username) {
             _.each(listeners['status'], function(listener){listener(data, username);});
         };
+        
+        var updateErrorListeners = function(error) {
+            _.each(listeners['error'], function(listener){listener(error);});
+        };
             
         fuapi.addFriend = function(friendsUsername) {
             var afterAdding = when.defer();
@@ -181,9 +185,11 @@ define([], function() {
                         updateStatusListeners(statusUpdates, null);
                         afterStatusUpdate.resolve(statusUpdates);
                     }, function(err) {
+                        updateErrorListeners("Could set status data: " + err);
                         afterStatusUpdate.reject("Could set status data: " + err);
                     });
                 }, function(err) {
+                    updateErrorListeners("Could not access status data: " + err);
                     afterStatusUpdate.reject("Could not access status data: " + err);
                 });
 

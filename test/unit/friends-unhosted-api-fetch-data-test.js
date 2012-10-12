@@ -148,7 +148,13 @@ function(fuc, _, when, remoteAdapter, help) {
                 .withExactArgs('friendsunhosted_status')
                 .returns(rejected(666));
                        
-            fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666")).always(done);
+            
+            fu.on('error', function(error) {
+                assert.equals(error, "Could not access status data: 666");
+                done();
+            });
+
+            fu.addStatus(status, 'some@user.com').then(eq('failure expected'), eq("Could not access status data: 666"));
         },
         
 
