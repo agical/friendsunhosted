@@ -69,7 +69,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 fu.fetchFriends().then(eq("Should fail"), match("666"));
 
             },
-            
+
             "- cannot add same user twice": function (done) {
                 var friends = [
                     {'username':'some@user.com', 'timestamp':9876543210}

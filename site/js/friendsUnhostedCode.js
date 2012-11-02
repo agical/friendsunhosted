@@ -120,11 +120,14 @@ define([], function () {
         fuapi.fetchFriends = function () {
             var def = when.defer();
             rem.fetchUserData(FRIENDS_KEY).then(
-
                 function (friendsArray) {
                     updateFriendsListeners(friendsArray);
                     def.resolve(friendsArray || []);
-                }, def.reject);
+                },
+                function(err) {
+                    updateErrorListeners("Could not fetch friend. Error code: " + err);
+                    def.reject("Could not fetch friend. Error code: " + err);
+                });
             return def.promise;
         };
 
