@@ -56,9 +56,8 @@ define([], function() {
                 if (existingFriends && _.any(existingFriends, function(f) {
                     return f.username == friendsUsername;
                 })) {
-                    dialog.info(friendsUsername + " is already your friend!").then(function() {
-                        afterAdding.reject(friendsUsername + " is already your friend!");
-                    }, afterAdding.reject);
+                    updateErrorListeners(friendsUsername + " is already your friend!");
+                    afterAdding.reject(friendsUsername + " is already your friend!");
                     return afterAdding.promise;
                 }
 

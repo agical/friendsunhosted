@@ -47,20 +47,12 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                     .withExactArgs('friendsunhosted_friends')
                     .returns(resolved(friends));
 
-                fakeDialog.info = function (message) {
-                    assert.defined(message);
-                    var ret = when.defer();
-                    ret.resolve();
-                    return ret.promise;
-                };
-
-                /*
                 fu.on('error', function (err) {
                     assert.equals(err, friends[0].username + " is already your friend!");
                     done();
                 });
-*/
-                fu.addFriend('some@user.com').always(eq(friends[0].username + " is already your friend!")).always(done);
+
+                fu.addFriend('some@user.com').always(eq(friends[0].username + " is already your friend!"));
             },
 
             "- Puts new friend for no friends in repo": function (done) {
