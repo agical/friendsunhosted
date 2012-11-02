@@ -7,8 +7,9 @@ define([], function () {
         var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
         var listeners = {
-            'status': [],
             'error': [],
+            'status': [],
+            'profile': [],
             'friends-of-friend': [],
             'friend-added': [],
             'friends': []
@@ -25,6 +26,12 @@ define([], function () {
         var updateStatusListeners = function (data, username) {
             _.each(listeners['status'], function (listener) {
                 listener(data, username);
+            });
+        };
+
+        var updateProfileListeners = function (profile) {
+            _.each(listeners['profile'], function (listener) {
+                listener(profile);
             });
         };
 
@@ -137,9 +144,9 @@ define([], function () {
 
             rem
                 .getPublicData(username, STATUS_KEY_V3)
-                .then(function (data) {
-                    updateStatusListeners(data);
-                    afterUserStatus.resolve(data || []);
+                .then(function (statuses) {
+                    updateStatusListeners(statuses);
+                    afterUserStatus.resolve(statuses || []);
                 },
                 function (error) {
                     updateErrorListeners(error);
@@ -152,24 +159,19 @@ define([], function () {
         fuapi.saveProfile = function (profile) {
             var afterSaveProfile = when.defer();
             var writeProfile = function () {
-                rem.putUserData(PROFILE, profile).then(afterSaveProfile.resolve, afterSaveProfile.reject);
+                rem.putUserData(PROFILE, profile).then(
+                    function(profile) {
+                        updateProfileListeners(profile);
+                        afterSaveProfile.resolve(profile);
+                    }, function(err) {
+                        afterSaveProfile.reject(err);
+                    });
             };
             when(rem.fetchUserData(PROFILE)).then(function (data) {
-                if (!data) {
-                    verifyUpdatingEmptyStatus().then(writeProfile, afterSaveProfile.reject);
-                } else {
-                    writeProfile();
-                }
+                writeProfile();
             }, function (err) {
-                if (err == 404 || err == 204) {
-                    if (verifyUpdatingEmptyStatus()) {
-                        writeProfile();
-                    } else {
-                        afterStatusUpdate.reject();
-                    }
-                } else {
-                    afterStatusUpdate.reject("Could not access status data: " + err);
-                }
+                updateErrorListeners("Could not write profile.");
+                afterStatusUpdate.reject("Could not write profile.");
             });
             return afterSaveProfile.promise;
         };

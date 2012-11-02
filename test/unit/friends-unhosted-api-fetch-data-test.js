@@ -68,13 +68,15 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             }
         });
 
+
+
         buster.testCase("F#U API puts status", {
             setUp:setUpRemoteAdapterAndFuApi,
             tearDown:function () {
                 fu.getTimestamp = this.originalGetTimestamp || fu.getTimestamp;
             },
 
-            "- Puts new data for empty store":function (done) {
+            "- Puts new status for empty store":function (done) {
                 var status = 'status';
                 var username = 'some@user.com';
                 this.originalGetTimestamp = fu.getTimestamp;
@@ -107,7 +109,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             },
 
 
-            "- Appends data to existing data":function (done) {
+            "- Appends status to existing statuses":function (done) {
                 var status = 'status';
                 var username = 'some@user.com';
                 fu.getTimestamp = function () {
@@ -144,7 +146,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
             },
 
-            "- Rejects update for error":function (done) {
+            "- Rejects status update for error":function (done) {
 
                 var status = 'status';
                 var username = 'some@user.com';
@@ -169,4 +171,48 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
 
         });
-    });
+
+        buster.testCase("F#U API profile", {
+            setUp:setUpRemoteAdapterAndFuApi,
+            tearDown:function () {
+                fu.getTimestamp = this.originalGetTimestamp || fu.getTimestamp;
+            },
+
+            "- Puts profile for empty store": function (done) {
+                var profile = {profile: "My dummy profile"};
+
+                ra.expects('fetchUserData')
+                    .withExactArgs('friendsunhosted/profile')
+                    .returns(resolved(null));
+
+                ra.expects('putUserData')
+                    .withArgs('friendsunhosted/profile', profile)
+                    .returns(resolved(profile));
+
+                fu.on('profile', function (actualProfile) {
+                    assert.equals(actualProfile, profile);
+                    done();
+                });
+
+                fu.saveProfile(profile).then(eq(profile), eq('fail'));
+
+            },
+
+            "- Handle error when writing profile": function (done) {
+                var profile = {profile: "My dummy profile"};
+
+                ra.expects('fetchUserData')
+                    .withExactArgs('friendsunhosted/profile')
+                    .returns(rejected(666));
+
+                fu.on('error', function (err) {
+                    assert.equals(err, "Could not write profile.");
+                    done();
+                });
+
+                fu.saveProfile(profile).then(eq("Should fail"), eq("Could not write profile."));
+
+            }
+        });
+    }
+);
