@@ -71,6 +71,7 @@ define([], function() {
                 });
 
             }, function(err) {
+                updateErrorListeners("Could not fetch friend data from storage: " + err);
                 afterAdding.reject("Could not fetch friend data from storage: " + err);
             });
 

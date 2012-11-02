@@ -91,14 +91,19 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 };
 
                 var friends = [
-                    {'username':'test@agical.com', 'timestamp':123456789}
+                    {'username': 'test@agical.com', 'timestamp':123456789}
                 ];
 
                 ra.expects('fetchUserData')
                     .withExactArgs('friendsunhosted_friends')
                     .returns(rejected(666));
 
-                fu.addFriend(friends[0].username).then(eq("Should fail"), match("666")).always(done);
+                fu.on('error', function (err) {
+                    assert.match(err, "666");
+                    done();
+                });
+
+                fu.addFriend(friends[0].username).then(eq("Should fail"), match("666"));
 
             }
 
