@@ -83,8 +83,37 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
             },
 
+            "- Puts new friend for friends in repo": function (done) {
+                this.originalGetTimestamp = fu.getTimestamp;
+                fu.getTimestamp = function () {
+                    return 123456789;
+                };
 
-            "- Rejects new friend on error": function (done) {
+                var friends = [
+                    {'username':'test1@agical.com', 'timestamp':123456789},
+                    {'username':'test2@agical.com', 'timestamp':123456789}
+                ];
+
+                ra.expects('fetchUserData')
+                    .withExactArgs('friendsunhosted_friends')
+                    .returns(resolved([friends[0]]));
+
+                ra.expects('putUserData')
+                    .withArgs('friendsunhosted_friends', friends)
+                    .returns(resolved(friends));
+
+                fu.on('friend-added', function (addedFriend, allFriends) {
+                    assert.equals(addedFriend, friends[1]);
+                    assert.equals(allFriends, friends);
+                    done();
+                });
+
+                fu.addFriend(friends[1].username).then(eq(friends[1]), eq('fail')).always(done);
+
+            },
+
+
+            "- Rejects new friend on fetch current friends error": function (done) {
                 this.originalGetTimestamp = fu.getTimestamp;
                 fu.getTimestamp = function () {
                     return 123456789;
