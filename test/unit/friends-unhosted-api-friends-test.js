@@ -38,6 +38,24 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 fu.fetchFriendsOfFriend(friend).always(eq(friends));
             },
 
+            "- fetch friends": function (done) {
+                var friends = [
+                    {'username':'test@agical.com', 'timestamp':9876543210},
+                    {'username':'fersuch@agical.com', 'timestamp':9876543211}
+                ];
+
+                ra.expects('fetchUserData')
+                    .withArgs('friendsunhosted_friends')
+                    .returns(resolved(friends));
+
+                fu.on('friends', function (friendsRes) {
+                    assert.equals(friendsRes, friends);
+                    done();
+                });
+
+                fu.fetchFriends().always(eq(friends));
+            },
+
             "- cannot add same user twice": function (done) {
                 var friends = [
                     {'username':'some@user.com', 'timestamp':9876543210}
@@ -121,7 +139,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 var friends = [
                     {'username':'test1@agical.com', 'timestamp':123456789},
                     {'username':'test2@agical.com', 'timestamp':123456789}
-                ];
+                ];0
 
                 ra.expects('fetchUserData')
                     .withExactArgs('friendsunhosted_friends')
