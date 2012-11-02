@@ -4,5 +4,6 @@ logs
 *.log
 .project
 .settings
+.idea
 \#*
 .#*
