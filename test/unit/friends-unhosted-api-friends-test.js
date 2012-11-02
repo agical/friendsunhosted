@@ -18,20 +18,27 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
         buster.testCase("F#U API friends management", {
             setUp:setUpRemoteAdapterAndFuApi,
 
-            "- fetch friends of friend":function (done) {
+            "- fetch friends of friend": function (done) {
                 var friends = [
                     {'username':'test@agical.com', 'timestamp':9876543210},
                     {'username':'fersuch@agical.com', 'timestamp':9876543211}
                 ];
 
+                var friend = 'some@user.com';
                 ra.expects('getPublicData')
-                    .withArgs('some@user.com', 'friendsunhosted_friends')
+                    .withArgs(friend, 'friendsunhosted_friends')
                     .returns(resolved(friends));
 
-                fu.fetchFriendsOfFriend('some@user.com').always(eq(friends)).always(done);
+                fu.on('friends-of-friend', function (friendRes, friendsRes) {
+                    assert.equals(friendRes, friend);
+                    assert.equals(friendsRes, friends);
+                    done();
+                });
+
+                fu.fetchFriendsOfFriend(friend).always(eq(friends));
             },
 
-            "- cannot add same user twice":function (done) {
+            "- cannot add same user twice": function (done) {
                 var friends = [
                     {'username':'some@user.com', 'timestamp':9876543210}
                 ];
@@ -50,7 +57,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 fu.addFriend('some@user.com').always(eq(friends[0].username + " is already your friend!")).always(done);
             },
 
-            "- Puts new friend for no friends in repo":function (done) {
+            "- Puts new friend for no friends in repo": function (done) {
                 this.originalGetTimestamp = fu.getTimestamp;
                 fu.getTimestamp = function () {
                     return 123456789;
@@ -73,7 +80,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             },
 
 
-            "- Rejects new friend on error":function (done) {
+            "- Rejects new friend on error": function (done) {
                 this.originalGetTimestamp = fu.getTimestamp;
                 fu.getTimestamp = function () {
                     return 123456789;

@@ -6,7 +6,11 @@ define([], function() {
         var FRIENDS_KEY = 'friendsunhosted_friends';
         var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
-        var listeners = {'status':[], 'error':[]};
+        var listeners = {
+            'status':[],
+            'error':[],
+            'friends-of-friend':[]
+        };
         
         var verifyUpdatingEmptyFriends = function() {
                 return dialog.confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " + "If this really is the first friend you add, then all is fine and you may press the ok button.");
@@ -23,7 +27,11 @@ define([], function() {
         var updateErrorListeners = function(error) {
             _.each(listeners['error'], function(listener){listener(error);});
         };
-            
+
+        var updateFriendsOfFriendListeners = function(friend, friends) {
+            _.each(listeners['friends-of-friend'], function(listener){listener(friend, friends);});
+        };
+
         fuapi.addFriend = function(friendsUsername) {
             var afterAdding = when.defer();
 
@@ -102,6 +110,8 @@ define([], function() {
             rem
                 .getPublicData(friend, FRIENDS_KEY)
                 .then(function(data) {
+
+                    updateFriendsOfFriendListeners(friend, data);
                     def.resolve(data || []);
                 }, def.reject);
             return def.promise;
@@ -204,7 +214,7 @@ define([], function() {
             return addStatusOrReply({
                 "status": status,
                 "timestamp": fuapi.getTimestamp(),
-                "username": username,
+                "username": username
             });
         };
 
@@ -213,7 +223,7 @@ define([], function() {
                 'username': username,
                 'timestamp': fuapi.getTimestamp(),
                 'status': reply,
-                'inReplyTo': inReplyTo,
+                'inReplyTo': inReplyTo
             });
         };
 
