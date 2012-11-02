@@ -117,20 +117,6 @@ define([], function () {
             return afterRemoving.promise;
         };
 
-        fuapi.fetchFriends = function () {
-            var def = when.defer();
-            rem.fetchUserData(FRIENDS_KEY).then(
-                function (friendsArray) {
-                    updateFriendsListeners(friendsArray);
-                    def.resolve(friendsArray || []);
-                },
-                function(err) {
-                    updateErrorListeners("Could not fetch friend. Error code: " + err);
-                    def.reject("Could not fetch friend. Error code: " + err);
-                });
-            return def.promise;
-        };
-
         fuapi.fetchFriendsOfFriend = function (friend) {
             var def = when.defer();
             rem
@@ -138,16 +124,6 @@ define([], function () {
                 .then(function (data) {
 
                     updateFriendsOfFriendListeners(friend, data);
-                    def.resolve(data || []);
-                }, def.reject);
-            return def.promise;
-        };
-
-        fuapi.fetchStatus = function () {
-            var def = when.defer();
-            rem.fetchUserData(STATUS_KEY_V3).then(
-
-                function (data) {
                     def.resolve(data || []);
                 }, def.reject);
             return def.promise;
