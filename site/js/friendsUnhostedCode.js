@@ -67,6 +67,7 @@ define([], function() {
                     updateFriendAddedListeners(friendData, existingFriends);
                     afterAdding.resolve(friendData);
                 }, function(err) {
+                    updateErrorListeners("Could not put friend in storage: " + err);
                     afterAdding.reject("Could not put friend in storage: " + err);
                 });
 
