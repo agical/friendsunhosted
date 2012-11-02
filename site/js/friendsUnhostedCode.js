@@ -9,7 +9,8 @@ define([], function() {
         var listeners = {
             'status':[],
             'error':[],
-            'friends-of-friend':[]
+            'friends-of-friend':[],
+            'friend-added':[]
         };
         
         var verifyUpdatingEmptyFriends = function() {
@@ -32,6 +33,10 @@ define([], function() {
             _.each(listeners['friends-of-friend'], function(listener){listener(friend, friends);});
         };
 
+        var updateFriendAddedListeners = function(friend, allFriends) {
+            _.each(listeners['friend-added'], function(listener){listener(friend, allFriends);});
+        };
+
         fuapi.addFriend = function(friendsUsername) {
             var afterAdding = when.defer();
 
@@ -47,8 +52,8 @@ define([], function() {
                 "timestamp": fuapi.getTimestamp()
             };
 
-            rem.fetchUserData(FRIENDS_KEY).then(function(value) {
-                if (value && _.any(value, function(f) {
+            rem.fetchUserData(FRIENDS_KEY).then(function(existingFriends) {
+                if (existingFriends && _.any(existingFriends, function(f) {
                     return f.username == friendsUsername;
                 })) {
                     dialog.info(friendsUsername + " is already your friend!").then(function() {
@@ -57,9 +62,10 @@ define([], function() {
                     return afterAdding.promise;
                 }
 
-                value = value || [];
-                value.push(friendData);
-                rem.putUserData(FRIENDS_KEY, value).then(function(keyValCat) {
+                existingFriends = existingFriends || [];
+                existingFriends.push(friendData);
+                rem.putUserData(FRIENDS_KEY, existingFriends).then(function(keyValCat) {
+                    updateFriendAddedListeners(friendData, existingFriends);
                     afterAdding.resolve(friendData);
                 }, function(err) {
                     afterAdding.reject("Could not put friend in storage: " + err);

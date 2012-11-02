@@ -54,6 +54,12 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                     return ret.promise;
                 };
 
+                /*
+                fu.on('error', function (err) {
+                    assert.equals(err, friends[0].username + " is already your friend!");
+                    done();
+                });
+*/
                 fu.addFriend('some@user.com').always(eq(friends[0].username + " is already your friend!")).always(done);
             },
 
@@ -75,7 +81,13 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                     .withArgs('friendsunhosted_friends', friends)
                     .returns(resolved(friends));
 
-                fu.addFriend(friends[0].username).then(eq(friends[0]), eq('fail')).always(done);
+                fu.on('friend-added', function (addedFriend, allFriends) {
+                    assert.equals(addedFriend, friends[0]);
+                    assert.equals(allFriends, friends);
+                    done();
+                });
+
+                fu.addFriend(friends[0].username).then(eq(friends[0]), eq('fail'));
 
             },
 
