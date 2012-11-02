@@ -198,7 +198,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
             },
 
-            "- Handle error when writing profile": function (done) {
+            "- Handle error when reading profile": function (done) {
                 var profile = {profile: "My dummy profile"};
 
                 ra.expects('fetchUserData')
@@ -211,8 +211,27 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 });
 
                 fu.saveProfile(profile).then(eq("Should fail"), eq("Could not write profile."));
+            },
 
+            "- Handle error when writing profile": function (done) {
+                var profile = {profile: "My dummy profile"};
+
+                ra.expects('fetchUserData')
+                    .withExactArgs('friendsunhosted/profile')
+                    .returns(resolved(null));
+
+                ra.expects('putUserData')
+                    .withArgs('friendsunhosted/profile', profile)
+                    .returns(rejected(666));
+
+                fu.on('error', function (err) {
+                    assert.equals(err, "Could not write profile.");
+                    done();
+                });
+
+                fu.saveProfile(profile).then(eq("Should fail"), eq("Could not write profile."));
             }
+
         });
     }
 );

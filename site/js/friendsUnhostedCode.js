@@ -164,7 +164,8 @@ define([], function () {
                         updateProfileListeners(profile);
                         afterSaveProfile.resolve(profile);
                     }, function(err) {
-                        afterSaveProfile.reject(err);
+                        updateErrorListeners("Could not write profile.");
+                        afterSaveProfile.reject("Could not write profile.");
                     });
             };
             when(rem.fetchUserData(PROFILE)).then(function (data) {
