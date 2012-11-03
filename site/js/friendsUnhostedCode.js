@@ -29,9 +29,9 @@ define([], function () {
             });
         };
 
-        var updateProfileListeners = function (profile) {
+        var updateProfileListeners = function (username, profile) {
             _.each(listeners['profile'], function (listener) {
-                listener(profile);
+                listener(username, profile);
             });
         };
 
@@ -161,7 +161,7 @@ define([], function () {
             var writeProfile = function () {
                 rem.putUserData(PROFILE, profile).then(
                     function(profile) {
-                        updateProfileListeners(profile);
+                        updateProfileListeners(rem.username(), profile);
                         afterSaveProfile.resolve(profile);
                     }, function(err) {
                         updateErrorListeners("Could not write profile.");

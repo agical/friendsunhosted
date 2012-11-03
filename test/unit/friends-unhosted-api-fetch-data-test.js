@@ -178,8 +178,30 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 fu.getTimestamp = this.originalGetTimestamp || fu.getTimestamp;
             },
 
+
+            "//- Get profile": function (done) {
+                var profile = {profile: "My dummy profile"};
+
+
+                ra.expects('fetchUserData')
+                    .withExactArgs('friendsunhosted/profile')
+                    .returns(resolved(profile));
+
+                fu.on('profile', function (actualProfile) {
+                    assert.equals(actualProfile, profile);
+                    done();
+                });
+
+                fu.saveProfile(profile).then(eq(profile), eq('fail'));
+
+            },
+
             "- Puts profile for empty store": function (done) {
                 var profile = {profile: "My dummy profile"};
+
+                var username = 'username@agical.com';
+                ra.expects('username')
+                    .returns(username);
 
                 ra.expects('fetchUserData')
                     .withExactArgs('friendsunhosted/profile')
@@ -189,8 +211,9 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                     .withArgs('friendsunhosted/profile', profile)
                     .returns(resolved(profile));
 
-                fu.on('profile', function (actualProfile) {
+                fu.on('profile', function (actualUsername, actualProfile) {
                     assert.equals(actualProfile, profile);
+                    assert.equals(actualUsername, username);
                     done();
                 });
 
