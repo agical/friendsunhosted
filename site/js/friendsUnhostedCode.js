@@ -2,7 +2,7 @@ define([], function () {
     return function (_, when, rem, dialog) {
 
         var fuapi = {};
-        var STATUS_KEY_V3 = 'friendsunhosted_status';
+        var STATUS_KEY = 'friendsunhosted_status';
         var FRIENDS_KEY = 'friendsunhosted_friends';
         var PROFILE = 'friendsunhosted/profile';
         var currentUser = null;
@@ -143,7 +143,7 @@ define([], function () {
             var afterUserStatus = when.defer();
 
             rem
-                .getPublicData(username, STATUS_KEY_V3)
+                .getPublicData(username, STATUS_KEY)
                 .then(function (statuses) {
                     updateStatusListeners(statuses);
                     afterUserStatus.resolve(statuses || []);
@@ -201,11 +201,11 @@ define([], function () {
 
         var addStatusOrReply = function (statusData) {
             var afterStatusUpdate = when.defer();
-            rem.fetchUserData(STATUS_KEY_V3).then(function (statusUpdates) {
+            rem.fetchUserData(STATUS_KEY).then(function (statusUpdates) {
                 statusUpdates = statusUpdates || [];
                 statusUpdates = cleanFromSeenInThread(statusUpdates);
                 statusUpdates.push(statusData);
-                rem.putUserData(STATUS_KEY_V3, statusUpdates).then(function () {
+                rem.putUserData(STATUS_KEY, statusUpdates).then(function () {
                     updateStatusListeners(statusUpdates, null);
                     afterStatusUpdate.resolve(statusUpdates);
                 }, function (err) {
@@ -261,14 +261,6 @@ define([], function () {
 
         fuapi.logout = function () {
             return rem.logout();
-        };
-
-        fuapi.removeAllStatuses = function () {
-            return rem.deleteUserData(STATUS_KEY_V3);
-        };
-
-        fuapi.removeAllFriends = function () {
-            return rem.deleteUserData(FRIENDS_KEY);
         };
 
         return fuapi;
