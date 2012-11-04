@@ -9,6 +9,7 @@ define([], function () {
         var listeners = {
             'error': [],
             'login': [],
+            'logout': [],
             'status': [],
             'profile': [],
             'friends-of-friend': [],
@@ -62,6 +63,12 @@ define([], function () {
 
         var updateLoginListeners = function (username) {
             _.each(listeners['login'], function (listener) {
+                listener(username);
+            });
+        };
+
+        var updateLogoutListeners = function (username) {
+            _.each(listeners['logout'], function (listener) {
                 listener(username);
             });
         };
@@ -276,7 +283,19 @@ define([], function () {
         };
 
         fuapi.logout = function () {
-            return rem.logout();
+            var afterLogout = when.defer();
+
+            var username = rem.username();
+
+            rem.logout()
+                .then(function() {
+                    updateLogoutListeners(username);
+                    afterLogout.resolve(username);
+                }, function(err) {
+                    afterLogout.reject(err);
+                }
+            )
+            return afterLogout.promise;
         };
 
         return fuapi;
