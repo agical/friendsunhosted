@@ -179,20 +179,22 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             },
 
 
-            "//- Get profile": function (done) {
+            "- Get profile": function (done) {
                 var profile = {profile: "My dummy profile"};
+                var username = 'username@agical.com';
 
 
-                ra.expects('fetchUserData')
-                    .withExactArgs('friendsunhosted/profile')
+                ra.expects('getPublicData')
+                    .withExactArgs(username, 'friendsunhosted/profile')
                     .returns(resolved(profile));
 
-                fu.on('profile', function (actualProfile) {
+                fu.on('profile', function (actualUsername, actualProfile) {
+                    assert.equals(actualUsername, username);
                     assert.equals(actualProfile, profile);
                     done();
                 });
 
-                fu.saveProfile(profile).then(eq(profile), eq('fail'));
+                fu.getProfile(username).then(eq(profile), eq('fail'));
 
             },
 

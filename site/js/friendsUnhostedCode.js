@@ -178,7 +178,14 @@ define([], function () {
         };
 
         fuapi.getProfile = function (username) {
-            return rem.getPublicData(username, PROFILE);
+            var afterGetProfile = when.defer();
+            when(rem.getPublicData(username, PROFILE))
+                .then(function(profile) {
+                    updateProfileListeners(username, profile);
+                    afterGetProfile.resolve(profile);
+                }, afterGetProfile.reject
+                );
+            return afterGetProfile.promise;
         };
 
         var cleanFromSeenInThread = function (updates) {
