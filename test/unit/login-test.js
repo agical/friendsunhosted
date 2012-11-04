@@ -60,7 +60,20 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 });
 
                 fu.logout();
-            }
+            },
+
+            "- Logout failed": function (done) {
+
+                ra.expects('logout')
+                    .returns(rejected("Failed to logout..."));
+
+                fu.on('error', function (err) {
+                    assert.equals(err, "Failed to logout...");
+                    done();
+                });
+
+                fu.login(username).then(eq("Shouldn't happen"), eq('Failed to logout...'));
+            },
 
         });
     }
