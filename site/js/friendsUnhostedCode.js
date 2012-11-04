@@ -276,6 +276,7 @@ define([], function () {
                     updateLoginListeners(retUsername);
                     afterLogin.resolve(retUsername);
                 }, function(err) {
+                    updateErrorListeners(err);
                     afterLogin.reject(err);
                 }
             )
