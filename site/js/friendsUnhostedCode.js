@@ -8,6 +8,7 @@ define([], function () {
         var currentUser = null;
         var listeners = {
             'error': [],
+            'login': [],
             'status': [],
             'profile': [],
             'friends-of-friend': [],
@@ -56,6 +57,12 @@ define([], function () {
         var updateFriendAddedListeners = function (friend, allFriends) {
             _.each(listeners['friend-added'], function (listener) {
                 listener(friend, allFriends);
+            });
+        };
+
+        var updateLoginListeners = function (username) {
+            _.each(listeners['login'], function (listener) {
+                listener(username);
             });
         };
 
@@ -256,7 +263,16 @@ define([], function () {
         };
 
         fuapi.login = function (username) {
-            return rem.login(username);
+            var afterLogin = when.defer();
+            rem.login(username)
+                .then(function(retUsername) {
+                    updateLoginListeners(retUsername);
+                    afterLogin.resolve(retUsername);
+                }, function(err) {
+                    afterLogin.reject(err);
+                }
+            )
+            return afterLogin.promise;
         };
 
         fuapi.logout = function () {
