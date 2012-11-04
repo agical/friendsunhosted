@@ -5,7 +5,6 @@ define([], function () {
         var STATUS_KEY = 'friendsunhosted_status';
         var FRIENDS_KEY = 'friendsunhosted_friends';
         var PROFILE = 'friendsunhosted/profile';
-        var currentUser = null;
         var listeners = {
             'error': [],
             'login': [],
@@ -15,10 +14,6 @@ define([], function () {
             'friends-of-friend': [],
             'friend-added': [],
             'friends': []
-        };
-
-        var verifyUpdatingEmptyFriends = function () {
-            return dialog.confirm("You seem to have no friends in your store. Press Cancel if you have added friends previously! " + "If this really is the first friend you add, then all is fine and you may press the ok button.");
         };
 
         fuapi.on = function (event, callback) {
@@ -46,12 +41,6 @@ define([], function () {
         var updateFriendsOfFriendListeners = function (friend, friends) {
             _.each(listeners['friends-of-friend'], function (listener) {
                 listener(friend, friends);
-            });
-        };
-
-        var updateFriendsListeners = function (friends) {
-            _.each(listeners['friends'], function (listener) {
-                listener(friends);
             });
         };
 
@@ -207,11 +196,6 @@ define([], function () {
                 return item.seen;
             });
         };
-
-        var verifyUpdatingEmptyStatus = function () {
-            return dialog.confirm("You seem to have no data in your store. Press Cancel if you have made previous updates! " + "If this really is your first update, then all is fine and you may press the ok button.");
-        };
-
 
         var addStatusOrReply = function (statusData) {
             var afterStatusUpdate = when.defer();
