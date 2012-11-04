@@ -76,8 +76,35 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 });
 
                 fu.logout().then(eq("Shouldn't happen"), eq('Failed to logout...'));
+            },
+
+            "- Init": function (done) {
+
+                ra.expects('restoreLogin')
+                    .returns(resolved(username));
+
+                fu.on('login', function (actualUsername) {
+                    assert.equals(actualUsername, username);
+                    done();
+                });
+
+                fu.init().then(eq(username), eq('fail'));
+            },
+
+            "- Init failed": function (done) {
+
+                ra.expects('restoreLogin')
+                    .withExactArgs()
+                    .returns(rejected("Failed to login..."));
+
+                fu.on('error', function (err) {
+                    assert.equals(err, "Failed to login...");
+                    done();
+                });
+
+                fu.init().then(eq("Shouldn't happen"), eq('Failed to login...'));
             }
 
+
         });
-    }
-);
+    });

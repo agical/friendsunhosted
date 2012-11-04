@@ -266,7 +266,17 @@ define([], function () {
          */
 
         fuapi.init = function () {
-            return rem.restoreLogin();
+            var afterLogin = when.defer();
+            rem.restoreLogin()
+                .then(function(retUsername) {
+                    updateLoginListeners(retUsername);
+                    afterLogin.resolve(retUsername);
+                }, function(err) {
+                    updateErrorListeners(err);
+                    afterLogin.reject(err);
+                }
+            )
+            return afterLogin.promise;
         };
 
         fuapi.login = function (username) {
