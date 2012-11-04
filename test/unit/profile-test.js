@@ -8,24 +8,19 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
         var fu = null;
         var ra = null;
-        var fakeDialog;
+
+        var profile = {profile: "My dummy profile"};
+        var username = 'username@agical.com';
 
         function setUpRemoteAdapterAndFuApi() {
             ra = this.mock(remoteAdapter);
-            fu = fuc(_, when, ra.object, fakeDialog);
+            fu = fuc(_, when, ra.object, null);
         }
 
         buster.testCase("F#U API profile", {
             setUp:setUpRemoteAdapterAndFuApi,
-            tearDown:function () {
-                fu.getTimestamp = this.originalGetTimestamp || fu.getTimestamp;
-            },
-
 
             "- Get profile": function (done) {
-                var profile = {profile: "My dummy profile"};
-                var username = 'username@agical.com';
-
 
                 ra.expects('getPublicData')
                     .withExactArgs(username, 'friendsunhosted/profile')
@@ -42,9 +37,7 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             },
 
             "- Puts profile for empty store": function (done) {
-                var profile = {profile: "My dummy profile"};
 
-                var username = 'username@agical.com';
                 ra.expects('username')
                     .returns(username);
 
@@ -67,7 +60,6 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             },
 
             "- Handle error when reading profile": function (done) {
-                var profile = {profile: "My dummy profile"};
 
                 ra.expects('fetchUserData')
                     .withExactArgs('friendsunhosted/profile')
@@ -82,7 +74,6 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
             },
 
             "- Handle error when writing profile": function (done) {
-                var profile = {profile: "My dummy profile"};
 
                 ra.expects('fetchUserData')
                     .withExactArgs('friendsunhosted/profile')

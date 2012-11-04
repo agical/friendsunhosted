@@ -8,12 +8,10 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
         var fu = null;
         var ra = null;
-        var fakeDialog;
 
         function setUpRemoteAdapterAndFuApi() {
             ra = this.mock(remoteAdapter);
-            fakeDialog = {};
-            fu = fuc(_, when, ra.object, fakeDialog);
+            fu = fuc(_, when, ra.object, null);
         }
 
         buster.testCase("F#U API read public statuses", {
