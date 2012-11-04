@@ -293,6 +293,7 @@ define([], function () {
                     updateLogoutListeners(username);
                     afterLogout.resolve(username);
                 }, function(err) {
+                    updateErrorListeners(err);
                     afterLogout.reject(err);
                 }
             )
