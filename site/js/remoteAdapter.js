@@ -13,6 +13,10 @@ define(['underscore', 'remoteStorage', 'when'], function(_, remoteStorage, when)
             return client;
         };
 
+    val.username = function() {
+        return localStorage.getItem('username');
+    };
+
     val.login = function(username, categories) {
         var categories = categories || ['public'];
 
@@ -28,6 +32,7 @@ define(['underscore', 'remoteStorage', 'when'], function(_, remoteStorage, when)
 
                 var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
                 window.location.replace(oauthPage);
+                deferred.resolve();
             }
         });
         return deferred.promise;
