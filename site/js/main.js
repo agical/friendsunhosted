@@ -248,6 +248,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
 
         self.refresh = function() {
             if (self.loggedIn()) {
+                self.me().updateStatuses();
                 _.each(self.me().allFriends(), function(friend) {
                     friend.updateStatuses();
                 });
