@@ -7,12 +7,10 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
 
         var fu = null;
         var ra = null;
-        var fakeDialog;
 
         function setUpRemoteAdapterAndFuApi() {
             ra = this.mock(remoteAdapter);
-            fakeDialog = {};
-            fu = fuc(_, when, ra.object, fakeDialog);
+            fu = fuc(_, when, ra.object, null);
         }
 
         buster.testCase("F#U API friends management", {
@@ -46,13 +44,6 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                 ra.expects('fetchUserData')
                     .withExactArgs('friendsunhosted_friends')
                     .returns(resolved(friends));
-
-                fakeDialog.info = function (message) {
-                    assert.defined(message);
-                    var ret = when.defer();
-                    ret.resolve();
-                    return ret.promise;
-                };
 
                 fu.on('error', function (err) {
                     assert.equals(err, friends[0].username + " is already your friend!");
