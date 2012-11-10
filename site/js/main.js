@@ -1,5 +1,5 @@
-require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate', 'friend', 'dialog'],
-        function($, ui, ko, bb, _, when, fuapi, moment, StatusUpdate, Friend, dialog) {
+require(['jquery', 'ui', 'ko', 'underscore', 'when', 'friendsUnhostedApi', 'moment', 'statusUpdate', 'friend', 'dialog'],
+        function($, ui, ko, _, when, fuapi, moment, StatusUpdate, Friend, dialog) {
 
     function getLatestTimestamp(rootItem) {
         if (rootItem.comments().length > 0) {
@@ -166,7 +166,7 @@ require(['jquery', 'ui', 'ko', 'bootbox', 'underscore', 'when', 'friendsUnhosted
                     localStorage.removeItem(PENDING_USERS);
                     localStorage.setItem(PENDING_USERS, JSON.stringify(pendingUsers));
                     
-                    dialog.showMessage('#referred-message', '<a class="close" data-dismiss="alert">×</a>' +
+                    dialog.info(
                         'You have been invited by <b>' + referrer + '</b> to join Friends#Unhosted.<br/><br/>' +
                         'To connect with your friends on Friends#Unhosted you need a remoteStorage account (read more below). ' +
                         'If you don\'t have a remoteStorage account yet, you can follow one of the links below to register for one<br/><br/>' +
