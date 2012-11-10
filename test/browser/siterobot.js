@@ -371,11 +371,11 @@
         };
 
         fu.errorMessage = function(text_cb) {
-            return text(".bootbox .modal-body", text_cb);
+            return text("#error-message-body", text_cb);
         };
         
         fu.clickErrorOk = function() {
-            return click(".bootbox a[data-handler=0]");
+            return click("#error-message .close");
         };
 
         fu.clickOkInConfirmWriteToEmptyStore = function() {
