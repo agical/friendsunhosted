@@ -373,12 +373,12 @@ buster.testCase("Friends#Unhosted", {
         var _value = [{"status":"Hej\nhopp 11","timestamp":firstTimestamp,"username":"mongo@localhost"}, 
                       {"status":"Nr 2","timestamp":firstTimestamp+30000,"username":"mongo@localhost",'inReplyTo':firstTimestamp+':mongo@localhost'},
                       {'seen':'arne@anka.se', 'thread':firstTimestamp+':mongo@localhost'},
-                      {'seen':'peppe@bodega.es', 'thread':firstTimestamp+':mongo@localhost'},
+                      {'seen':'peppe@bodega.es', 'thread':firstTimestamp+':mongo@localhost'}
                       ];
         var _username2 = 'bongo@localhost';
         var _value2 = [{"status":"Från bongo","timestamp":firstTimestamp+60000,"username":"bongo@localhost",'inReplyTo':firstTimestamp+':mongo@localhost'},
                       {'seen':'arne@anka.se', 'thread':firstTimestamp+':mongo@localhost'},
-                      {'seen':'arnold@isback.es', 'thread':firstTimestamp+':mongo@localhost'},
+                      {'seen':'arnold@isback.es', 'thread':firstTimestamp+':mongo@localhost'}
                       ];
         var store = siterobot.store();
         store
@@ -414,7 +414,7 @@ buster.testCase("Friends#Unhosted", {
                       {"status":"2 days ago","timestamp":now-ONE_DAY_MS*2,"username":"mongo@localhost"},
                       {"status":"4 days ago","timestamp":now-ONE_DAY_MS*4,"username":"mongo@localhost"},
                       {"status":"5 days ago","timestamp":now-ONE_DAY_MS*5,"username":"mongo@localhost"},
-                      {"status":"7 days ago","timestamp":now-ONE_DAY_MS*7,"username":"mongo@localhost"},
+                      {"status":"7 days ago","timestamp":now-ONE_DAY_MS*7,"username":"mongo@localhost"}
                       ];
         siterobot.store()
             .setValue(_username, _category, _key, _value)
@@ -437,7 +437,7 @@ buster.testCase("Friends#Unhosted", {
                     .statusUpdate(5, eq(_value[4].status))
                 .end();
             });
-    },
+    }
 
 });
 

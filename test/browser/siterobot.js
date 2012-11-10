@@ -18,7 +18,7 @@
         var driver = webdriverjs.remote({
             host:"localhost",
             port: 4444,
-            desiredCapabilities:{browserName:"firefox", version:"14"},
+            desiredCapabilities:{browserName:"firefox", version:"14"}
         });
         return driver;
     }
@@ -363,27 +363,27 @@
         };
         
         fu.referralMessage = function(text_cb) {
-            return text('#referred-message', text_cb);
+            return text('#info-message-body', text_cb);
         };
 
         fu.closeReferralMessage = function() {
-            return click('#referred-message .close');
+            return click('#info-message-body .close');
         };
 
         fu.errorMessage = function(text_cb) {
-            return text(".bootbox .modal-body", text_cb);
+            return text("#error-message-body", text_cb);
         };
         
         fu.clickErrorOk = function() {
-            return click(".bootbox a[data-handler=0]");
+            return click("#notification-area .close");
         };
 
         fu.clickOkInConfirmWriteToEmptyStore = function() {
-            return clickButton(".bootbox .btn-primary");
+            return click("#notification-area .close");
         };
 
         fu.confirmBody = function(text_cb) {
-            return text(".bootbox .modal-body", text_cb);
+            return text("#info-message-body", text_cb);
         };
 
         fu.loggedInUser = function(user_cb) {

@@ -48,6 +48,8 @@
         </div>
         <div class="container">
             <div id="loading-screen">Loading...</div>
+            <div id="notification-area" class="hidden">
+            </div>
             <div id="page-about" class="page about full-page-text hidden" data-bind="visible: selectedTab() == 'about'">
                 <div class="span6">
                     <h3>About FRIENDS#UNHOSTED</h3>
@@ -215,9 +217,9 @@
                 </div>
                 <div id="invite-a-friend-by-email" class="logged-in input-append span5" data-bind="visible:loggedIn()">
                     <h4>Invite a friend by email</h4>
-                    <input type="text" id="add-friends-username" class="span3" placeholder="email@server.domain"
+                    <input type="text" id="invite-friends-username" class="span3" placeholder="email@server.domain"
                     data-bind="value:inviteFriendEmail" />
-                    <button id="do-add-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}"><i class="icon-envelope"></i> Invite friend!</button>
+                    <button id="do-invite-friend" class="btn" data-bind="click:function(){$root.inviteFriendByEmail($root.inviteFriendEmail());}"><i class="icon-envelope"></i> Invite friend!</button>
                     <p>Enter your friends email address and click invite. Your preset email client will start with a prefilled message. 
                     Remember that you can add several friends in a single mail.</p>
                 </div>
@@ -386,18 +388,12 @@
                 paths : {
                     "jquery" : "vendor/jquery-1.7.2.min",
                     "ui" : "vendor/bootstrap.min",
-                    "bootbox" : "vendor/bootbox",
                     "ko" : "vendor/knockout-2.1.0.debug",
                     "moment" : "vendor/moment",
                     "underscore" : "vendor/underscore",
                     "when" : "vendor/when",
                     "remoteStorage": "vendor/remoteStorage"
-                },
-                shim: {
-                    'ui': ['jquery'],
-                    'bootbox': ['ui'],
-                    'ko': ['bootbox']                  
-                } 
+                }
             });
         </script>
 

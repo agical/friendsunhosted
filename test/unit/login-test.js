@@ -98,11 +98,10 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                     .returns(rejected("Failed to login..."));
 
                 fu.on('error', function (err) {
-                    assert.equals(err, "Failed to login...");
-                    done();
+                    assert.equals("", "Error listener not supposed to be called");
                 });
 
-                fu.init().then(eq("Shouldn't happen"), eq('Failed to login...'));
+                fu.init().then(eq("Shouldn't happen"), eq('Failed to login...')).always(done);
             }
 
 

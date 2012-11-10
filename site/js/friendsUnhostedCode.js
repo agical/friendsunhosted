@@ -81,10 +81,8 @@ define([], function () {
                 if (existingFriends && _.any(existingFriends, function (f) {
                     return f.username == friendsUsername;
                 })) {
-                    dialog.info(friendsUsername + " is already your friend!").then(function() {
-                        updateErrorListeners(friendsUsername + " is already your friend!");
-                        afterAdding.reject(friendsUsername + " is already your friend!");
-                    }, afterAdding.reject);
+                    updateErrorListeners(friendsUsername + " is already your friend!");
+                    afterAdding.reject(friendsUsername + " is already your friend!");
 
                     return afterAdding.promise;
                 }
@@ -256,7 +254,6 @@ define([], function () {
                     updateLoginListeners(retUsername);
                     afterLogin.resolve(retUsername);
                 }, function(err) {
-                    updateErrorListeners(err);
                     afterLogin.reject(err);
                 }
             )
