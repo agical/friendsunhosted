@@ -59,10 +59,9 @@ define(['friendsUnhostedCode', 'underscore', 'when', 'remoteAdapter', 'testHelpe
                     .returns(rejected(666));
 
                 fu.on('error', function (err) {
-                    assert.equals(err, 666);
-                    done();
+                    buster.fail();
                 });
-                fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(666));
+                fu.fetchStatusForUser('some@user.com').then(buster.fail, eq(666)).always(done);
             }
         });
 

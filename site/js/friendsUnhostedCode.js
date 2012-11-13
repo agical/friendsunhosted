@@ -150,7 +150,6 @@ define([], function () {
                     afterUserStatus.resolve(statuses || []);
                 },
                 function (error) {
-                    updateErrorListeners(error);
                     afterUserStatus.reject(error);
                 });
 
