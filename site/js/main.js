@@ -21,19 +21,23 @@ require(['jquery', 'ui', 'ko', 'underscore', 'when', 'friendsUnhostedApi', 'mome
         dialog.showError(message);
     };
 
+            fuapi.on('login', onLoggedIn);
 
+    function onLoggedIn() {
+        $('.logged-in').addClass('visible').removeClass('hidden');
+        $('.not-logged-in').addClass('hidden').removeClass('visible');
+    }
+
+    function onNotLoggedIn() {
+        $('.logged-in').addClass('hidden').removeClass('visible');
+        $('.not-logged-in').addClass('visible').removeClass('hidden');
+    }
 
     function FriendsViewModel() {
         var self = this;
 
         self.username = ko.observable("");
         self.loggedIn = ko.observable(false);
-        
-        self.loggedIn.subscribe(function(val) {
-            $('.logged-in').addClass(val ? 'visible' : 'hidden').removeClass(val ? 'hidden' : 'visible');
-            $('.not-logged-in').addClass(val ? 'hidden' : 'visible').removeClass(val ? 'visible' : 'hidden');
-        });
-
 
         self.addFriendsUsername = ko.observable("");
         self.inviteFriendEmail = ko.observable("");
@@ -306,6 +310,8 @@ require(['jquery', 'ui', 'ko', 'underscore', 'when', 'friendsUnhostedApi', 'mome
     
     $(function() {
         setTimeout(function() {
+            fuapi.on('login', onLoggedIn);
+            fuapi.on('logout', onNotLoggedIn);
             var viewModel = new FriendsViewModel();
             initBindingHandlers();
             ko.applyBindings(viewModel);
